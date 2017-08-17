@@ -53,4 +53,8 @@ typedef NS_ENUM(NSInteger) {
 @property (nonatomic,copy) NSString *selectMoth;
 @property (nonatomic,copy) NSDate   *selectDeate;
 
+@property (nonatomic,strong) UIView *datePickView;
+
+@property (nonatomic,strong) UIButton *backGroundBtn;
+
 @end

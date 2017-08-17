@@ -11,7 +11,6 @@
 @interface STSelectDateView ()<UIPickerViewDelegate,UIPickerViewDataSource>
 
 @property (nonatomic,strong) UILabel *myLbl;
-@property (nonatomic,strong) UIPickerView *datePicker;
 
 @property (nonatomic,assign) SELECT_DATAVIEW_TYPE TYPE;
 
@@ -21,6 +20,7 @@
 
 - (instancetype)initWithType:(SELECT_DATAVIEW_TYPE)type;
 {
+    _TYPE = type;
     if (type == ISAge) {
         _isOnlyAge = YES;
     }
@@ -31,7 +31,6 @@
         _isParticularYear = ParticularYear;
     }
     if (type == DateTime || type == Default) {
-        _TYPE = type;
         return [self initDatePickerView];
     }
 
@@ -42,54 +41,56 @@
 {
     self = [super init];
     
-    _selectDay = _selectMoth = _selectYear =  @"0";
-    if (_isOnlyYeaer||_isOnlyAge) {
-        _selectYear = @"1";
+    if (self) {
+        _selectDay = _selectMoth = _selectYear =  @"0";
+        if (_isOnlyYeaer||_isOnlyAge) {
+            _selectYear = @"1";
+        }
+        
+        [self createUI];
     }
     
-    UIButton *backGroundBtn    = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];/**< 透明背景 */
-    UIView *datePickView       = [UIView new];                 /**< 放置控件背景View */
-    _datePicker   = [UIPickerView new];                        /**< 日期PickerView */
+    return self;
+}
+
+- (instancetype)initDatePickerView
+{
+    self = [super init];
+    if (self) {
+        _TYPE = Default;
+        [self createUI];
+    }
+
+    return self;
+}
+
+- (void)createUI
+{
+    id datePicker = [self getDatePicker];
     
-    [self         addSubview:backGroundBtn];
-    [self         addSubview:datePickView];
-    [datePickView addSubview:_datePicker];
-    
-    datePickView.tag              = 26;
-    datePickView.backgroundColor  = RGB(255, 255, 255);
-    backGroundBtn.tag             = 25;
-    backGroundBtn.backgroundColor = [UIColor blackColor];
-    backGroundBtn.alpha           = 0;
-    [backGroundBtn addTarget:self action:@selector(dateClick:) forControlEvents:UIControlEventTouchUpInside];
-    _datePicker.backgroundColor   = [UIColor whiteColor];
-    _datePicker.delegate          = self;
-    _datePicker.dataSource        = self;
+    [self addSubview:self.backGroundBtn];
+    [self addSubview:self.datePickView];
+    [self.datePickView addSubview:datePicker];
     
     WS(ws);
     
-    [_datePicker mas_makeConstraints:^(MASConstraintMaker *make) {
+    [datePicker mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(35);
         make.width.mas_equalTo(SCREEN_WIDTH);
         make.centerX.mas_equalTo(ws);
     }];
     
-    datePickView.frame = CGRectMake(0,SCREEN_HEIGHT - XT(80*2+20)+_datePicker.height, SCREEN_WIDTH, 250);
-    
-    if (_isParticularYear) {
-        [_datePicker selectRow:[self pickerView:_datePicker numberOfRowsInComponent:0] - 1 inComponent:0 animated:true];
-        _selectYear = [[NSDate date] toString:@"yyyy"];
-    }
     
     //确定按钮和取消按钮
     for (NSInteger i = 0; i < 2; i++) {
         UIButton *button = [UIButton new];
-        button.tag = 120+i;
+        button.tag       = 120+i;
         [button setBackgroundColor:[UIColor whiteColor]];
-        [button setTitleColor:TCOL_BG forState:UIControlStateNormal];
+        [button setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
         [button setTitle:@[@"取消",@"确定"][i] forState:UIControlStateNormal];
         [button.titleLabel setFont:GL_FONT(XT(34))];
         [button addTarget:self action:@selector(dateClick:) forControlEvents:UIControlEventTouchUpInside];
-        [datePickView addSubview:button];
+        [self.datePickView addSubview:button];
         
         [button mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(15);
@@ -103,32 +104,38 @@
     }
     
     [UIView animateWithDuration:0.3 animations:^{
-        backGroundBtn.alpha = 0.3;
-        datePickView.y = SCREEN_HEIGHT - datePickView.height;
+        ws.backGroundBtn.alpha = 0.3;
+        ws.datePickView.y      = SCREEN_HEIGHT - ws.datePickView.height;
     }];
-
-    return self;
 }
 
-- (instancetype)initDatePickerView
+- (UIView *)datePickView
 {
-    self = [super init];
-    if (self) {
-        UIButton *backGroundBtn    = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];/**< 透明背景 */
-        UIView *datePickView       = [UIView new];                                   /**< 放置控件背景View */
-        UIDatePicker *datePicker   = [UIDatePicker new];                             /**< 日期PickerView */
-        
-        
-        [self addSubview:backGroundBtn];
-        [self addSubview:datePickView];
-        [datePickView addSubview:datePicker];
-        
-        datePickView.tag              = 26;
-        datePickView.backgroundColor  = [UIColor whiteColor];
-        backGroundBtn.tag             = 25;
-        backGroundBtn.backgroundColor = [UIColor blackColor];
-        backGroundBtn.alpha           = 0;
-        [backGroundBtn addTarget:self action:@selector(selectDateClick:) forControlEvents:UIControlEventTouchUpInside];
+    if (!_datePickView) {
+        _datePickView                 = [[UIView alloc]initWithFrame:CGRectMake(0,SCREEN_HEIGHT + 250, SCREEN_WIDTH, 250)];
+        _datePickView.tag             = 26;
+        _datePickView.backgroundColor = RGB(255, 255, 255);
+    }
+    return _datePickView;
+}
+
+- (UIButton *)backGroundBtn
+{
+    if (!_backGroundBtn) {
+        _backGroundBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _backGroundBtn.tag             = 25;
+        _backGroundBtn.backgroundColor = [UIColor blackColor];
+        _backGroundBtn.alpha           = 0;
+        [_backGroundBtn addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+
+    }
+    return _backGroundBtn;
+}
+
+- (id)getDatePicker
+{
+    if (self.TYPE == DEFAULT || self.TYPE == DateTime) {
+        UIDatePicker *datePicker   = [UIDatePicker new]; /**< 日期PickerView */
         datePicker.tag                = 2000;
         datePicker.backgroundColor    = [UIColor whiteColor];
         if (_TYPE == DateTime) {
@@ -139,46 +146,23 @@
         datePicker.maximumDate        = [NSDate date];
         NSTimeInterval times          = [[NSDate dateWithTimeIntervalSinceNow:0] timeIntervalSince1970] - (NSTimeInterval)24*60*60*365*150;
         datePicker.minimumDate        = [NSDate dateWithTimeIntervalSince1970:times];
+        return datePicker;
+    } else {
+        UIPickerView *datePicker   = [UIPickerView new];                        /**< 日期PickerView */
         
-        WS(ws);
+        [self addSubview:self.backGroundBtn];
+        [self addSubview:self.datePickView];
+        [self.datePickView addSubview:datePicker];
         
-        [datePicker mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.mas_equalTo(35);
-            make.width.mas_equalTo(SCREEN_WIDTH);
-            make.centerX.mas_equalTo(ws);
-        }];
-        
-        datePickView.frame = CGRectMake(0,SCREEN_HEIGHT + 250, SCREEN_WIDTH, 250);
-        
-        //确定按钮和取消按钮
-        for (NSInteger i = 0; i < 2; i++) {
-            UIButton *button = [UIButton new];
-            button.tag = 120+i;
-            [button setBackgroundColor:[UIColor whiteColor]];
-            [button setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
-            [button setTitle:@[@"取消",@"确定"][i] forState:UIControlStateNormal];
-            [button.titleLabel setFont:GL_FONT(XT(34))];
-            [button addTarget:self action:@selector(selectDateClick:) forControlEvents:UIControlEventTouchUpInside];
-            [datePickView addSubview:button];
-            
-            [button mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.mas_equalTo(15);
-                if(!i){
-                    make.left.mas_equalTo(15);
-                } else {
-                    make.right.mas_equalTo(-15);
-                }
-                make.size.mas_equalTo(CGSizeMake(50, 30));
-            }];
+        datePicker.backgroundColor   = [UIColor whiteColor];
+        datePicker.delegate          = self;
+        datePicker.dataSource        = self;
+        if (_isParticularYear) {
+            [datePicker selectRow:[self pickerView:datePicker numberOfRowsInComponent:0] - 1 inComponent:0 animated:true];
+            _selectYear = [[NSDate date] toString:@"yyyy"];
         }
-        
-        [UIView animateWithDuration:0.3 animations:^{
-            backGroundBtn.alpha = 0.3;
-            datePickView.y = SCREEN_HEIGHT - datePickView.height;
-        }];
+        return datePicker;
     }
-
-    return self;
 }
 
 
@@ -271,41 +255,35 @@
 - (void)dateClick:(UIButton *)sender
 {
     [[[self getFormViewController] view] endEditing:YES];
-    if (sender.tag == 121) {
-        if ([self.delegate respondsToSelector:@selector(getSelecteDataYeaer:WithMoth:WithDay:)]) {
-            [self.delegate getSelecteDataYeaer:_selectYear WithMoth:_selectMoth WithDay:_selectDay];
-        }
-        if ([self.delegate respondsToSelector:@selector(getSelecteDataWithSelecteView:)]) {
-            [self.delegate getSelecteDataWithSelecteView:self];
-        }
-    }
-
-    [self dismiss];
-}
-
-//日期选择Click
-- (void)selectDateClick:(UIButton *)sender
-{
-    if (sender.tag == 121) {
-        
-        UIDatePicker *datePicker = (UIDatePicker *)[self viewWithTag:2000];
-        _selectYear              = [datePicker.date toString:@"yyyy"];
-        _selectMoth              = [datePicker.date toString:@"MM"];
-        _selectDay               = [datePicker.date toString:@"dd"];
-        _selectDeate             = datePicker.date;
-        
-        
-        if ([self.delegate respondsToSelector:@selector(getSelecteDataYeaer:WithMoth:WithDay:)]) {
-            [self.delegate getSelecteDataYeaer:_selectYear WithMoth:_selectMoth WithDay:_selectDay];
-        }
-        if ([self.delegate respondsToSelector:@selector(getSelecteDataWithDate:)]) {
-            [self.delegate getSelecteDataWithDate:datePicker.date];
-        }
-        if ([self.delegate respondsToSelector:@selector(getSelecteDataWithSelecteView:)]) {
-            [self.delegate getSelecteDataWithSelecteView:self];
-        }
-    }
     
+    if (sender.tag == 121) {
+        if (self.TYPE == DEFAULT || self.TYPE == DateTime) {
+            UIDatePicker *datePicker = (UIDatePicker *)[self viewWithTag:2000];
+            _selectYear              = [datePicker.date toString:@"yyyy"];
+            _selectMoth              = [datePicker.date toString:@"MM"];
+            _selectDay               = [datePicker.date toString:@"dd"];
+            _selectDeate             = datePicker.date;
+            
+            
+            if ([self.delegate respondsToSelector:@selector(getSelecteDataYeaer:WithMoth:WithDay:)]) {
+                [self.delegate getSelecteDataYeaer:_selectYear WithMoth:_selectMoth WithDay:_selectDay];
+            }
+            if ([self.delegate respondsToSelector:@selector(getSelecteDataWithDate:)]) {
+                [self.delegate getSelecteDataWithDate:datePicker.date];
+            }
+            if ([self.delegate respondsToSelector:@selector(getSelecteDataWithSelecteView:)]) {
+                [self.delegate getSelecteDataWithSelecteView:self];
+            }
+        } else {
+            if ([self.delegate respondsToSelector:@selector(getSelecteDataYeaer:WithMoth:WithDay:)]) {
+                [self.delegate getSelecteDataYeaer:_selectYear WithMoth:_selectMoth WithDay:_selectDay];
+            }
+            if ([self.delegate respondsToSelector:@selector(getSelecteDataWithSelecteView:)]) {
+                [self.delegate getSelecteDataWithSelecteView:self];
+            }
+        }
+    }
+
     [self dismiss];
 }
 
