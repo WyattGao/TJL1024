@@ -164,7 +164,6 @@ SlideRuleView *slideRuleView;
         [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
         [btn setTag:10 + i];
         
-        
         [btn mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(ws).offset(9);
             make.size.mas_equalTo(CGSizeMake(50, 40));
