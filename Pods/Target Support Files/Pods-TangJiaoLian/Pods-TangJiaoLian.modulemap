@@ -1,0 +1,6 @@
+framework module Pods_TangJiaoLian {
+  umbrella header "Pods-TangJiaoLian-umbrella.h"
+
+  export *
+  module * { export * }
+}

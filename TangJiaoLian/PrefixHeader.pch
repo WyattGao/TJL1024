@@ -1,0 +1,64 @@
+//
+//  PrefixHeader.pch
+//  TangJiaoLian
+//
+//  Created by 高临原 on 2017/3/15.
+//  Copyright © 2017年 高临原♬. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifdef __OBJC__
+
+//宏
+#import "APIMacro.h"
+#import "UtilsMacro.h"
+#import "CommonColorMacro.h"
+#import "APPConst.h"
+
+//工具
+#import "GLTools.h"
+#import "CGMManager.h"
+#import "GLCache.h"
+#import "GLReloadView.h"
+
+//第三方工具
+#import "Masonry.h"
+#import "SVProgressHUD.h"
+#import "UIImageView+WebCache.h"
+#import "MJRefresh.h"
+#import <HyphenateLite_CN/EMSDK.h>  //环信
+#import "UIView+DNImagePicker.h"
+
+//基类
+#import "GLButton.h"
+#import "GLViewController.h"
+#import "GLTextField.h"
+#import "GLTextView.h"
+#import "GLNextBtn.h"
+
+//网络请求
+#import "GLRequest.h"
+
+//类扩展
+#import "NSDictionary+GL.h"
+#import "NSUserDefaults+GL.h"
+#import "NSDate+GL.h"
+#import "UIView+GL.h"
+#import "NSString+GL.h"
+#import "UILabel+Category.h"
+#import "UIImage+GL.h"
+#import "NSMutableAttributedString+Category.h"
+#import "UITextView+Category.h"
+#import "UINavigationController+FDFullscreenPopGesture.h"
+
+//官方框架
+#import <AVFoundation/AVFoundation.h>
+#import <UIKit/UIKit.h>
+
+#endif
+#endif /* PrefixHeader_pch */
