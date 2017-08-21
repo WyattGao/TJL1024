@@ -9,6 +9,9 @@
 #import "GLView.h"
 #import "TRSDialScrollView.h"
 
+typedef void(^GetSelectValue)(CGFloat value);
+typedef void(^DeleteValue)();
+
 @interface SlideRuleView : GLView
 
 ///标尺
@@ -32,10 +35,18 @@
 ///减号按钮
 @property (nonatomic,strong) GLButton *deductBtn;
 
+@property (nonatomic,copy) GetSelectValue selectValue;
+
+@property (nonatomic,copy) DeleteValue deleteValue;
+
 + (instancetype)share;
 //显示滑尺
 + (void)showWithCurrentValue:(CGFloat)currentValue;
 //关闭滑尺
 + (void)dismiss;
+
++ (void)getValue:(GetSelectValue)selectValue;
+
++ (void)deleteValue:(DeleteValue)deleteValue;
 
 @end

@@ -109,25 +109,35 @@
     UIScrollView *BloodSugarScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, TypeScrollview.height-55)];
     BloodSugarScrollview.backgroundColor = [UIColor whiteColor];
     BloodSugarScrollview.contentSize = CGSizeMake(SCREEN_WIDTH, form_h*daysArr.count);
+    BloodSugarScrollview.tag =  2016818;
     [TypeScrollview addSubview:BloodSugarScrollview];
     
     for (int i=0; i<daysArr.count; i++) {
-        //序号
+        //日期
         UIButton *dateLab = [UIButton new];
         dateLab.frame = CGRectMake(0, i*form_h, form_w-0.5, form_h-0.5);
         
-        NSString *time1 = daysArr[i][@"date"];
-        NSArray *array = [time1 componentsSeparatedByString:@"-"];
-//        dateLab.text = array[array.count-1];
-        [dateLab setTitle:array[array.count-1] forState:UIControlStateNormal];
+        NSDictionary *dayStyleDict   = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [UIFont systemFontOfSize:18],NSFontAttributeName,nil];
+        NSDictionary *monthStyleDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                            [UIFont systemFontOfSize:10],NSFontAttributeName,nil];
+
+        
+        NSString *time2 = [[daysArr[i][@"date"] toDate:@"yyyy-MM-dd"] toString:@"dd\nMM月"];
+        NSMutableAttributedString *time1 = [[NSMutableAttributedString alloc]initWithString:time2];
+        [time1 addAttributes:dayStyleDict range:NSMakeRange(0, 2)];
+        [time1 addAttributes:monthStyleDict range:NSMakeRange(2, time1.length - 2)];
+        
+        [dateLab setAttributedTitle:time1 forState:UIControlStateNormal];
+        [dateLab setTitleColor:TCOL_NORMALETEXT forState:UIControlStateNormal];
         dateLab.titleLabel.textAlignment = NSTextAlignmentCenter;
-        dateLab.titleLabel.font = [UIFont systemFontOfSize:(16)];
+        dateLab.titleLabel.numberOfLines = 2;
+
 //        dateLab.textColor = COL_MAIN_BLUE;
-        [dateLab setTitleColor:RGB(74, 74, 74) forState:UIControlStateNormal];
         dateLab.backgroundColor = [UIColor colorWithRed:0.97f green:0.97f blue:0.97f alpha:1.00f];
-        dateLab.tag = 989000+[array[array.count-1] intValue];
         [dateLab addTarget:self action:@selector(dateDown:) forControlEvents:UIControlEventTouchUpInside];
         [BloodSugarScrollview addSubview:dateLab];
+        
         
         int num = [daysArr[i][@"randomnum"] intValue];
         if (num != 0) {
@@ -155,7 +165,7 @@
             CGFloat X = (j+1)*form_w;//(([dayArr[j][@"TYPE"] intValue]+1)%8+1)*form_w;
             CGFloat Y = i*form_h;
             
-            UIButton *dayLab = [UIButton new];
+            GLButton *dayLab = [GLButton new];
             dayLab.frame = CGRectMake(X, Y, form_w+0.5, form_h);
             [dayLab setTitle:dayArr[(j+7)%8][@"VALUE"] forState:UIControlStateNormal];
             dayLab.titleLabel.font = [UIFont systemFontOfSize:(14)];
@@ -173,26 +183,22 @@
 //            }
             /////////////////////////////////////////////////////////////////////////////////
             
-            int blood;
-            if (dayLab.titleLabel.text.length!=0) {
-                blood = [Tools justBlood:[dayLab.titleLabel.text floatValue] andType:[dayArr[(j+7)%8][@"TYPE"] intValue]];
-            }else{
-                blood = 2;
-            }
-            if (blood == 0 || blood == 1) {//低
-                dayLab.backgroundColor = [UIColor colorWithRed:0.84f green:0.91f blue:0.97f alpha:1.00f];//RGB(247, 97, 116);
-                [dayLab setTitleColor:RGB(75, 168, 240) forState:UIControlStateNormal];
-            }else if (blood == 2){
-                if (dayLab.titleLabel.text.length!=0) {
-                    dayLab.backgroundColor = [UIColor colorWithRed:0.83f green:0.97f blue:0.87f alpha:1.00f];
-                }
-                [dayLab setTitleColor:RGB(59, 219, 97) forState:UIControlStateNormal];
-            }else if (blood == 3 || blood == 4 || blood == 5){//高
-                dayLab.backgroundColor = [UIColor colorWithRed:1.00f green:0.86f blue:0.86f alpha:1.00f];//RGB(252, 214, 113);
-                [dayLab setTitleColor:RGB(251, 80, 80) forState:UIControlStateNormal];
-            }
+            [dayLab setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
             [dayLab addTarget:self action:@selector(lodDown:) forControlEvents:UIControlEventTouchUpInside];
+            [dayLab setTitleColor:RGB(255, 255, 255) forState:UIControlStateSelected];
             dayLab.titleLabel.textAlignment = NSTextAlignmentCenter;
+            [dayLab setBackgroundColor:TCOL_MAIN forState:UIControlStateSelected];
+            [dayLab setBackgroundColor:TCOL_BG forState:UIControlStateNormal];
+
+            
+            if (dayLab.lbl.text.length!=0) {
+                if ([dayLab.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
+                    [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
+                } else if ([dayLab.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
+                    [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+                }
+            }
+
             [BloodSugarScrollview addSubview:dayLab];
         }
     }
@@ -213,7 +219,7 @@
     int i = (int)(btn.tag-110000)/1000;
     int j = (int)(btn.tag-110000-i*1000);
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-    NSNotification *notify = [NSNotification notificationWithName:@"bloodClick" object:@{@"i":IntTOSting(i),@"j":IntTOSting(j)}];
+    NSNotification *notify = [NSNotification notificationWithName:@"bloodClick" object:@{@"i":IntTOSting(i),@"j":IntTOSting(j),@"btn":btn}];
     [center postNotification:notify];
 }
 

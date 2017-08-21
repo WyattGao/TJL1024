@@ -75,8 +75,7 @@
 {
     if (BloodArr.count>0) {
         self.navigationItem.rightBarButtonItem.enabled = YES;
-    }else
-    {
+    } else {
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }
 }
@@ -220,13 +219,15 @@
 }
 
 
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
     NSInteger yrow = [pickerView selectedRowInComponent:0];
     NSInteger mrow = [pickerView selectedRowInComponent:1];
     alertTimeLab.text = [NSString stringWithFormat:@"%ld年%ld月",yrow+2000,mrow+1];
 }
 
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
     return 2;
 }
 
@@ -240,7 +241,6 @@
         return 1;
     }
 }
-
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
@@ -320,6 +320,10 @@
 {
     if (!_headerView) {
         _headerView = [LogDateHeaderView new];
+        WS(ws);
+        _headerView.dateChange = ^{
+            [ws loadBloodSugar];
+        };
     }
     return _headerView;
 }
@@ -330,19 +334,20 @@
                           @"FuncName":@"getBloodValueByMonthNew",
                           @"InField":@{
                               @"ACCOUNT":USER_ACCOUNT,	//帐号
-                              @"YEAR":IntTOSting(year),	//年份
-                              @"MONTH":IntTOSting(month),		//月份
+//                              @"YEAR" : @"2017",
+//                              @"MONTH" : @"8",
+                              @"BEGINDATE":self.headerView.leftDateBtn.lbl.text, //起始日期
+                              @"ENDDATE":self.headerView.rightDateBtn.lbl.text,  //结束日期
                               @"DEVICE":@"1"
                           },
-                          @"OutField":@[
-                              ]
+                          @"OutField":@[]
                           };
     [GL_Requst postWithParameters:dic SvpShow:true success:^(GLRequest *request, id response) {
         NSDictionary *myDic = response;
         if ([myDic[@"Tag"] intValue]==0) {
             return;
         }
-        BloodArr = myDic[@"Result"][@"OutTable"];
+        BloodArr = [[myDic[@"Result"][@"OutTable"] reverseObjectEnumerator] allObjects];
         [BloodSugarScrollview removeFromSuperview];
         BloodSugarScrollview = [STLogView makeBloodSugarScrollview:TypeScrollview andSelectYear:year andMonth:month andData:BloodArr];
         [self bloodArrHaveData];
@@ -393,13 +398,87 @@
     [super viewDidAppear:animated];
 }
 
-//血糖异常事件
+#pragma mark - 添加修改血糖
 - (void)bloodClick:(NSNotification*)not{
     NSDictionary *dic  = [not object];
     NSDictionary *dicc = BloodArr[[dic[@"i"] intValue]][@"result"][[dic[@"j"] intValue]];
+    GLButton *btn      = [dic objectForKey:@"btn"];
     
-    CGFloat  bloodSugarValue = [dicc getFloatValue:@"VALUE"];
-    [SlideRuleView showWithCurrentValue:bloodSugarValue > 0 ? bloodSugarValue * 10 : 100];
+    [[BloodSugarScrollview subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if ([[obj class] isEqual:[GLButton class]] && obj != btn) {
+            GLButton *tmpBtn = obj;
+            tmpBtn.selected  = false;
+        }
+    }];
+    btn.selected = !btn.selected;
+    NSInteger  bloodSugarValue = [dicc getDoubleValue:@"VALUE"] * 10;
+    [SlideRuleView showWithCurrentValue:bloodSugarValue > 0 ? bloodSugarValue : 100];
+    [SlideRuleView getValue:^(CGFloat value) {
+        
+        NSString *btnStr = btn.lbl.text;
+        [btn setTitle:[NSString stringWithFormat:@"%.1lf",value/10.0f]  forState:UIControlStateNormal];
+        
+        NSDictionary *postDic = @{
+                                  FUNCNAME : @"saveBloodValue",
+                                  INFIELD : @{@"DEVICE":@"1"},
+                                  INTABLE : @{
+                                          @"BLOOD_TEST" :@[
+                                                  @{
+                                                  @"ACCOUNT" : USER_ACCOUNT,
+                                                  @"COUNTS" : btn.lbl.text,
+                                                  @"TYPE" : [dicc getStringValue:@"TYPE"],
+                                                  @"DATE" : [BloodArr[[dic[@"i"] intValue]] getStringValue:@"date"]
+                                                  }
+                                          ]
+                                          }
+                                  };
+        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            if (GETTAG) {
+                if (GETRETVAL) {
+                    [btn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
+                    if (btn.lbl.text.length!=0) {
+                        if ([btn.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
+                            [btn setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
+                        } else if ([btn.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
+                            [btn setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+                        }
+                    }
+
+                } else {
+                    GL_ALERTCONTR(nil, GETRETMSG);
+                    [btn setTitle:btnStr  forState:UIControlStateNormal];
+                }
+            } else {
+                GL_ALERTCONTR(nil, GETMESSAGE);
+                [btn setTitle:btnStr  forState:UIControlStateNormal];
+            }
+        } failure:^(GLRequest *request, NSError *error) {
+            GL_AFFAil;
+            [btn setTitle:btnStr  forState:UIControlStateNormal];
+        }];
+    }];
+    
+    [SlideRuleView deleteValue:^{
+        NSDictionary *postDic = @{
+                                  FUNCNAME : @"delSamReferGlucose",
+                                  INFIELD  : @{
+                                          @"ID":[dicc getStringValue:@"id"]
+                                          }
+                                  };
+        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            if (GETTAG) {
+                if (GETRETVAL) {
+                    
+                } else {
+                    GL_ALERTCONTR_1(GETRETMSG);
+                }
+            } else {
+                GL_ALERTCONTR_1(GETMESSAGE);
+            }
+        } failure:^(GLRequest *request, NSError *error) {
+            GL_AFFAil;
+        }];
+    }];
 }
 
 @end

@@ -24,7 +24,7 @@
 #define TCOL_BORDER RGB(213,213,213)
 
 //普通状态文字颜色
-#define TCOL_NORMALETEXT RGB(51,51,51)
+#define TCOL_NORMALETEXT RGB(102,102,102)
 #define TCOL_SUBHEADTEXT RGB(153,153,153)
 #define TCOL_WHITETEXT   RGB(255, 255, 255)
 #define TCOL_NAVTITLE    RGB(255,255,255)
@@ -73,4 +73,10 @@
 
 //记录按钮灰色蒙版
 #define TCOL_RECORDBTNHINT RGBA(0, 0, 0, 0.7)
+
+//高血糖数值颜色
+#define TCOL_GLUCOSEHEIGHT RGB(255, 102, 102)
+
+//低血糖数值颜色
+#define TCOL_GLUCOSLOW RGB(255, 153, 0)
 

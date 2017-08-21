@@ -75,6 +75,16 @@
 
 //=====================================================================>
 //UIAlert
+#define GL_ALERTCONTR(TITLE,MESSAGE) UIAlertController *alertController = [UIAlertController alertControllerWithTitle:TITLE message:MESSAGE preferredStyle:UIAlertControllerStyleAlert];\
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定"  style:UIAlertActionStyleDefault handler:nil]];\
+    [self presentViewController:alertController animated:YES completion:nil];
+
+#define GL_ALERTFORVIEW(TITLE,MESSAGE) UIAlertController *alertController = [UIAlertController alertControllerWithTitle:TITLE message:MESSAGE preferredStyle:UIAlertControllerStyleAlert];\
+[alertController addAction:[UIAlertAction actionWithTitle:@"确定"  style:UIAlertActionStyleDefault handler:nil]];\
+[[self getFormViewController] presentViewController:alertController animated:YES completion:nil];
+
+
+#define GL_ALERTCONTR_1(MESSAGE) GL_ALERTCONTR(nil,MESSAGE)
 
 #define GL_ALERT(Title, Message, Tag, LeftButton, ...)                                             \
 {                                                                                                  \

@@ -122,7 +122,7 @@
 - (UIButton *)backGroundBtn
 {
     if (!_backGroundBtn) {
-        _backGroundBtn = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        _backGroundBtn                 = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
         _backGroundBtn.tag             = 25;
         _backGroundBtn.backgroundColor = [UIColor blackColor];
         _backGroundBtn.alpha           = 0;

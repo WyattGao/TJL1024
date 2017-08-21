@@ -17,21 +17,17 @@
 ///日期右箭头
 @property (nonatomic,strong) UIImageView *rightArrowIV;
 
-///日期左标签
-@property (nonatomic,strong) GLButton *leftDateBtn;
-
-///日期右标签
-@property (nonatomic,strong) GLButton *rightDateBtn;
 
 @property (nonatomic,strong) UILabel *titleLbl;
 
 @property (nonatomic,strong) STSelectDateView *dateView;
 
+///要修改日期的按钮标签
+@property (nonatomic,strong) UILabel *dateBtnLbl;
+
 @end
 
 @implementation LogDateHeaderView
-
-
 
 - (void)dateBtnClick:(GLButton *)sender
 {
@@ -41,13 +37,31 @@
     
     }
     
+    _dateBtnLbl = sender.lbl;
+    
     [self.dateView show];
 }
 
 #pragma mrak - SelecteDateDelegate
 - (void)getSelecteDataWithDate:(NSDate *)date
 {
+    NSDate *otherDate = [NSDate date];
+    BOOL  isOverShoot = false;
+    if (_dateBtnLbl ==  _leftDateBtn.lbl) {
+        otherDate   = [[_rightDateBtn.lbl.text stringByAppendingString:@" 23:59:59"] toDate:@"yyyy-MM-dd HH:mm:ss +0800"];
+        isOverShoot = [date timeIntervalSince1970] > [otherDate timeIntervalSince1970];
+    } else if (_dateBtnLbl == _rightDateBtn.lbl){
+        otherDate   = [[_leftDateBtn.lbl.text stringByAppendingString:@" 00:00:00"] toDate:@"yyyy-MM-dd HH:mm:ss +0800"];
+        isOverShoot = [date timeIntervalSince1970] < [otherDate timeIntervalSince1970];
+    }
     
+    if (isOverShoot) {
+            GL_ALERTFORVIEW(nil, @"起始日期不得大于结束日期");
+    } else {
+        _dateBtnLbl.text  = [date toString:@"yyyy-MM-dd"];
+        
+        self.dateChange();
+    }
 }
 
 #pragma mark - CreateUI

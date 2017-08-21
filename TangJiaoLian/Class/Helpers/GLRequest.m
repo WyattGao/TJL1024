@@ -54,8 +54,8 @@
      success:(void (^)(GLRequest *request, id response))success
      failure:(void (^)(GLRequest *request, NSError *error))failure{
     
-    self.operationQueue = self.operationManager.operationQueue;
-    self.operationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    self.operationQueue                                     = self.operationManager.operationQueue;
+    self.operationManager.responseSerializer                = [AFHTTPResponseSerializer serializer];
     self.operationManager.requestSerializer.timeoutInterval = 10.0f;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONWritingPrettyPrinted error:nil];
     NSString *json =[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
@@ -82,7 +82,7 @@
         if (data == nil) {
             data= @{};
         }
-        
+                
         [SVProgressHUD dismiss];
         success(self,data);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

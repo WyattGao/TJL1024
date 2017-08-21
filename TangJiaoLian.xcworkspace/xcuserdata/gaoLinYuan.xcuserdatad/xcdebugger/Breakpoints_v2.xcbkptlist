@@ -13,5 +13,101 @@
             stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+            timestampString = "524990596.220124"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "469"
+            endingLineNumber = "469"
+            landmarkName = "-bloodClick:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__30-[STLogController bloodClick:]_block_invoke_2.437"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Desktop/Work/TangJiaoLian0804/TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+                  timestampString = "524990608.800398"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "470"
+                  endingLineNumber = "470"
+                  offsetFromSymbolStart = "80">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__30-[STLogController bloodClick:]_block_invoke_3"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Desktop/Work/TangJiaoLian0804/TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+                  timestampString = "524990608.801895"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "472"
+                  endingLineNumber = "472"
+                  offsetFromSymbolStart = "88">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+            timestampString = "524990632.233227"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "407"
+            endingLineNumber = "407"
+            landmarkName = "-bloodClick:"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[STLogController bloodClick:]"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Desktop/Work/TangJiaoLian0804/TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+                  timestampString = "524990632.453679"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "407"
+                  endingLineNumber = "407"
+                  offsetFromSymbolStart = "468">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__30-[STLogController bloodClick:]_block_invoke"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Desktop/Work/TangJiaoLian0804/TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+                  timestampString = "524990632.45582"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "408"
+                  endingLineNumber = "408"
+                  offsetFromSymbolStart = "80">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

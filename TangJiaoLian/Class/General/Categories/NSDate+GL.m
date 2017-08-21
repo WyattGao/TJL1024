@@ -17,6 +17,11 @@
     return [formatter stringFromDate:self];
 }
 
+- (NSString *)toStringyyyyMMddHHmmss
+{
+    return [self toString:@"yyyy-MM-dd HH:mm:ss"];
+}
+
 + (NSDate *)dateWithTimeIntervalInMilliSecondSince1970:(double)timeIntervalInMilliSecond {
     NSDate *ret = nil;
     double timeInterval = timeIntervalInMilliSecond;

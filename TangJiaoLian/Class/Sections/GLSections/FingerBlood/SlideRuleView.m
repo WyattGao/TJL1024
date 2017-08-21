@@ -75,15 +75,31 @@ SlideRuleView *slideRuleView;
             
             break;
         case GLDeleteBtn:
-            
+            if (slideRuleView.deleteValue) {
+                slideRuleView.deleteValue();
+            }
             break;
         case GLConfirmBtn:
-            
+            if (slideRuleView.selectValue) {
+                slideRuleView.selectValue(_dialScrollView.currentValue);
+            }
             break;
         default:
             break;
     }
     [SlideRuleView dismiss];
+}
+
++ (void)getValue:(GetSelectValue)selectValue
+{
+    slideRuleView = [SlideRuleView share];
+    slideRuleView.selectValue = selectValue;
+}
+
++ (void)deleteValue:(DeleteValue)deleteValue
+{
+    slideRuleView = [SlideRuleView share];
+    slideRuleView.deleteValue = deleteValue;
 }
 
 - (void)changeCurrentValueClick:(GLButton *)sender
@@ -95,6 +111,8 @@ SlideRuleView *slideRuleView;
         [SlideRuleView showWithCurrentValue:self.dialScrollView.currentValue - 1];
     }
 }
+
+
 
 + (instancetype)share
 {
