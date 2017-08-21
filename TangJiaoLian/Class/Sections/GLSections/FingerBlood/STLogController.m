@@ -410,7 +410,7 @@
             tmpBtn.selected  = false;
         }
     }];
-    btn.selected = !btn.selected;
+    btn.selected = true;
     NSInteger  bloodSugarValue = [dicc getDoubleValue:@"VALUE"] * 10;
     [SlideRuleView showWithCurrentValue:bloodSugarValue > 0 ? bloodSugarValue : 100];
     [SlideRuleView getValue:^(CGFloat value) {
@@ -459,25 +459,28 @@
     }];
     
     [SlideRuleView deleteValue:^{
-        NSDictionary *postDic = @{
-                                  FUNCNAME : @"delSamReferGlucose",
-                                  INFIELD  : @{
-                                          @"ID":[dicc getStringValue:@"id"]
-                                          }
-                                  };
-        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
-            if (GETTAG) {
-                if (GETRETVAL) {
-                    
+        if ([dicc getStringValue:@"ID"].length) {
+            NSDictionary *postDic = @{
+                                      FUNCNAME : @"delSamReferGlucose",
+                                      INFIELD  : @{
+                                              @"ACCOUNT":USER_ACCOUNT,
+                                              @"ID":[dicc getStringValue:@"ID"]
+                                              }
+                                      };
+            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) { 
+                if (GETTAG) {
+                    if (GETRETVAL) {
+                        [btn setTitle:@"" forState:UIControlStateNormal];
+                    } else {
+                        GL_ALERTCONTR_1(GETRETMSG);
+                    }
                 } else {
-                    GL_ALERTCONTR_1(GETRETMSG);
+                    GL_ALERTCONTR_1(GETMESSAGE);
                 }
-            } else {
-                GL_ALERTCONTR_1(GETMESSAGE);
-            }
-        } failure:^(GLRequest *request, NSError *error) {
-            GL_AFFAil;
-        }];
+            } failure:^(GLRequest *request, NSError *error) {
+                GL_AFFAil;
+                }];
+        }
     }];
 }
 
