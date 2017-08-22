@@ -1115,6 +1115,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         _xueTangView.shiShiView.connectSwitchClick = ^(BOOL isOn){
             if (!isOn) {
                 [ws stopBLE];
+            } else {
+                //搜索设备
+                ws.xueTangView.shiShiView.ringView.connectBtnClick();
             }
         };
         

@@ -30,7 +30,10 @@
 - (void)connectSwitchClick:(UISwitch *)sender
 {
     if (_connectSwitchClick) {
-        _connectSwitchClick(sender.on);
+        _connectSwitchClick(sender.isOn);
+    }
+    if (sender.on) {
+        sender.on = false;
     }
 }
 
@@ -105,7 +108,7 @@
     if (!_connectSwitch) {
         _connectSwitch = [UISwitch new];
         _connectSwitch.onTintColor = TCOL_MAIN;
-        [_connectSwitch addTarget:self action:@selector(connectSwitchClick:) forControlEvents:UIControlEventValueChanged];
+        [_connectSwitch addTarget:self action:@selector(connectSwitchClick:) forControlEvents:UIControlEventTouchUpInside];
         if (ISBINDING) {
             [_connectSwitch setOn:true];
         }
