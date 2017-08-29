@@ -14,7 +14,9 @@
 
 @property (nonatomic,strong) WoAccountSecurityTableView *mainTV;
 
-@property (nonatomic,strong) WoChangePassWordWithPhoneViewController *changeVC;
+@property (nonatomic,strong) WoChangePassWordWithPhoneViewController *changePassWordVC;
+
+@property (nonatomic,strong) WoChangePassWordWithPhoneViewController *changePhoneVC;
 
 @end
 
@@ -55,30 +57,44 @@
         WS(ws);
         
         _mainTV.tableViewDidSelect = ^(NSIndexPath *indexPath) {
-            
             switch (indexPath.row) {
                 case 0:
                 {
-                    [ws pushWithController:ws.changeVC];
+                    [ws pushWithController:ws.changePassWordVC];
                 }
                     break;
                 case 1:
+                {
+                    [ws pushWithController:ws.changePhoneVC];
+                }
                     break;
                 default:
                     break;
             }
+
         };
     }
     return _mainTV;
 }
 
-- (WoChangePassWordWithPhoneViewController *)changeVC
+- (WoChangePassWordWithPhoneViewController *)changePassWordVC
 {
-    if (!_changeVC) {
-        _changeVC                = [WoChangePassWordWithPhoneViewController new];
-        _changeVC.phoneNumberStr = [GL_USERDEFAULTS getStringValue:@"PHONE"];
+    if (!_changePassWordVC) {
+        _changePassWordVC                = [WoChangePassWordWithPhoneViewController new];
+        _changePassWordVC.phoneNumberStr = [GL_USERDEFAULTS getStringValue:@"PHONE"];
+        _changePhoneVC.viewType          = ChangePassWord;
     }
-    return _changeVC;
+    return _changePassWordVC;
+}
+
+- (WoChangePassWordWithPhoneViewController *)changePhoneVC
+{
+    if (!_changePhoneVC) {
+        _changePhoneVC                = [WoChangePassWordWithPhoneViewController new];
+        _changePhoneVC.phoneNumberStr = [GL_USERDEFAULTS getStringValue:@"PHONE"];
+        _changePhoneVC.viewType       = ChangePhone;
+    }
+    return _changePhoneVC;
 }
 
 @end

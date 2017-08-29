@@ -52,6 +52,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     self.navHide = false;
 }
 
@@ -187,9 +188,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (!section) {
-        return 7;
+        return 5; //多返回一行作为分割线
     }
-    return 10;
+//    return 10;
+    return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -221,7 +223,7 @@
     if (!indexPath.section && indexPath.row == 2) {
         cell.delegate = self;
     }
-    cell.patientDic = _patientDic;
+    cell.patientDic  = _patientDic;
     cell.userBaseDic = _userBaseDic;
     [cell reloadData];
     return cell;
@@ -240,9 +242,10 @@
             UIActionSheet *action = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"拍照",@"从相册中选取", nil];
             [action showInView:self.view];
         }
-        if (indexPath.row == 1) {
+        if (indexPath.row == 1) { //修改昵称
             STEditiInfoViewController *editiInfoVC = [[STEditiInfoViewController alloc]initWithType:NikeName];
             editiInfoVC.delegate = self;
+            editiInfoVC.editiStyle = NikeName;
             editiInfoVC.tf1Str   = [[(STPersonInfoCell *)[tableView cellForRowAtIndexPath:indexPath] rightLbl] text];
             [self pushWithController:editiInfoVC];
         }

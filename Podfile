@@ -9,5 +9,5 @@ target ‘TangJiaoLian’ do
     pod 'UITableView+FDTemplateLayoutCell'
     pod 'SDWebImage'
     pod 'HyphenateLite_CN'
-    pod 'FDFullscreenPopGesture'
+    pod 'FDFullscreenPopGesture' 
 end

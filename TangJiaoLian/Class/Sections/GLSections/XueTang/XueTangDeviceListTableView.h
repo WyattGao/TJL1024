@@ -13,4 +13,5 @@
 
 @property (nonatomic,assign) GLConnectionStatus status;
 
+
 @end

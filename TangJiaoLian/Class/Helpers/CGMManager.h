@@ -26,7 +26,7 @@ typedef enum {
 @interface CGMManager : NSObject<CBPeripheralManagerDelegate>
 
 @property (nonatomic, strong) CBPeripheralManager *manager;
-@property (nonatomic, assign) BOOL isOpen;/*<#注释#>*/
+@property (nonatomic, assign) BOOL isOpen;/**<注释#>*/
 
 
 

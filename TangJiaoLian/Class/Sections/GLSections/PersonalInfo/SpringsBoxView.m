@@ -10,12 +10,12 @@
 
 @interface SpringsBoxView()<UIPickerViewDelegate,UIPickerViewDataSource>
 {
-    NSInteger number;
+    NSInteger   number;
     NSMutableArray *numArr;
     NSMutableArray *numArr2;
     NSString *unitStr;
-    NSString *leftStr;
-    NSString *rightStr;
+    NSString *leftTmpStr;
+    NSString *rightTmpStr;
     MASViewAttribute *boom;
     NSArray *_detailsArr;
     NSInteger selectedType;
@@ -44,16 +44,17 @@
         [UIView animateWithDuration:0.3 animations:^{
             self.alpha = 1;
         } completion:^(BOOL finished) {
+            
         }];
         
-        number    = num;
-        numArr    = [NSMutableArray new];
-        numArr2   = [NSMutableArray new];
-        unitStr   = unit;
+        number      = num;
+        numArr      = [NSMutableArray new];
+        numArr2     = [NSMutableArray new];
+        unitStr     = unit;
         _detailsArr = detailsArr;
-        
-        leftStr   = [@(mini) stringValue];
-        rightStr  = [@(rMini) stringValue];
+
+        leftTmpStr  = [@(mini) stringValue];
+        rightTmpStr = [@(rMini) stringValue];
         
         //血糖值含小数
         if ([unitStr isEqualToString:@"mmol/L"]) {
@@ -181,21 +182,21 @@
             lineIV2.backgroundColor = [UIColor blackColor];
             
             if (!idx) {
-                _tfLbl                 = [UILabel  new];
+                _tfLbl = [UILabel  new];
                 [mainView addSubview:_tfLbl];
-                _tfLbl.font              = GL_FONT((XT(34)));
-                _tfLbl.textColor         = TCOL_MAIN;
+                _tfLbl.font = GL_FONT((XT(34)));
+                _tfLbl.textColor = TCOL_MAIN;
                 if ([unitStr isEqualToString:@"Kg"]) {
-                    _tfLbl.text              = [NSString stringWithFormat:@"%ld.0",(long)mini];
+                    _tfLbl.text = [NSString stringWithFormat:@"%ld.0",(long)mini];
                 } else {
-                    _tfLbl.text              = [NSString stringWithFormat:@"%ld",(long)mini];
+                    _tfLbl.text = [NSString stringWithFormat:@"%ld",(long)mini];
                 }
-                _tfLbl.textAlignment     = NSTextAlignmentCenter;
+                _tfLbl.textAlignment = NSTextAlignmentCenter;
             }
             
             if (detailsArr.count == 1) {
                 
-                unitLbl.font             = GL_FONT((XT(30)));
+                unitLbl.font = GL_FONT((XT(30)));
                 
                 [_delLbl mas_makeConstraints:^(MASConstraintMaker *make) {
                     make.right.equalTo(lineIV2.mas_left).offset(-5);
@@ -317,11 +318,11 @@
             [pickView selectRow:120 - 50 inComponent:0 animated:YES];
             [pickView selectRow:80 - 50 inComponent:1 animated:YES];
             
-            _tfLbl.text = @"120";
+            _tfLbl.text  = @"120";
             _tfLbl2.text = @"80";
             
-            leftStr = @"120";
-            rightStr = @"50";
+            leftTmpStr  = @"120";
+            rightTmpStr = @"50";
         } else if (!_isHideUnit) {
             _tfLbl.text = [NSString stringWithFormat:@"%ld.0",mini];
         }
@@ -387,19 +388,19 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
     if (!component) {
-        leftStr = [[numArr firstObject] isKindOfClass:[NSString class]] ? [numArr objectAtIndex:row] : [[numArr objectAtIndex:row] stringValue];
+        leftTmpStr  = [[numArr firstObject] isKindOfClass:[NSString class]] ? [numArr objectAtIndex:row] : [[numArr objectAtIndex:row] stringValue];
     } else {
-        rightStr = [[numArr2 firstObject] isKindOfClass:[NSString class]] ? [numArr2 objectAtIndex:row] : [[numArr2 objectAtIndex:row] stringValue];
+        rightTmpStr = [[numArr2 firstObject] isKindOfClass:[NSString class]] ? [numArr2 objectAtIndex:row] : [[numArr2 objectAtIndex:row] stringValue];
     }
     
     if (_detailsArr.count > 1) {
-        _tfLbl.text = [NSString stringWithFormat:@"%@",leftStr];
-        _tfLbl2.text = [NSString stringWithFormat:@"%@",rightStr];
+        _tfLbl.text = [NSString stringWithFormat:@"%@",leftTmpStr];
+        _tfLbl2.text = [NSString stringWithFormat:@"%@",rightTmpStr];
     } else {
         if ([unitStr isEqualToString:@"kg"] || [unitStr isEqualToString:@"cm"]) {
-            _tfLbl.text = [NSString stringWithFormat:@"%@.%@",leftStr,rightStr];
+            _tfLbl.text = [NSString stringWithFormat:@"%@.%@",leftTmpStr,rightTmpStr];
         } else {
-            _tfLbl.text = leftStr;
+            _tfLbl.text = leftTmpStr;
         }
     }
     
@@ -413,13 +414,13 @@
     if (sender.tag == 102) {
         if ([unitStr isEqualToString:@"mmol/L"]) {
             if ([_tfLbl2.text floatValue] < [_tfLbl.text floatValue]) {
-                GL_ALERT_1(@"最高血糖值不得小于最低血糖值");
+                GL_ALERTFORVIEW_1(@"最高血糖值不得小于最低血糖值");
                 return;
             }
         }
         if ([unitStr isEqualToString:@"mmHg"]) {
             if ([_tfLbl.text integerValue] <= [_tfLbl2.text integerValue]) {
-                GL_ALERT_1(@"收缩压值需大于舒张压值");
+                GL_ALERTFORVIEW_1(@"收缩压值需大于舒张压值");
                 return;
             }
             [self.delegate springsBoxViewSelectedWhitNumStr:[NSString stringWithFormat:@"高压%@ 低压%@",_tfLbl.text,_tfLbl2.text]];

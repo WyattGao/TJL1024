@@ -9,11 +9,13 @@
 #import "WoChangePassWordWithPhoneViewController.h"
 #import "WoChangePassWordWIthPhoneView.h"
 #import "WoChangePassWordViewController.h"
+#import "WoChangePhoneViewController.h"
 
 @interface WoChangePassWordWithPhoneViewController ()
 
 @property (nonatomic,strong) WoChangePassWordWIthPhoneView *mainView;
 @property (nonatomic,strong) WoChangePassWordViewController *changePassWordVC;
+@property (nonatomic,strong) WoChangePhoneViewController *changePhoneVC;
 
 @end
 
@@ -46,7 +48,10 @@
 
 - (void)createData
 {
-//    [self sendCodeRequst];
+#if DEBUG
+#else
+    [self sendCodeRequst];
+#endif
 }
 
 - (void)sendCodeRequst
@@ -84,8 +89,12 @@
         };
 
         _mainView.nextBtnClick = ^{
-            [ws pushWithController:ws.changePassWordVC];
-            /*
+            if (ws.viewType == ChangePassWord) {
+                [ws pushWithController:ws.changePassWordVC];
+            } else {
+                [ws pushWithController:ws.changePhoneVC];
+            }
+            
             NSDictionary *postDic = @{
                                       FUNCNAME : @"checkVerifyCode",
                                       INFIELD  : @{
@@ -96,7 +105,11 @@
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
-                        [ws pushWithController:ws.changePassWordVC];
+//                        if (ws.viewType == ChangePassWord) {
+//                            [ws pushWithController:ws.changePassWordVC];
+//                        } else {
+//                            [ws pushWithController:ws.changePhoneVC];
+//                        }
                     } else {
                         GL_ALERT_E(GETRETMSG);
                     }
@@ -106,7 +119,6 @@
             } failure:^(GLRequest *request, NSError *error) {
                 
             }];
-             */
         };
     }
     return _mainView;
@@ -118,6 +130,14 @@
         _changePassWordVC = [WoChangePassWordViewController new];
     }
     return _changePassWordVC;
+}
+
+- (WoChangePhoneViewController *)changePhoneVC
+{
+    if (!_changePhoneVC) {
+        _changePhoneVC = [WoChangePhoneViewController new];
+    }
+    return _changePhoneVC;
 }
 
 - (void)didReceiveMemoryWarning {

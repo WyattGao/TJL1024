@@ -42,9 +42,20 @@
     NSInteger count = ([endSp integerValue]-[startSp integerValue])/addTimeSp+5;
     
     NSMutableArray *xAllArrMu = [NSMutableArray arrayWithCapacity:0];
+    
+    //记录上一个时间
+    NSString *tmpTimeStr = [NSString string];
     for (int i=0; i<count; i++) {
         NSString *timeStr = [TimeManage getAfterTime:3*i nowTime:startTime format:format];
-//        timeStr = [timeStr substringWithRange:NSMakeRange(10, 6)];
+        NSDate *timeDate  = [timeStr toDate:@"yyyy-MM-dd HH:mm:ss"];
+        NSString *dayStr  = [timeDate toString:@"dd"];
+        //每一天的开始显示月日
+        if (![dayStr isEqualToString:tmpTimeStr]) {
+            timeStr = [timeDate toString:@"MM月dd日 HH:mm"];
+        } else {
+            timeStr = [timeDate toString:@"dd日 HH:mm"];
+        }
+        tmpTimeStr = dayStr;
         [xAllArrMu addObject:timeStr];
     }
     

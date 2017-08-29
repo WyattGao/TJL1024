@@ -8,23 +8,22 @@
 
 #import "GLView.h"
 #import "XQDLineChart.h"
+#import "ChartsDateValueFormatter.h"
+#import "XueTangLineViewEntity.h"
+
 
 @interface XueTangLineView : GLView
 
 @property (nonatomic,strong) XQDColor *lineColor;
 @property (nonatomic,strong) UIView *cutlineView;
 @property (nonatomic,strong) XQDLineChart *lineChat;
+@property (nonatomic,strong) LineChartView *lineChartView;
+@property (nonatomic,strong) XueTangLineViewEntity *entity;
 
 
 /**
- 主页面刷新折线图
+ 刷新折线图
  */
 - (void)refreshLineView;
-
-
-/**
- 佩戴记录刷新折现图
- */
-- (void)wearRecordrefreshLineView;
 
 @end

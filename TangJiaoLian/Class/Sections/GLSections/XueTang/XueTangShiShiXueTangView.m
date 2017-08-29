@@ -37,6 +37,13 @@
     }
 }
 
+- (void)tendencyBtnClick:(GLButton *)sender
+{
+    if (_tendencyBtnClick) {
+        _tendencyBtnClick();
+    }
+}
+
 - (void)createUI
 {
     self.backgroundColor = TCOL_BG;
@@ -79,6 +86,7 @@
         [_tendencyBtn setTitleColor:TCOL_WHITETEXT forState:UIControlStateNormal];
         [_tendencyBtn setCornerRadius:13];
         [_tendencyBtn setBackgroundColor:TCOL_MAIN];
+        [_tendencyBtn addTarget:self action:@selector(tendencyBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         if (ISBINDING) {
             [self.tendencyBtn setTitle:@"详细记录" forState:UIControlStateNormal];
         } else {
@@ -106,7 +114,7 @@
 - (UISwitch *)connectSwitch
 {
     if (!_connectSwitch) {
-        _connectSwitch = [UISwitch new];
+        _connectSwitch             = [UISwitch new];
         _connectSwitch.onTintColor = TCOL_MAIN;
         [_connectSwitch addTarget:self action:@selector(connectSwitchClick:) forControlEvents:UIControlEventTouchUpInside];
         if (ISBINDING) {

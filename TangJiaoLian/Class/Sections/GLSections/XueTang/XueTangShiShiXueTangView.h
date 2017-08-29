@@ -12,6 +12,8 @@
 
 typedef void(^ConnectSwitchClick)(BOOL isOn);
 
+typedef void(^TendencyBtnClick)();
+
 @interface XueTangShiShiXueTangView : GLView
 
 ///连接状态提示
@@ -22,6 +24,8 @@ typedef void(^ConnectSwitchClick)(BOOL isOn);
 @property (nonatomic,strong) UIButton *tendencyBtn;
 
 @property (nonatomic,copy) ConnectSwitchClick connectSwitchClick;
+
+@property (nonatomic,copy) TendencyBtnClick tendencyBtnClick;
 
 @property (nonatomic,strong) XueTangRingTimeView *ringView;
 

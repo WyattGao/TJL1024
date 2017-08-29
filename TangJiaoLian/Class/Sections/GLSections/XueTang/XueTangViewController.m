@@ -21,6 +21,7 @@
 #import "STDietRecordViewController.h"
 #import "STMedicationController.h"
 #import "WearRecordViewController.h"
+#import "RunChartViewController.h"
 
 typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     ///开始佩戴记录
@@ -56,6 +57,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 @property (nonatomic,strong) XueTangPolarizationView *polarizationView;
 ///佩戴记录VC
 @property (nonatomic,strong) WearRecordViewController *wearRecordVC;
+///趋势图
+@property (nonatomic,strong) RunChartViewController *runChartVC;
+
 @end
 
 @implementation XueTangViewController
@@ -577,11 +581,12 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         
         _sConvertResult_t convert_result;
         int rslt = BGC_InputCurrent([allCurrentValue[i] doubleValue]*100, &convert_result);
+        NSLog(@"rslt = %d",rslt);
         
         bloodValue = [NSString stringWithFormat:@"%d.%d",convert_result.bg/1000,convert_result.bg%1000/100];
         
         //将数据存到本地
-        //        {value:5.23,collectedtime:'2015-12-17 16:30:55'}
+        //数据示例 {value:5.23,collectedtime:'2015-12-17 16:30:55'}
         if ([allCurrentValue[i] floatValue]>600||[allCurrentValue[i] floatValue]<30) {
             if (i && [allCurrentValue[i] floatValue] >= 0) {
                 bloodValue = [[allBloodValueArr lastObject] getStringValue:@"value"];
@@ -659,6 +664,24 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     });
 }
 
+//开启蓝牙
+- (void)openBluetooth
+{
+    [JHSysAlertUtil presentAlertViewWithTitle:@"未开启蓝牙" message:@"监测到您的蓝牙已关闭" cancelTitle:@"去设置" defaultTitle:@"确定" distinct:true cancel:^{
+        NSString * defaultWork       = [self getDefaultWork];
+        NSString * bluetoothMethod   = [self getBluetoothMethod];
+        NSURL*url                    = [NSURL URLWithString:@"Prefs:root=Bluetooth"];
+        Class LSApplicationWorkspace = NSClassFromString(@"LSApplicationWorkspace");
+        [[LSApplicationWorkspace
+          performSelector:NSSelectorFromString(defaultWork)]
+         performSelector:NSSelectorFromString(bluetoothMethod)
+         withObject:url
+         withObject:nil];
+    } confirm:^{
+        
+    }];
+}
+
 #pragma mark - 蓝牙状态监听
 //监听蓝牙连接状态
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central{
@@ -682,7 +705,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             _isBluetoothOpen = false;
             message = @"尚未打开蓝牙，请在设置中打开……";
             if ([GL_USERDEFAULTS objectForKey:SamBangDingDeviceName]) {
-                GL_ALERT(@"未开启蓝牙", @"检测到您的蓝牙已关闭，请开启蓝牙以便连接动态血糖设备", 101, @"去设置",@"确定");
+                [self openBluetooth];
             }
         }
             break;
@@ -705,6 +728,11 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                         } else {
                             //设备未连接，开始搜索设备
                             [[SMDBlueToothManager sharedManger] startScanningDevice];
+//                            double delayInSeconds = 20.0;
+//                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+//                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+//                                
+//                            });
                         }
                     }
                 } else {
@@ -723,56 +751,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     }
     NSLog(@"蓝牙状态---%@",message);
 }
-
-
-#pragma mark - 弹出框代理
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (!buttonIndex) {
-        //点击左按钮
-        switch (alertView.tag) {
-            case 101:  //跳转打开蓝牙设置
-            {
-                
-                NSString * defaultWork       = [self getDefaultWork];
-                NSString * bluetoothMethod   = [self getBluetoothMethod];
-                NSURL*url                    = [NSURL URLWithString:@"Prefs:root=Bluetooth"];
-                Class LSApplicationWorkspace = NSClassFromString(@"LSApplicationWorkspace");
-                [[LSApplicationWorkspace
-                  performSelector:NSSelectorFromString(defaultWork)]
-                 performSelector:NSSelectorFromString(bluetoothMethod)
-                 withObject:url
-                 withObject:nil];
-                
-            }
-                break;
-            case 102: //极化完成录入参比血糖
-            {
-                [self.popView show];
-            }
-                break;
-            case 103:
-            {
-                [SVProgressHUD showWithStatus:@"正在停止监测"];
-                [self recordWearingTime:GLEndRecord];
-            }
-                break;
-            default:
-                break;
-        }
-    } else {
-        //点击右按钮
-        switch (alertView.tag) {
-            case 103:
-                [self.xueTangView.shiShiView.connectSwitch setOn:true];
-                break;
-                
-            default:
-                break;
-        }
-    }
-}
-
 
 #pragma mark - 网络请求
 /**
@@ -835,7 +813,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             if (GETMESSAGE) {
                 GL_ALERT_E(GETMESSAGE);
             } else {
-                GL_ALERT_1(@"未能成功开启监测，请稍后再试");
+                GL_ALERTCONTR_1(@"未能成功开启监测，请稍后再试");
             }
             
             if (type == GLStartRecord) {
@@ -1097,9 +1075,15 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 }
 
 #pragma mark - 点击事件
+//停止监测
 - (void)stopBLE
 {
-    GL_ALERT(@"确定要停止监测吗？", @"停止监测后将直接完成本次周期的监测", 103, @"确定",@"取消");
+    [JHSysAlertUtil presentAlertViewWithTitle:@"确定要停止监测吗" message:@"停止监测后将直接完成本次周期的监测" cancelTitle:@"确定" defaultTitle:@"取消" distinct:true cancel:^{
+        [SVProgressHUD showWithStatus:@"正在停止监测"];
+        [self recordWearingTime:GLEndRecord];
+    } confirm:^{
+        [self.xueTangView.shiShiView.connectSwitch setOn:true];
+    }];
 }
 
 #pragma mark - 加载属性
@@ -1129,12 +1113,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 }
                 
                 if (!ws.isBluetoothOpen){
-                    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"未开启蓝牙" message:@"检测到您的蓝牙已关闭，请开启蓝牙以便连接动态血糖设备" delegate:ws cancelButtonTitle:@"去设置" otherButtonTitles:@"取消", nil];
-                    [alertView setTag:101];
-                    [alertView show];
+                    [self openBluetooth];
                 } else {
-//                    ws.listVC.hidesBottomBarWhenPushed = true;
-//                    [ws pushWithController:ws.listVC];
                     [ws.xueTangView.shiShiView sendSubviewToBack:ws.xueTangView.deviceTV];
                     [UIView transitionFromView:(ws.xueTangView.shiShiView)
                                         toView:(ws.xueTangView.deviceTV)
@@ -1142,12 +1122,15 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                                        options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
                                     completion:^(BOOL finished) {
                                         if (finished) {
-                                            
                                         }
                                     }
                      ];
                 }
             }
+        };
+        
+        _xueTangView.shiShiView.tendencyBtnClick = ^{
+            [ws pushWithController:ws.runChartVC];
         };
         
         _xueTangView.recordView.recordViewClick = ^(GLRecordType type){
@@ -1301,11 +1284,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 //极化结束
                 GL_DISPATCH_MAIN_QUEUE(^{
                     ws.xueTangView.userInteractionEnabled = true;
-                    UIAlertController *alertContr = [UIAlertController alertControllerWithTitle:@"极化完成" message:@"请输入参比血糖" preferredStyle:UIAlertControllerStyleAlert];
-                    [alertContr addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                    [JHSysAlertUtil presentAlertViewWithTitle:@"极化完成" message:@"请输入参比血糖" confirmTitle:@"确定" handler:^{
                         [ws.popView show];
-                    }]];
-                    [ws presentViewController:alertContr animated:true completion:^{
                     }];
                 });
             } else {
@@ -1358,6 +1338,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         _wearRecordVC = [WearRecordViewController new];
     }
     return _wearRecordVC;
+}
+
+- (RunChartViewController *)runChartVC
+{
+    if (!_runChartVC) {
+        _runChartVC = [RunChartViewController new];
+    }
+    return _runChartVC;
 }
 
 

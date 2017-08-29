@@ -33,6 +33,7 @@
 #import "MJRefresh.h"
 #import <HyphenateLite_CN/EMSDK.h>  //环信
 #import "UIView+DNImagePicker.h"
+#import "JHSysAlertUtil.h"
 
 //基类
 #import "GLButton.h"
@@ -59,6 +60,9 @@
 //官方框架
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
+
+//桥接文件
+#import "TangJiaoLian-Bridging-Header.h"
 
 #endif
 #endif /* PrefixHeader_pch */

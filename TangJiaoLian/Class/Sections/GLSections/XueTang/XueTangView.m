@@ -72,14 +72,6 @@
     return cell;
 }
 
-- (void)cellAddSubview:(UITableViewCell *)cell subview:(UIView *)view
-{
-    [cell.contentView addSubview:view];
-    [view mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.equalTo(cell.contentView);
-        make.center.equalTo(cell.contentView);
-    }];
-}
 
 - (XueTangLiShiZhiView *)liShiZhiView
 {

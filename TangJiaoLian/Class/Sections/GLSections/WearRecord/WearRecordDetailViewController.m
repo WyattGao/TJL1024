@@ -54,12 +54,12 @@
             if (GETRETVAL) {
                 _bloodArr = [NSMutableArray arrayWithArray:[[response objectForKey:@"Result"] objectForKey:@"OutTable"]];
                 if (!_bloodArr.count) {
-                    GL_ALERT_1(@"所选佩戴日期暂无血糖数据");
+                    GL_ALERTCONTR_1(@"所选佩戴日期暂无血糖数据");
                 } else {
                     [ws.mainTV.lishiZhiView reloadDataWithBloodArr:[[_bloodArr reverseObjectEnumerator] allObjects]];
-                    ws.mainTV.lineView.lineColor.chartLine_Xarr     = [TimeManage XAllTimeAndStarTime:_entity.starttime andEndTime:[[_bloodArr lastObject] getStringValue:@"collectedtime"]];
-                    ws.mainTV.lineView.lineColor.chartLine_PointArr = [NSMutableArray arrayWithArray:@[_bloodArr]];
-                    [ws.mainTV.lineView wearRecordrefreshLineView];
+                    ws.mainTV.lineView.entity.xAxisTimeArr    = [TimeManage XAllTimeAndStarTime:_entity.starttime andEndTime:[[_bloodArr lastObject] getStringValue:@"collectedtime"]];
+                    ws.mainTV.lineView.entity.bloodGlucoseArr = _bloodArr;
+                    [ws.mainTV.lineView refreshLineView];
                 }
             }
         }
@@ -91,8 +91,8 @@
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取参比%@",response);
-                        ws.mainTV.lineView.lineColor.chartLine_bigPointArr = response[@"Result"][@"OutTable"];
-                        [ws.mainTV.lineView wearRecordrefreshLineView];
+                        ws.mainTV.lineView.entity.referenceArr = response[@"Result"][@"OutTable"];
+                        [ws.mainTV.lineView refreshLineView];
                     }
                 }
             } failure:^(GLRequest *request, NSError *error) {
@@ -120,8 +120,8 @@
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取饮食%@",response);
-                        ws.mainTV.lineView.lineColor.chartLine_oneFloorArr = response[@"Result"][@"OutTable"];
-                        [ws.mainTV.lineView wearRecordrefreshLineView];
+                        ws.mainTV.lineView.entity.dietArr = response[@"Result"][@"OutTable"];
+                        [ws.mainTV.lineView refreshLineView];
                     }
                 }
             } failure:^(GLRequest *request, NSError *error) {
@@ -150,8 +150,8 @@
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取用药%@",response);
-                        ws.mainTV.lineView.lineColor.chartLine_threeFloorArr = response[@"Result"][@"OutTable"];
-                        [ws.mainTV.lineView wearRecordrefreshLineView];
+                        ws.mainTV.lineView.entity.medicatedArr = response[@"Result"][@"OutTable"];
+                        [ws.mainTV.lineView refreshLineView];
                     }
                 }
             } failure:^(GLRequest *request, NSError *error) {
@@ -179,8 +179,8 @@
                 if ( GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取胰岛素%@",response);
-                        ws.mainTV.lineView.lineColor.chartLine_fourFloorArr = response[@"Result"][@"OutTable"];
-                        [ws.mainTV.lineView wearRecordrefreshLineView];
+                        ws.mainTV.lineView.entity.insulinArr = response[@"Result"][@"OutTable"];
+                        [ws.mainTV.lineView refreshLineView];
                     }
                 }
             } failure:^(GLRequest *request, NSError *error) {
@@ -207,8 +207,9 @@
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取运动%@",response);
-                        ws.mainTV.lineView.lineColor.chartLine_twoFloorArr = response[@"Result"][@"OutTable"];
-                        [ws.mainTV.lineView wearRecordrefreshLineView];
+                        
+                        ws.mainTV.lineView.entity.sportsArr = response[@"Result"][@"OutTable"];
+                        [ws.mainTV.lineView refreshLineView];
                     }
                 }
             } failure:^(GLRequest *request, NSError *error) {

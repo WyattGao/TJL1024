@@ -57,6 +57,7 @@
     self.operationQueue                                     = self.operationManager.operationQueue;
     self.operationManager.responseSerializer                = [AFHTTPResponseSerializer serializer];
     self.operationManager.requestSerializer.timeoutInterval = 10.0f;
+    
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONWritingPrettyPrinted error:nil];
     NSString *json =[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     parameters = @{@"param" : json};

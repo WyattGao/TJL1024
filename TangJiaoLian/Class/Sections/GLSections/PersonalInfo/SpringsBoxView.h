@@ -2,7 +2,7 @@
 //  SpringsBoxView.h
 //  Diabetes
 //
-//  Created by 高临原 on 15/11/17.
+    //  Created by 高临原 on 15/11/17.
 //  Copyright © 2015年 hlcc. All rights reserved.
 //
 
@@ -30,6 +30,7 @@
 @property (nonatomic,copy) NSString *rightStr;
 
 - (void)show;
+
 
 - (instancetype)initWithTitle:(NSString *)title Num:(NSInteger )num lMiniScope:(NSInteger )mini TolMaxScope:(NSInteger)max rMiniScope:(NSInteger)rMini TorMaxScope:(NSInteger)rMax Unit:(NSString *)unit DetailsArr:(NSArray *)detailsArr;
 

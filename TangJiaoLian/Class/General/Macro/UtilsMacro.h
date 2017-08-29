@@ -85,6 +85,7 @@
 
 
 #define GL_ALERTCONTR_1(MESSAGE) GL_ALERTCONTR(nil,MESSAGE)
+#define GL_ALERTFORVIEW_1(MESSAGE) GL_ALERTFORVIEW(nil,MESSAGE)
 
 #define GL_ALERT(Title, Message, Tag, LeftButton, ...)                                             \
 {                                                                                                  \

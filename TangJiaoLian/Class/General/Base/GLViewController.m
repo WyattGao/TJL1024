@@ -8,6 +8,7 @@
 
 #import "GLViewController.h"
 #import "LoginViewController.h"
+#import "UIViewController+BackButtonHandler.h"
 
 @interface GLViewController ()
 
@@ -63,10 +64,7 @@
     return UIStatusBarStyleLightContent;//白色
 }
 
-- (void)createUI
-{
-    
-}
+- (void)createUI{}
 
 - (void)createData{}
 
@@ -216,6 +214,12 @@
     _navHide = navHide;
     
     self.fd_prefersNavigationBarHidden = navHide;
+}
+
+- (BOOL)navigationShouldPopOnBackButton
+{
+    [self navLeftBtnClick:nil];
+    return false;
 }
 
 - (void)navLeftBtnClick:(UIButton *)sender
