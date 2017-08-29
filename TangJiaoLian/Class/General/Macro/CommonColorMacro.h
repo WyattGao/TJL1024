@@ -80,3 +80,8 @@
 //低血糖数值颜色
 #define TCOL_GLUCOSLOW RGB(255, 153, 0)
 
+//修改手机号密码高亮字符
+#define TCOL_HIGHLIGHTSTR RGB(255,102,0)
+
+//按钮不可选状态颜色
+#define TCOL_BTNUNAVAILABLE RGB(204,204,204)

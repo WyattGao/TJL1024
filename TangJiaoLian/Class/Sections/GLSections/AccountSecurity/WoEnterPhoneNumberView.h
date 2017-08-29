@@ -14,12 +14,14 @@ typedef NS_ENUM(NSInteger,EnterPhoneNuamberType) {
     EnterPhoneNuamberForNewPhoneNumber    = 2  /**< 修改手机号第三部输入新手机号 */
 };
 
-@interface WoEnterPhoneNumberView : GLView
+@interface WoEnterPhoneNumberView : GLView<GLTextFieldDelegate>
 
-@property (nonatomic,strong) UILabel *hintLbl;
+@property (nonatomic,strong) UILabel               *hintLbl;
 
-@property (nonatomic,strong) GLTextField *phoneTF;
+@property (nonatomic,strong) GLTextField           *phoneTF;
 
-@property (nonatomic,strong) GLNextBtn *nextBtn;
+@property (nonatomic,strong) GLNextBtn             *nextBtn;
+
+@property (nonatomic,assign) EnterPhoneNuamberType type;
 
 @end

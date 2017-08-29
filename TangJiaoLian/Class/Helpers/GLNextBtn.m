@@ -20,6 +20,8 @@
         self.cornerRadius    = 5;
         [self setTitleColor:TCOL_WHITETEXT forState:UIControlStateNormal];
         [self addTarget:self action:@selector(glNextBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+        [self setBackgroundColor:TCOL_MAIN forState:UIControlStateSelected];
+        [self setBackgroundColor:TCOL_BTNUNAVAILABLE forState:UIControlStateNormal];
         
         switch (type) {
             case GLNextBtnNormalType:
