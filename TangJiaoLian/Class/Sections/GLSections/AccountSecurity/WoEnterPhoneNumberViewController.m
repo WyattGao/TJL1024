@@ -10,6 +10,8 @@
 
 @interface WoEnterPhoneNumberViewController ()
 
+@property (nonatomic,strong)WoEnterPhoneNumberView *enterPhoneNumberView;
+
 
 @end
 
@@ -21,6 +23,15 @@
 
 - (void)createUI
 {
+    [self.view addSubview:self.enterPhoneNumberView];
+    
+    WS(ws);
+    
+    [self.enterPhoneNumberView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(ws.view);
+        make.size.equalTo(ws.view);
+    }];
+    
     switch (self.type) {
         case EnterPhoneNuamberForChangePassWord:
             [self setNavTitle:@"密码找回"];
@@ -34,6 +45,14 @@
         default:
             break;
     }
+}
+
+- (WoEnterPhoneNumberView *)enterPhoneNumberView
+{
+    if (!_enterPhoneNumberView) {
+        _enterPhoneNumberView = [WoEnterPhoneNumberView new];
+    }
+    return _enterPhoneNumberView;
 }
 
 - (void)didReceiveMemoryWarning {
