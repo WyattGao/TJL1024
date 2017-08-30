@@ -31,6 +31,7 @@
 #define GL_IP6_H_RATIO(f)   ((f * 1.0f)/GL_IPHONE_6_SCREEN_HEIGHT*SCREEN_HEIGHT)
 
 #define GL_KEYWINDOW    [[UIApplication sharedApplication] keyWindow]
+#define GL_RootViewController [UIApplication sharedApplication].keyWindow.rootViewController
 
 #define GL_TABBARHEIGHT 49
 #define GL_NAVBARHEIGHT 44
@@ -77,11 +78,11 @@
 //UIAlert
 #define GL_ALERTCONTR(TITLE,MESSAGE) UIAlertController *alertController = [UIAlertController alertControllerWithTitle:TITLE message:MESSAGE preferredStyle:UIAlertControllerStyleAlert];\
     [alertController addAction:[UIAlertAction actionWithTitle:@"确定"  style:UIAlertActionStyleDefault handler:nil]];\
-    [self presentViewController:alertController animated:YES completion:nil];
+    [GL_RootViewController presentViewController:alertController animated:YES completion:nil];
 
 #define GL_ALERTFORVIEW(TITLE,MESSAGE) UIAlertController *alertController = [UIAlertController alertControllerWithTitle:TITLE message:MESSAGE preferredStyle:UIAlertControllerStyleAlert];\
 [alertController addAction:[UIAlertAction actionWithTitle:@"确定"  style:UIAlertActionStyleDefault handler:nil]];\
-[[self getFormViewController] presentViewController:alertController animated:YES completion:nil];
+[GL_RootViewController presentViewController:alertController animated:YES completion:nil];
 
 
 #define GL_ALERTCONTR_1(MESSAGE) GL_ALERTCONTR(nil,MESSAGE)

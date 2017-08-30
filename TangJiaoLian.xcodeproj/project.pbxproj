@@ -176,8 +176,7 @@
 		2643B7A51ED92143003B8A0F /* WoChangePassWordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B79B1ED92143003B8A0F /* WoChangePassWordViewController.m */; };
 		2643B7A61ED92143003B8A0F /* WoChangePassWordWihPhoneFinishViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B79D1ED92143003B8A0F /* WoChangePassWordWihPhoneFinishViewController.m */; };
 		2643B7A71ED92143003B8A0F /* WoChangePassWordWIthPhoneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B79F1ED92143003B8A0F /* WoChangePassWordWIthPhoneView.m */; };
-		2643B7A81ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7A11ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.m */; };
-		2643B7A91ED92143003B8A0F /* WoChangePhoneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7A31ED92143003B8A0F /* WoChangePhoneViewController.m */; };
+		2643B7A81ED92143003B8A0F /* WoGetVerificationCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7A11ED92143003B8A0F /* WoGetVerificationCodeViewController.m */; };
 		2643B7B11ED921C6003B8A0F /* HelpAndFeedBackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7B01ED921C6003B8A0F /* HelpAndFeedBackViewController.m */; };
 		2643B7B41ED9220A003B8A0F /* HelpAndFeedBackTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7B31ED9220A003B8A0F /* HelpAndFeedBackTableView.m */; };
 		2648852C1E8FF9BA007A98D7 /* JinNangHeaderScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2648852B1E8FF9BA007A98D7 /* JinNangHeaderScrollView.m */; };
@@ -447,6 +446,8 @@
 		26D0B4721E8CA6A5009F1774 /* WoTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D0B4711E8CA6A4009F1774 /* WoTableView.m */; };
 		26D0B4761E8CAA21009F1774 /* WoInfoHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D0B4751E8CAA21009F1774 /* WoInfoHeaderView.m */; };
 		26D0B4901E8CF00E009F1774 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D0B48F1E8CF00E009F1774 /* AVFoundation.framework */; };
+		26FA06F11F56C43400DAD665 /* MallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA06F01F56C43400DAD665 /* MallViewController.m */; };
+		26FA06F41F56C44700DAD665 /* TrainingCampViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA06F31F56C44700DAD665 /* TrainingCampViewController.m */; };
 		26FC97C01E8CF77100B5FBAA /* SpringsBoxView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97BB1E8CF77100B5FBAA /* SpringsBoxView.m */; };
 		26FC97C11E8CF77100B5FBAA /* STListSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97BD1E8CF77100B5FBAA /* STListSelectionView.m */; };
 		26FC97C21E8CF77100B5FBAA /* STPersonInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97BF1E8CF77100B5FBAA /* STPersonInfoCell.m */; };
@@ -711,10 +712,8 @@
 		2643B79D1ED92143003B8A0F /* WoChangePassWordWihPhoneFinishViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WoChangePassWordWihPhoneFinishViewController.m; sourceTree = "<group>"; };
 		2643B79E1ED92143003B8A0F /* WoChangePassWordWIthPhoneView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoChangePassWordWIthPhoneView.h; sourceTree = "<group>"; };
 		2643B79F1ED92143003B8A0F /* WoChangePassWordWIthPhoneView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WoChangePassWordWIthPhoneView.m; sourceTree = "<group>"; };
-		2643B7A01ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoChangePassWordWithPhoneViewController.h; sourceTree = "<group>"; };
-		2643B7A11ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WoChangePassWordWithPhoneViewController.m; sourceTree = "<group>"; };
-		2643B7A21ED92143003B8A0F /* WoChangePhoneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoChangePhoneViewController.h; sourceTree = "<group>"; };
-		2643B7A31ED92143003B8A0F /* WoChangePhoneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WoChangePhoneViewController.m; sourceTree = "<group>"; };
+		2643B7A01ED92143003B8A0F /* WoGetVerificationCodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoGetVerificationCodeViewController.h; sourceTree = "<group>"; };
+		2643B7A11ED92143003B8A0F /* WoGetVerificationCodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WoGetVerificationCodeViewController.m; sourceTree = "<group>"; };
 		2643B7AF1ED921C6003B8A0F /* HelpAndFeedBackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpAndFeedBackViewController.h; sourceTree = "<group>"; };
 		2643B7B01ED921C6003B8A0F /* HelpAndFeedBackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpAndFeedBackViewController.m; sourceTree = "<group>"; };
 		2643B7B21ED9220A003B8A0F /* HelpAndFeedBackTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpAndFeedBackTableView.h; sourceTree = "<group>"; };
@@ -1264,6 +1263,10 @@
 		26D0B4741E8CAA21009F1774 /* WoInfoHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoInfoHeaderView.h; sourceTree = "<group>"; };
 		26D0B4751E8CAA21009F1774 /* WoInfoHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WoInfoHeaderView.m; sourceTree = "<group>"; wrapsLines = 0; };
 		26D0B48F1E8CF00E009F1774 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		26FA06EF1F56C43400DAD665 /* MallViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MallViewController.h; sourceTree = "<group>"; };
+		26FA06F01F56C43400DAD665 /* MallViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MallViewController.m; sourceTree = "<group>"; };
+		26FA06F21F56C44700DAD665 /* TrainingCampViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrainingCampViewController.h; sourceTree = "<group>"; };
+		26FA06F31F56C44700DAD665 /* TrainingCampViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainingCampViewController.m; sourceTree = "<group>"; };
 		26FC97BA1E8CF77100B5FBAA /* SpringsBoxView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpringsBoxView.h; sourceTree = "<group>"; };
 		26FC97BB1E8CF77100B5FBAA /* SpringsBoxView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpringsBoxView.m; sourceTree = "<group>"; };
 		26FC97BC1E8CF77100B5FBAA /* STListSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STListSelectionView.h; sourceTree = "<group>"; };
@@ -1781,10 +1784,8 @@
 				269D88631EDE5A6D00540253 /* WoAccountSecurityViewController.m */,
 				2643B79A1ED92143003B8A0F /* WoChangePassWordViewController.h */,
 				2643B79B1ED92143003B8A0F /* WoChangePassWordViewController.m */,
-				2643B7A01ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.h */,
-				2643B7A11ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.m */,
-				2643B7A21ED92143003B8A0F /* WoChangePhoneViewController.h */,
-				2643B7A31ED92143003B8A0F /* WoChangePhoneViewController.m */,
+				2643B7A01ED92143003B8A0F /* WoGetVerificationCodeViewController.h */,
+				2643B7A11ED92143003B8A0F /* WoGetVerificationCodeViewController.m */,
 				269A664D1F5561BE002E7163 /* WoEnterPhoneNumberViewController.h */,
 				269A664E1F5561BE002E7163 /* WoEnterPhoneNumberViewController.m */,
 				2643B79C1ED92143003B8A0F /* WoChangePassWordWihPhoneFinishViewController.h */,
@@ -2960,6 +2961,8 @@
 		26CCA9161E78D4BF001D0E05 /* GLSections */ = {
 			isa = PBXGroup;
 			children = (
+				26FA06E81F56C3E300DAD665 /* Mall */,
+				26FA06E61F56C3B300DAD665 /* TrainingCamp */,
 				26C37DB31F4BCA0E00F7C8D1 /* RunChart */,
 				2600D0871F42BED30038E096 /* FingerBlood */,
 				26CCA91A1E78D4BF001D0E05 /* XueTang */,
@@ -3263,6 +3266,72 @@
 			name = View;
 			sourceTree = "<group>";
 		};
+		26FA06E61F56C3B300DAD665 /* TrainingCamp */ = {
+			isa = PBXGroup;
+			children = (
+				26FA06EB1F56C3F500DAD665 /* Model */,
+				26FA06E91F56C3EA00DAD665 /* View */,
+				26FA06EA1F56C3EF00DAD665 /* Controller */,
+			);
+			path = TrainingCamp;
+			sourceTree = "<group>";
+		};
+		26FA06E81F56C3E300DAD665 /* Mall */ = {
+			isa = PBXGroup;
+			children = (
+				26FA06EE1F56C40800DAD665 /* Model */,
+				26FA06ED1F56C40400DAD665 /* View */,
+				26FA06EC1F56C3FB00DAD665 /* Controller */,
+			);
+			path = Mall;
+			sourceTree = "<group>";
+		};
+		26FA06E91F56C3EA00DAD665 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		26FA06EA1F56C3EF00DAD665 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				26FA06F21F56C44700DAD665 /* TrainingCampViewController.h */,
+				26FA06F31F56C44700DAD665 /* TrainingCampViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		26FA06EB1F56C3F500DAD665 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		26FA06EC1F56C3FB00DAD665 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				26FA06EF1F56C43400DAD665 /* MallViewController.h */,
+				26FA06F01F56C43400DAD665 /* MallViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		26FA06ED1F56C40400DAD665 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		26FA06EE1F56C40800DAD665 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		351CF85058AF141C28C6B6CF /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -3552,6 +3621,7 @@
 				26D0B46A1E8BBB1D009F1774 /* UUBarChart.m in Sources */,
 				26394AD91F53BBC1009BB8AC /* XAxisRendererHorizontalBarChart.swift in Sources */,
 				269A66521F556601002E7163 /* WoEnterPhoneNumberView.m in Sources */,
+				26FA06F41F56C44700DAD665 /* TrainingCampViewController.m in Sources */,
 				264885381E8FFBF7007A98D7 /* GLTextView.m in Sources */,
 				264886C31E901121007A98D7 /* EaseConvertToCommonEmoticonsHelper.m in Sources */,
 				2648869A1E901121007A98D7 /* DACircularProgressView.m in Sources */,
@@ -3720,7 +3790,6 @@
 				26394AB91F53BBC1009BB8AC /* ScatterChartDataProvider.swift in Sources */,
 				264886D11E901121007A98D7 /* EaseBaseMessageCell.m in Sources */,
 				26B68CD91E81529900F9CF15 /* STMedicationController.m in Sources */,
-				2643B7A91ED92143003B8A0F /* WoChangePhoneViewController.m in Sources */,
 				264886B91E901121007A98D7 /* EaseSDKHelper.m in Sources */,
 				263B4AA31EDFE39900C29828 /* MessageCenterViewController.m in Sources */,
 				26B68C901E7EC1C900F9CF15 /* CGMManager.m in Sources */,
@@ -3729,6 +3798,7 @@
 				26D0B1CA1E820EC2009F1774 /* DNUnAuthorizedTipsView.m in Sources */,
 				26394A8A1F53BBC1009BB8AC /* LineChartDataSet.swift in Sources */,
 				264886A91E901121007A98D7 /* UIImageView+EMWebCache.m in Sources */,
+				26FA06F11F56C43400DAD665 /* MallViewController.m in Sources */,
 				26FC97CA1E8CF79800B5FBAA /* STPersonInfoViewController.m in Sources */,
 				264886BF1E901121007A98D7 /* NSString+Valid.m in Sources */,
 				264886731E901121007A98D7 /* EMCDDeviceManager+Media.m in Sources */,
@@ -3760,7 +3830,7 @@
 				26CCA91E1E78D4BF001D0E05 /* XueTangViewController.m in Sources */,
 				264886831E901121007A98D7 /* MJRefreshHeader.m in Sources */,
 				264886A21E901121007A98D7 /* MKAnnotationView+EMWebCache.m in Sources */,
-				2643B7A81ED92143003B8A0F /* WoChangePassWordWithPhoneViewController.m in Sources */,
+				2643B7A81ED92143003B8A0F /* WoGetVerificationCodeViewController.m in Sources */,
 				26394AC61F53BBC1009BB8AC /* CombinedChartRenderer.swift in Sources */,
 				26394A721F53BBC1009BB8AC /* Legend.swift in Sources */,
 				26D0B4721E8CA6A5009F1774 /* WoTableView.m in Sources */,

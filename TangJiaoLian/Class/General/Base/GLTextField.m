@@ -84,7 +84,14 @@
     }
     
     if (self.textLength > 0 && textField.text.length > self.textLength) {
-        textField.text = [textField.text substringToIndex:self.textLength];
+        //获取高亮部分
+        UITextRange *selectedRange = [textField markedTextRange];
+        NSString *str              = [textField textInRange:selectedRange];
+        NSInteger num              = [textField.text length]-[str length];
+        if (num > self.textLength) {
+            textField.text = [textField.text substringToIndex:self.textLength];
+        }
+
     }
     
     if ([_glDelegate respondsToSelector:@selector(textfieldFieldDidChange:)]) {

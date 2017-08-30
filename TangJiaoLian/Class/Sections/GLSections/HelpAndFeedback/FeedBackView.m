@@ -87,7 +87,8 @@
 - (GLNextBtn *)nextBtn
 {
     if (!_nextBtn) {
-        _nextBtn = [[GLNextBtn alloc]initWithType:GLSubmitBtnNormalType];
+        _nextBtn          = [[GLNextBtn alloc]initWithType:GLSubmitBtnNormalType];
+        _nextBtn.selected = true;
     }
     return _nextBtn;
 }

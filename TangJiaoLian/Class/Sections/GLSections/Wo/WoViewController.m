@@ -14,6 +14,8 @@
 #import "HelpAndFeedBackViewController.h"
 #import "AboutViewController.h"
 
+#import "WoChangePassWordWihPhoneFinishViewController.h"
+
 @interface WoViewController ()
 
 @property (nonatomic,strong) WoTableView *mainTV;
@@ -89,7 +91,9 @@
                     
                     break;
                 case 1://消息中心
-                    
+                {
+                    [ws pushWithController:[WoChangePassWordWihPhoneFinishViewController new]];
+                }
                     break;
                 case 2://账号安全
                     [ws pushWithController:ws.accountSecurityVC];

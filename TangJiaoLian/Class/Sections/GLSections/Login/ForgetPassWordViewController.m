@@ -493,7 +493,7 @@
     return YES;
 }
 
-- (void)keyboardWillShowHandler2:(NSDictionary *)userInfo
+- (void)keyboardWillShowHandler:(CGSize)keyBoardSize
 {
     [UIView animateWithDuration:0.3f animations:^{
         if (_type == ForgetPassWord) {
@@ -504,7 +504,7 @@
     }];
 }
 
-- (void)keyboardWillHideHandler2:(NSDictionary *)userInfo
+- (void)keyboardWillHideHandler:(CGSize)keyBoardSize
 {
     [UIView animateWithDuration:0.3f animations:^{
         _changePassWordBtn.y = 95.5;

@@ -8,15 +8,11 @@
 
 #import "WoAccountSecurityViewController.h"
 #import "WoAccountSecurityTableView.h"
-#import "WoChangePassWordWithPhoneViewController.h"
+#import "WoEnterPhoneNumberViewController.h"
 
 @interface WoAccountSecurityViewController ()
 
 @property (nonatomic,strong) WoAccountSecurityTableView *mainTV;
-
-@property (nonatomic,strong) WoChangePassWordWithPhoneViewController *changePassWordVC;
-
-@property (nonatomic,strong) WoChangePassWordWithPhoneViewController *changePhoneVC;
 
 @end
 
@@ -57,15 +53,18 @@
         WS(ws);
         
         _mainTV.tableViewDidSelect = ^(NSIndexPath *indexPath) {
+            WoEnterPhoneNumberViewController *enterPhoneNumberVC = [WoEnterPhoneNumberViewController new];
             switch (indexPath.row) {
                 case 0:
                 {
-                    [ws pushWithController:ws.changePassWordVC];
+                    enterPhoneNumberVC.type = EnterPhoneNuamberForChangePassWord;
+                    [ws pushWithController:enterPhoneNumberVC];
                 }
                     break;
                 case 1:
                 {
-                    [ws pushWithController:ws.changePhoneVC];
+                    enterPhoneNumberVC.type = EnterPhoneNumaberForChangePhoneNumber;
+                    [ws pushWithController:enterPhoneNumberVC];
                 }
                     break;
                 default:
@@ -77,24 +76,5 @@
     return _mainTV;
 }
 
-- (WoChangePassWordWithPhoneViewController *)changePassWordVC
-{
-    if (!_changePassWordVC) {
-        _changePassWordVC                = [WoChangePassWordWithPhoneViewController new];
-        _changePassWordVC.phoneNumberStr = [GL_USERDEFAULTS getStringValue:@"PHONE"];
-        _changePhoneVC.viewType          = ChangePassWord;
-    }
-    return _changePassWordVC;
-}
-
-- (WoChangePassWordWithPhoneViewController *)changePhoneVC
-{
-    if (!_changePhoneVC) {
-        _changePhoneVC                = [WoChangePassWordWithPhoneViewController new];
-        _changePhoneVC.phoneNumberStr = [GL_USERDEFAULTS getStringValue:@"PHONE"];
-        _changePhoneVC.viewType       = ChangePhone;
-    }
-    return _changePhoneVC;
-}
 
 @end

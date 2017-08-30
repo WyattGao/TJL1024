@@ -70,19 +70,6 @@
 #pragma mark - TextViewDelegate
 - (void)textViewDidChange:(UITextView *)textView
 {
-    
-//    CGFloat tvHeight = [self getChangeHeight];
-//    
-//    if (tvHeight != textView.height) {
-//        if (tvHeight > 42.5) {
-////            _textCellHeight = tvHeight;
-//        } else if(tvHeight <= 42.5){
-////            _textCellHeight = 42.5;
-//        }
-//        
-//        textView.height = _textCellHeight;
-//    }
-    
     if([textView.text length] == 0) {
         _placeholderLbl.hidden = NO;
     } else {
@@ -93,7 +80,12 @@
         [self.glDelegate textViewDidChange:textView];
     }
     
-    [self setText:textView.text lineSpacing:self.lineSpacing];
+    
+    UITextRange *selectedRange = [self markedTextRange];
+    NSString *str              = [self textInRange:selectedRange];
+    NSInteger num              = [self.text length]-[str length];
+
+    [self setText:[self.text substringToIndex:num] lineSpacing:self.lineSpacing];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView

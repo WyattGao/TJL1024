@@ -14,7 +14,11 @@
 - (void)setBindingPhoneStr:(NSString *)bindingPhoneStr
 {
     _bindingPhoneStr        = bindingPhoneStr;
-    _hintLbl.attributedText = [NSMutableAttributedString setAllText:[NSString stringWithFormat:@"我们已经给您的手机号码 %@ 发送了一条验证短信，请输入短信验证码。",self.bindingPhoneStr] andSpcifiStr:self.bindingPhoneStr withColor:RGB(252,79,8) specifiStrFont:GL_FONT(14)];
+    if ([_bindingPhoneStr isEqualToString:[GL_USERDEFAULTS getStringValue:@"PHONE"]]) {
+        _hintLbl.attributedText = [NSMutableAttributedString setAllText:[NSString stringWithFormat:@"我们已经给您的手机号码 %@ 发送了一条验证短信，请输入短信验证码。",self.bindingPhoneStr] andSpcifiStr:self.bindingPhoneStr withColor:RGB(252,79,8) specifiStrFont:GL_FONT(14)];
+    } else {
+        _hintLbl.attributedText = [NSMutableAttributedString setAllText:[NSString stringWithFormat:@"我们已经给您的新手机号码 %@ 发送了一条验证短信，请输入短信验证码。",self.bindingPhoneStr] andSpcifiStr: [NSString stringWithFormat:@"新手机号码 %@",self.bindingPhoneStr]  withColor:RGB(252,79,8) specifiStrFont:GL_FONT(14)];
+    }
 }
 
 - (void)nextBtnClick:(GLButton *)sender

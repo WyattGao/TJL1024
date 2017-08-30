@@ -9,7 +9,7 @@
 
 #import "WoChangePassWordWihPhoneFinishViewController.h"
 
-@interface WoChangePassWordWihPhoneFinishViewController ()
+@interface WoChangePassWordWihPhoneFinishViewController ()<UIGestureRecognizerDelegate>
 
 @end
 
@@ -20,12 +20,23 @@
     [self.navigationController popToRootViewControllerAnimated:true];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    //关闭禁用左滑手势
+    self.fd_interactivePopDisabled = false;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 }
 
 - (void)createUI
 {
+    //开启禁用左滑手势
+    self.fd_interactivePopDisabled = true;
+    
     [self.view setBackgroundColor:TCOL_BGGRAY];
     
     switch (_type) {
@@ -104,7 +115,8 @@
 - (GLNextBtn *)finishBtn
 {
     if (!_finishBtn) {
-        _finishBtn = [[GLNextBtn alloc]initWithType:GLFinishBtnNomalType];
+        _finishBtn          = [[GLNextBtn alloc]initWithType:GLFinishBtnNomalType];
+        _finishBtn.selected = true;
         WS(ws);
         _finishBtn.glNextBtnClick = ^{
             GL_DISPATCH_MAIN_QUEUE(^{

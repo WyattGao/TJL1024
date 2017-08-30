@@ -24,6 +24,8 @@
 
 - (void)createUI
 {
+    self.backgroundColor = TCOL_BGGRAY;
+    
     [self addSubview:self.hintLbl];
     [self addSubview:self.phoneTF];
     [self addSubview:self.nextBtn];
@@ -45,9 +47,13 @@
     [self.nextBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(ws.phoneTF.mas_bottom).offset(100);
         make.centerX.equalTo(ws);
-        
+        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH - 30, 40));
     }];
-    
+}
+
+- (void)setType:(EnterPhoneNuamberType)type
+{
+    _type = type;
     switch (self.type) {
         case EnterPhoneNuamberForChangePassWord:
             self.hintLbl.text        = @"请输入您注册的手机号";
@@ -71,7 +77,6 @@
         default:
             break;
     }
-    
 }
 
 - (UILabel *)hintLbl
@@ -88,9 +93,13 @@
 - (GLTextField *)phoneTF
 {
     if (!_phoneTF) {
-        _phoneTF = [GLTextField new];
-        _phoneTF.placeholder = @"请输入手机号";
-        _phoneTF.glDelegate = self;
+        _phoneTF                 = [GLTextField new];
+        _phoneTF.placeholder     = @"请输入手机号";
+        _phoneTF.glDelegate      = self;
+        _phoneTF.textAlignment   = NSTextAlignmentCenter;
+        _phoneTF.backgroundColor = TCOL_BG;
+        _phoneTF.keyboardType    = UIKeyboardTypeNumberPad;
+        [_phoneTF becomeFirstResponder];
     }
     return _phoneTF;
 }

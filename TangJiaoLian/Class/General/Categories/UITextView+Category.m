@@ -26,6 +26,7 @@
         return;
     }
     
+    
     NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:text];
     [attributedString addAttribute:NSFontAttributeName value:self.font range:NSMakeRange(0, [text length])];
 
@@ -33,6 +34,9 @@
     [paragraphStyle setLineSpacing:lineSpacing];
     [attributedString addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [attributedString length])];
     
+    
+
+
     self.attributedText = attributedString;
 }
 

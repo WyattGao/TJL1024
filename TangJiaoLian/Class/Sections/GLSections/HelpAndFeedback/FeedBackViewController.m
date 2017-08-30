@@ -10,15 +10,64 @@
 #import "FeedBackView.h"
 #import "WoChangePassWordWihPhoneFinishViewController.h"
 
-@interface FeedBackViewController ()
+@interface FeedBackViewController ()<GLTextFieldDelegate,GLTextViewDelegate>
+{
+    CGFloat tfRectY;
+}
 
 @property (nonatomic,strong) FeedBackView *feedBackView;
 
 @property (nonatomic,strong) WoChangePassWordWihPhoneFinishViewController *finishVC;
 
+
 @end
 
 @implementation FeedBackViewController
+
+- (BOOL)isKeyboardListener
+{
+    return true;
+}
+
+- (void)keyboardWillShowHandler:(CGSize)keyBoardSize
+{
+    if (tfRectY  > SCREEN_HEIGHT - keyBoardSize.height) {
+        WS(ws);        
+        CGFloat heightDiff = (SCREEN_HEIGHT  - keyBoardSize.height) - tfRectY;
+        
+        [UIView animateWithDuration:0.25f animations:^{
+            ws.view.y = heightDiff;
+        }];
+    }
+}
+
+- (void)keyboardWillHideHandler:(CGSize)keyBoardSize
+{
+    WS(ws);
+    [UIView animateWithDuration:0.25f animations:^{
+        ws.view.y = 0;
+    }];
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    CGRect rect = [textField convertRect:textField.bounds toView:GL_KEYWINDOW];
+    tfRectY     = rect.origin.y + rect.size.height;
+    return true;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return true;
+}
+
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+{
+    CGRect rect = [textView convertRect:textView.bounds toView:GL_KEYWINDOW];
+    tfRectY     = rect.origin.y + rect.size.height;
+    return true;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,7 +90,9 @@
 - (FeedBackView *)feedBackView
 {
     if (!_feedBackView) {
-        _feedBackView = [FeedBackView new];
+        _feedBackView                          = [FeedBackView new];
+        _feedBackView.mailOrPhoneTF.glDelegate = self;
+        _feedBackView.feedBackTV.glDelegate = self;
         WS(ws);
         _feedBackView.nextBtn.glNextBtnClick = ^{
             if (ws.feedBackView.feedBackTV.text.length) {

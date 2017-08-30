@@ -436,6 +436,8 @@
             if (GETTAG) {
                 if (GETRETVAL) {
                     [btn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
+                    //刷新数据，获取ID
+                    [self getData];
                     if (btn.lbl.text.length!=0) {
                         if ([btn.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
                             [btn setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];

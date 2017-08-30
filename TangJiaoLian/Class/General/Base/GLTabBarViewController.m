@@ -14,6 +14,8 @@
 #import "JinNangViewController.h"
 #import "WoViewController.h"
 #import "STLogController.h"
+#import "MallViewController.h"
+#import "TrainingCampViewController.h"
 
 
 @interface GLTabBarViewController ()
@@ -75,8 +77,9 @@
 - (NSArray *)vcArr
 {
     return @[[XueTangViewController new],
-//             [FuWuViewController new],
              [STLogController new],
+             [TrainingCampViewController new],
+             [MallViewController new],
              [WoViewController new]];
 }
 

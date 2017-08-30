@@ -1,25 +1,33 @@
 //
-//  WoChangePassWordWithPhoneViewController.m
+//  WoGetVerificationCodeViewController.m
 //  TangJiaoLian
 //
 //  Created by 高临原 on 2017/5/23.
 //  Copyright © 2017年 高临原♬. All rights reserved.
 //
 
-#import "WoChangePassWordWithPhoneViewController.h"
+#import "WoGetVerificationCodeViewController.h"
 #import "WoChangePassWordWIthPhoneView.h"
 #import "WoChangePassWordViewController.h"
-#import "WoChangePhoneViewController.h"
+#import "WoEnterPhoneNumberViewController.h"
+#import "WoChangePassWordWihPhoneFinishViewController.h"
 
-@interface WoChangePassWordWithPhoneViewController ()
+@interface WoGetVerificationCodeViewController ()
 
 @property (nonatomic,strong) WoChangePassWordWIthPhoneView *mainView;
 @property (nonatomic,strong) WoChangePassWordViewController *changePassWordVC;
-@property (nonatomic,strong) WoChangePhoneViewController *changePhoneVC;
+@property (nonatomic,strong) WoEnterPhoneNumberViewController *enterPhoneVC; /**< 输入新手机号页面 */
+@property (nonatomic,strong) WoChangePassWordWihPhoneFinishViewController *changeFinishVC; /**< 修改完成 */
 
 @end
 
-@implementation WoChangePassWordWithPhoneViewController
+@implementation WoGetVerificationCodeViewController
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.mainView.codeTF becomeFirstResponder];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -27,7 +35,7 @@
 
 - (void)createUI
 {
-    if (_viewType == ChangePassWord) {
+    if (_viewType == GetVerificationCodePassWord) {
         [self setNavTitle:@"修改密码"];
     } else {
         [self setNavTitle:@"更换手机号"];
@@ -89,11 +97,42 @@
         };
 
         _mainView.nextBtnClick = ^{
-            if (ws.viewType == ChangePassWord) {
-                [ws pushWithController:ws.changePassWordVC];
-            } else {
-                [ws pushWithController:ws.changePhoneVC];
+            switch (ws.viewType) {
+                case GetVerificationCodePassWord:
+                    [ws pushWithController:ws.changePassWordVC];
+                    break;
+                case GetVerificationCodeOldPhone:
+                    [ws pushWithController:ws.enterPhoneVC];
+                    break;
+                case GetVerificationCodeNewPhone:
+                {
+                    //将手机号改为新手机号
+                    NSDictionary *postDic = @{
+                                              FUNCNAME : @"updUserMobile",
+                                              INFIELD : @{
+                                                      @"DEVICE" : @"1",
+                                                      @"ACCOUNT" : USER_ACCOUNT,
+                                                      @"PHONE" : [GL_USERDEFAULTS getStringValue:@"PHONE"],
+                                                      @"NEWPHONE" : ws.phoneNumberStr
+                                                      }
+                                              };
+                    [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+                        if (GETTAG) {
+                            if (GETRETVAL) {
+                                [GL_USERDEFAULTS setValue:ws.phoneNumberStr forKey:@"PHONE"];
+                                [ws pushWithController:ws.changeFinishVC];
+                            }
+                        }
+                    } failure:^(GLRequest *request, NSError *error) {
+                        
+                    }];
+                    
+                }
+                    break;
+                default:
+                    break;
             }
+
             
             NSDictionary *postDic = @{
                                       FUNCNAME : @"checkVerifyCode",
@@ -132,12 +171,23 @@
     return _changePassWordVC;
 }
 
-- (WoChangePhoneViewController *)changePhoneVC
+
+- (WoEnterPhoneNumberViewController *)enterPhoneVC
 {
-    if (!_changePhoneVC) {
-        _changePhoneVC = [WoChangePhoneViewController new];
+    if (!_enterPhoneVC) {
+        _enterPhoneVC      = [WoEnterPhoneNumberViewController new];
+        _enterPhoneVC.type = EnterPhoneNuamberForNewPhoneNumber;
     }
-    return _changePhoneVC;
+    return _enterPhoneVC;
+}
+
+- (WoChangePassWordWihPhoneFinishViewController *)changeFinishVC
+{
+    if (!_changeFinishVC) {
+        _changeFinishVC      = [WoChangePassWordWihPhoneFinishViewController new];
+        _changeFinishVC.type = GLFinishChangePhone;
+    }
+    return _changeFinishVC;
 }
 
 - (void)didReceiveMemoryWarning {
