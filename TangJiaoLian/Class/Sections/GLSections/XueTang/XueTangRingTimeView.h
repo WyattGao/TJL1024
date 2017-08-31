@@ -18,4 +18,12 @@ typedef void(^ConnectBtnClick)();
 
 @property (nonatomic,copy) ConnectBtnClick connectBtnClick;
 
+
+
+/**
+ 根据时间刷新闪烁按钮的状态
+ */
+- (void)refreshTwinklingBtn;
+
+
 @end

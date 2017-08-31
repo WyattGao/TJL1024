@@ -649,9 +649,9 @@
 }
 
 
-- (void)keyboardWillShowHandler2:(NSDictionary *)userInfo
+- (void)keyboardWillShowHandler:(CGSize)keyBoardSize
 {
-    CGSize kbSize = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;//得到鍵盤的高度
+    CGSize kbSize = keyBoardSize;//得到鍵盤的高度
     if (tfRectY  > SCREEN_HEIGHT - kbSize.height) {
         DLog(@"tfRecty == %lf kbsize.heght = %lf max = %lf",tfRectY,kbSize.height,(SCREEN_HEIGHT - kbSize.height) - tfRectY);
         WS(ws);
@@ -683,7 +683,7 @@
 
 }
 
-- (void)keyboardWillHideHandler2:(NSDictionary *)userInfo
+- (void)keyboardWillHideHandler:(CGSize)keyBoardSize
 {
 //    [_tableView setContentOffset:CGPointMake(0, _tableView.contentSize.height - _tableView.height + 20) animated:false];
     
@@ -691,10 +691,9 @@
         [_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[_tableView numberOfRowsInSection:0] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionMiddle animated:true];
     }
     [UIView animateWithDuration:0.25f animations:^{
-        self.view.y = 64;
+        self.view.y = 0;
     }];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

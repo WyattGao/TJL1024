@@ -12,6 +12,20 @@
 
 #define degreesToRadians(degrees) ((degrees * (float)M_PI) / 180.0f)
 
+- (void)refreshTwinklingBtn
+{
+    if (ISBINDING) {
+        NSString *nowHour = [[NSDate date] toString:@"H"];
+        GLButton *hourBtn = [nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [nowHour integerValue] + 1)];
+        hourBtn.alpha = 0.5f;
+        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionRepeat animations:^{
+            hourBtn.alpha = 1.0f;
+        } completion:^(BOOL finished) {
+            
+        }];
+    }
+}
+
 /**
  连接设备按钮点击事件
  */
@@ -75,6 +89,8 @@
         
         [self addSubview:btn];
     }
+    
+    [self refreshTwinklingBtn];
 }
 
 - (void)timeBtnClick:(UIButton *)sender

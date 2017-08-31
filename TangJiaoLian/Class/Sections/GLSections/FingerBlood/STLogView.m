@@ -54,7 +54,7 @@
 #define form_h  46
 #define Line_color RGB(241, 241, 245)
 + (UIView*)makeHeaderView{
-    UIView *_TitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 55)];
+    UIView *_TitleView = [[UIView alloc] initWithFrame:CGRectMake(0, 42, SCREEN_WIDTH, 55)];
     _TitleView.backgroundColor = [UIColor whiteColor];
     
     for (int i=0; i<10; i++) {
@@ -106,7 +106,7 @@
     
     NSArray *daysArr = data;
     
-    UIScrollView *BloodSugarScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, TypeScrollview.height-55)];
+    UIScrollView *BloodSugarScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 55 + 42, SCREEN_WIDTH, TypeScrollview.height-55-42)];
     BloodSugarScrollview.backgroundColor = [UIColor whiteColor];
     BloodSugarScrollview.contentSize = CGSizeMake(SCREEN_WIDTH, form_h*daysArr.count);
     BloodSugarScrollview.tag =  2016818;

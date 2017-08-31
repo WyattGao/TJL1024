@@ -79,6 +79,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     
     //初始化CGM
     [self createCGM];
+    
+    //时间监听
+    [self TimeToMonitor];
 }
 
 - (void)createUI
@@ -133,6 +136,29 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         [GL_USERDEFAULTS setValue:@"11.1" forKey:SamTargetHeight];
         [GL_USERDEFAULTS setBool:true forKey:SamTargetState];
     }
+}
+
+
+/**
+ 时间监听
+ */
+- (void)TimeToMonitor
+{
+    WS(ws);
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        __block NSInteger i = 0;
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+        dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0),1.0 * NSEC_PER_SEC, 0);
+        dispatch_source_set_event_handler(_timer, ^{
+            [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
+            i ++;
+            DLog(@"计数器 : %ld",i);
+        });
+        dispatch_resume(_timer);
+    });
+
 }
 
 
@@ -1297,40 +1323,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     }
     return _polarizationView;
 }
-
-
-//- (XueTangConnectingDeviceView *)connectDeviceView
-//{
-//    if (!_connectDeviceView) {
-//        _connectDeviceView = [[XueTangConnectingDeviceView alloc]initWithFrame:self.view.frame];
-//        _connectDeviceView.hidden = ISBINDING;
-//        WS(ws);
-//        //连接设备按钮回调
-//        _connectDeviceView.connectBtnClick = ^(){
-//            if ([ws isLogin]) {
-//                if ([LFHardwareConnector shareConnector].delegate != [SMDBlueToothManager sharedManger]) {
-//                    [LFHardwareConnector shareConnector].delegate = [SMDBlueToothManager sharedManger];
-//                }
-//                if (!ws.isBluetoothOpen){
-//                    UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"未开启蓝牙" message:@"检测到您的蓝牙已关闭，请开启蓝牙以便连接动态血糖设备" delegate:ws cancelButtonTitle:@"去设置" otherButtonTitles:@"取消", nil];
-//                    [alertView setTag:101];
-//                    [alertView show];
-//                } else {
-//                    ws.listVC.hidesBottomBarWhenPushed = true;
-//                    [ws pushWithController:ws.listVC];
-//                }
-//            }
-//        };
-//        
-//        //查看历史记录按钮回调
-//        _connectDeviceView.checkWearRecordBtnClick = ^(){
-//            if ([ws isLogin]) {
-//                [ws pushWithController:ws.wearRecordVC];
-//            }
-//        };
-//    }
-//    return _connectDeviceView;
-//}
 
 - (WearRecordViewController *)wearRecordVC
 {

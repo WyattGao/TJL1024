@@ -122,4 +122,6 @@
 
 @property (nonatomic,assign) BOOL isKeyboardListener; /**< get方法获取是进行键盘事件监听 */
 
+@property (nonatomic,strong) GLReloadView *reloadView; /**< 刷新View */
+
 @end

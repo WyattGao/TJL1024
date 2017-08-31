@@ -55,6 +55,12 @@
     UIBarButtonItem *item                                = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationController.navigationBar.tintColor    = [UIColor whiteColor];
     self.navigationItem.backBarButtonItem                = item;
+    
+    [self addSubView:self.reloadView];
+    WS(ws);
+    [self.reloadView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(ws.view).with.insets(UIEdgeInsetsMake(0, 0, 0, 0));
+    }];
 
     [self createUI];
     [self createData];
@@ -277,6 +283,19 @@
 - (void)keyboardWillShowHandler:(CGSize)keyBoardSize
 {
     
+}
+
+- (GLReloadView *)reloadView
+{
+    if (!_reloadView) {
+        _reloadView        = [GLReloadView new];
+        _reloadView.hidden = true;
+    }
+    if (_reloadView.hidden) {
+        [self.view bringSubviewToFront:_reloadView];
+    }
+    
+    return _reloadView;
 }
 
 - (void)didReceiveMemoryWarning {

@@ -40,12 +40,28 @@
 
 @property (nonatomic,strong) LogDateHeaderView *headerView;
 
+@property (nonatomic,strong) NSDate *recordLoadDete;
+
 @end
 
 @implementation STLogController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if(![[_recordLoadDete toString:@"dd"] isEqualToString:[[NSDate date] toString:@"dd"]]){
+        [self.headerView createData];
+        [self getData];
+    }
+    
+    _recordLoadDete = [NSDate date];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _recordLoadDete = [NSDate date];
     
     [self setNavTitle:@"指尖血（点击单元格编辑）"];
     
@@ -62,13 +78,18 @@
     [self setRightBtnImgNamed:@"iconfont-shuju"];
     self.navigationItem.rightBarButtonItem.enabled = NO;
     
-    [self makeTimeSelectView];//时间选择
     [self makeTypeScrollview];
     
     [self makeTabble];
     
-//    //获取所有数据
+    //获取所有数据
     [self getData];
+    
+    WS(ws);
+    
+    self.reloadView.reload = ^{
+        [ws getData];
+    };
 }
 
 - (void)bloodArrHaveData
@@ -81,109 +102,6 @@
 }
 
 #pragma mark - - 时间选择
-- (void)makeTimeSelectView{
-    UIButton *TimeSelectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    TimeSelectBtn.frame = CGRectMake(0, 8, SCREEN_WIDTH, 40);
-    [TimeSelectBtn addTarget:self action:@selector(TimeSelectDown) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:TimeSelectBtn];
-    
-    TimeSelectBtn.backgroundColor = [UIColor whiteColor];
-    yearLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH/2-20, TimeSelectBtn.height)];
-    yearLab.text = [NSString stringWithFormat:@"%d年",year];
-    yearLab.textColor = RGB(91, 92, 89);
-    yearLab.font = [UIFont systemFontOfSize:16];
-    yearLab.textAlignment = NSTextAlignmentCenter;
-    [TimeSelectBtn addSubview:yearLab];
-    UIImageView *sanjiaoImg = [[UIImageView alloc] initWithFrame:CGRectMake(yearLab.width/2+25+8, 0, 10, 8.2)];
-    sanjiaoImg.x = yearLab.centerY;
-    sanjiaoImg.image = GL_IMAGE(@"Triangle 1");
-    [TimeSelectBtn addSubview:sanjiaoImg];
-    
-    monthLab = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 0, SCREEN_WIDTH/2-20, TimeSelectBtn.height)];
-    monthLab.text = [NSString stringWithFormat:@"%d月",month];
-    monthLab.textColor = RGB(91, 92, 89);
-    monthLab.font = [UIFont systemFontOfSize:16];
-    monthLab.textAlignment = NSTextAlignmentCenter;
-    [TimeSelectBtn addSubview:monthLab];
-    UIImageView *sanjiaoImg1 = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+monthLab.width/2+10+7.6, 0, 10, 8.2)];
-    sanjiaoImg1.centerY = monthLab.centerY;
-    sanjiaoImg1.image = GL_IMAGE(@"Triangle 1");
-    [TimeSelectBtn addSubview:sanjiaoImg1];
-    
-    //竖线
-    UIView *line         = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 0, 0.5, TimeSelectBtn.height-6)];
-    line.backgroundColor = RGB(241, 241, 245);
-    [TimeSelectBtn addSubview:line];
-    line.top             = 3;
-    line.width           = 1;
-}
-
-- (void)TimeSelectDown{
-    alertTimeView                 = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    alertTimeView.backgroundColor = [UIColor blackColor];
-    alertTimeView.alpha           = 0.4;
-    [self.view.window addSubview:alertTimeView];
-    
-    alertTimeBackGroundView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0, 0)];
-    alertTimeBackGroundView.backgroundColor = [UIColor whiteColor];
-    alertTimeBackGroundView.layer.cornerRadius = 5;
-    [self.view.window addSubview:alertTimeBackGroundView];
-    
-    //动画
-    [UIView animateWithDuration:0.2 animations:^{
-        alertTimeBackGroundView.frame = CGRectMake(47, 0, SCREEN_WIDTH-2*47, 311);
-         alertTimeBackGroundView.centerY = self.view.centerY-32;
-    } completion:^(BOOL finished) {
-        alertTimeLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, alertTimeBackGroundView.width, 47)];
-        alertTimeLab.text = [NSString stringWithFormat:@"%d年%d月",year,month];
-        alertTimeLab.textColor = TCOL_MAIN;
-        alertTimeLab.font = [UIFont systemFontOfSize:19];
-        alertTimeLab.textAlignment = NSTextAlignmentCenter;
-        [alertTimeBackGroundView addSubview:alertTimeLab];
-        
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 47, alertTimeBackGroundView.width ?: SCREEN_WIDTH, 0.5)];
-        line.backgroundColor = TCOL_MAIN;
-        [alertTimeBackGroundView addSubview:line];
-        
-        timePickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0,30,alertTimeBackGroundView.width,240)];
-        timePickerView.delegate = self;
-        timePickerView.dataSource =  self;
-        NSDate *minDate = [[NSDate alloc] initWithTimeIntervalSince1970:1970-01-01];
-        NSDate *maxDate = [NSDate date];
-//        timePickerView
-//        timePickerView.minimumDate = minDate;
-//        timePickerView.maximumDate = maxDate;
-        timePickerView.showsSelectionIndicator = YES;
-        [alertTimeBackGroundView addSubview:timePickerView];
-        
-        [timePickerView selectRow:year-2000 inComponent:0 animated:YES];
-        [timePickerView selectRow:month-1 inComponent:1 animated:YES];
-        
-        UIButton *cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        cancelBtn.frame = CGRectMake((alertTimeBackGroundView.width/2-90)/2, 266, 90, 30);
-        [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
-        [cancelBtn setTitleColor:RGB(128, 129, 127) forState:UIControlStateNormal];
-        cancelBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-        cancelBtn.layer.cornerRadius = 5;
-        cancelBtn.layer.borderWidth = 1;
-        cancelBtn.layer.borderColor = RGB(128, 129, 127).CGColor;
-        [cancelBtn addTarget:self action:@selector(cancelDown) forControlEvents:UIControlEventTouchUpInside];
-        [alertTimeBackGroundView addSubview:cancelBtn];
-        
-        UIButton *okBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        okBtn.frame = CGRectMake((alertTimeBackGroundView.width/2-90)/2+alertTimeBackGroundView.width/2, 266, 90, 30);
-        [okBtn setTitle:@"确定" forState:UIControlStateNormal];
-        [okBtn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
-        okBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-        okBtn.layer.cornerRadius = 5;
-        okBtn.layer.borderWidth = 1;
-        okBtn.layer.borderColor = TCOL_MAIN.CGColor;
-        [okBtn addTarget:self action:@selector(okDown) forControlEvents:UIControlEventTouchUpInside];
-        [alertTimeBackGroundView addSubview:okBtn];
-    }];
-    
-
-}
 - (void)cancelDown{
     
     for (UIView *view in alertTimeBackGroundView.subviews) {
@@ -285,10 +203,13 @@
 
 #pragma mark - - makeTypeScrollview
 - (void)makeTypeScrollview{
-    TypeScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 42+64, SCREEN_WIDTH, SCREEN_HEIGHT-(42 + 64 + 49))];
+    TypeScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0,64, SCREEN_WIDTH, SCREEN_HEIGHT-(64 + 49))];
     TypeScrollview.pagingEnabled = YES;
     TypeScrollview.scrollEnabled = NO;
     TypeScrollview.contentSize   = CGSizeMake(TYPECOUNT*SCREEN_WIDTH, TypeScrollview.height);
+    TypeScrollview.mj_header = [MJRefreshGifHeader headerWithRefreshingBlock:^{
+        [self getData];
+    }];
     [self addSubView:TypeScrollview];
 }
 
@@ -296,13 +217,12 @@
 - (void)makeTabble{
     //血糖
     [self BloodSugarView];
-    
-    //获取所有数据
-    [self getData];
 }
 
 - (void)BloodSugarView{
-    [self addSubView:self.headerView];
+    //绘制表头
+    [TypeScrollview addSubview:self.headerView];
+    [TypeScrollview addSubview:[STLogView makeHeaderView]];
     
     WS(ws);
     
@@ -312,8 +232,6 @@
         make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 42));
     }];
     
-    //绘制表头
-    [TypeScrollview addSubview:[STLogView makeHeaderView]];
 }
 
 - (LogDateHeaderView *)headerView
@@ -342,20 +260,33 @@
                           },
                           @"OutField":@[]
                           };
+    WS(ws);
     [GL_Requst postWithParameters:dic SvpShow:true success:^(GLRequest *request, id response) {
-        NSDictionary *myDic = response;
-        if ([myDic[@"Tag"] intValue]==0) {
-            return;
-        }
-        BloodArr = [[myDic[@"Result"][@"OutTable"] reverseObjectEnumerator] allObjects];
-        [BloodSugarScrollview removeFromSuperview];
-        BloodSugarScrollview = [STLogView makeBloodSugarScrollview:TypeScrollview andSelectYear:year andMonth:month andData:BloodArr];
-        [self bloodArrHaveData];
+        if (GETTAG) {
+            if (GETRETVAL) {
+                BloodArr = [[response[@"Result"][@"OutTable"] reverseObjectEnumerator] allObjects];
+                [BloodSugarScrollview removeFromSuperview];
+                BloodSugarScrollview = [STLogView makeBloodSugarScrollview:TypeScrollview andSelectYear:year andMonth:month andData:BloodArr];
+                [self bloodArrHaveData];
+                [self.reloadView setHidden:true];
+            } else {
+                GL_ALERT_E(GETRETMSG);
+                if (!BloodArr.count) {
+                    [self.reloadView setHidden:false];
+                }
+            }
+        } else {
+            GL_ALERT_E(GETMESSAGE);
+            if (!BloodArr.count) {
+                [self.reloadView setHidden:false];
+            }        }
     } failure:^(GLRequest *request, NSError *error) {
-        
+        GL_AFFAil;
+        if (!BloodArr.count) {
+            [self.reloadView setHidden:false];
+        }
     }];
 }
-
 
 - (void)getData{
     //血糖
@@ -385,18 +316,6 @@
     }];
 }
 
-
-#pragma mark - -
-#pragma mark - - 监测分析
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
 
 #pragma mark - 添加修改血糖
 - (void)bloodClick:(NSNotification*)not{
