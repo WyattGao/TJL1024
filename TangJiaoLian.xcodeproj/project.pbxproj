@@ -387,7 +387,6 @@
 		26CCA90E1E78D49A001D0E05 /* GLTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CCA8FF1E78D49A001D0E05 /* GLTabBarViewController.m */; };
 		26CCA90F1E78D49A001D0E05 /* GLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CCA9011E78D49A001D0E05 /* GLViewController.m */; };
 		26CCA91D1E78D4BF001D0E05 /* FuWuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CCA9191E78D4BF001D0E05 /* FuWuViewController.m */; };
-		26CCA91E1E78D4BF001D0E05 /* XueTangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CCA91C1E78D4BF001D0E05 /* XueTangViewController.m */; };
 		26CCA9271E78DA2C001D0E05 /* JinNangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CCA9261E78DA2C001D0E05 /* JinNangViewController.m */; };
 		26CCA9311E78DA7F001D0E05 /* WoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CCA9301E78DA7F001D0E05 /* WoViewController.m */; };
 		26D00B9B1EA8867E003EC425 /* FuWuTableViewSectionHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26D00B9A1EA8867E003EC425 /* FuWuTableViewSectionHeaderView.m */; };
@@ -456,6 +455,7 @@
 		26FC97C91E8CF79800B5FBAA /* STEditiInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97C41E8CF79800B5FBAA /* STEditiInfoViewController.m */; };
 		26FC97CA1E8CF79800B5FBAA /* STPersonInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97C61E8CF79800B5FBAA /* STPersonInfoViewController.m */; };
 		26FC97CB1E8CF79800B5FBAA /* TherapyMethodViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97C81E8CF79800B5FBAA /* TherapyMethodViewController.m */; };
+		5050E1D11F5D913900787CAB /* XueTangViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5050E1D01F5D913900787CAB /* XueTangViewController.m */; };
 		A5CFD2C73369173EE430D51F /* Pods_TangJiaoLian.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2E6793784DE18DD5621531E /* Pods_TangJiaoLian.framework */; };
 /* End PBXBuildFile section */
 
@@ -1150,8 +1150,6 @@
 		26CCA9011E78D49A001D0E05 /* GLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewController.m; sourceTree = "<group>"; };
 		26CCA9181E78D4BF001D0E05 /* FuWuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuWuViewController.h; sourceTree = "<group>"; };
 		26CCA9191E78D4BF001D0E05 /* FuWuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FuWuViewController.m; sourceTree = "<group>"; };
-		26CCA91B1E78D4BF001D0E05 /* XueTangViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XueTangViewController.h; sourceTree = "<group>"; };
-		26CCA91C1E78D4BF001D0E05 /* XueTangViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XueTangViewController.m; sourceTree = "<group>"; };
 		26CCA9251E78DA2C001D0E05 /* JinNangViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JinNangViewController.h; sourceTree = "<group>"; };
 		26CCA9261E78DA2C001D0E05 /* JinNangViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JinNangViewController.m; sourceTree = "<group>"; };
 		26CCA92F1E78DA7F001D0E05 /* WoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoViewController.h; sourceTree = "<group>"; };
@@ -1285,6 +1283,8 @@
 		26FC97C61E8CF79800B5FBAA /* STPersonInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STPersonInfoViewController.m; sourceTree = "<group>"; };
 		26FC97C71E8CF79800B5FBAA /* TherapyMethodViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TherapyMethodViewController.h; sourceTree = "<group>"; };
 		26FC97C81E8CF79800B5FBAA /* TherapyMethodViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TherapyMethodViewController.m; sourceTree = "<group>"; };
+		5050E1CF1F5D913900787CAB /* XueTangViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XueTangViewController.h; sourceTree = "<group>"; };
+		5050E1D01F5D913900787CAB /* XueTangViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XueTangViewController.m; sourceTree = "<group>"; };
 		957864DF30C705325CF91212 /* Pods-TangJiaoLian.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangJiaoLian.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TangJiaoLian/Pods-TangJiaoLian.debug.xcconfig"; sourceTree = "<group>"; };
 		E2E6793784DE18DD5621531E /* Pods_TangJiaoLian.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TangJiaoLian.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5223592EE0C997C7A9579A4 /* Pods-TangJiaoLian.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TangJiaoLian.release.xcconfig"; path = "Pods/Target Support Files/Pods-TangJiaoLian/Pods-TangJiaoLian.release.xcconfig"; sourceTree = "<group>"; };
@@ -3048,8 +3048,8 @@
 		26CCA92C1E78DA5D001D0E05 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				26CCA91B1E78D4BF001D0E05 /* XueTangViewController.h */,
-				26CCA91C1E78D4BF001D0E05 /* XueTangViewController.m */,
+				5050E1CF1F5D913900787CAB /* XueTangViewController.h */,
+				5050E1D01F5D913900787CAB /* XueTangViewController.m */,
 				26A8FE2F1E7E848600173280 /* XueTangDeviceListViewController.h */,
 				26A8FE301E7E848600173280 /* XueTangDeviceListViewController.m */,
 				26D0B4241E88B32F009F1774 /* XueTangTargerViewController.h */,
@@ -3863,7 +3863,6 @@
 				26394A941F53BBC1009BB8AC /* ScatterChartDataSet.swift in Sources */,
 				26A8FE371E7E878E00173280 /* XueTangDeviceListCell.m in Sources */,
 				2648869D1E901121007A98D7 /* EMSDWebImageDecoder.m in Sources */,
-				26CCA91E1E78D4BF001D0E05 /* XueTangViewController.m in Sources */,
 				264886831E901121007A98D7 /* MJRefreshHeader.m in Sources */,
 				264886A21E901121007A98D7 /* MKAnnotationView+EMWebCache.m in Sources */,
 				2643B7A81ED92143003B8A0F /* WoGetVerificationCodeViewController.m in Sources */,
@@ -3950,6 +3949,7 @@
 				264886791E901121007A98D7 /* wav.mm in Sources */,
 				26D0B1C11E820EC2009F1774 /* UIView+DNImagePicker.m in Sources */,
 				264886D21E901121007A98D7 /* EaseCustomMessageCell.m in Sources */,
+				5050E1D11F5D913900787CAB /* XueTangViewController.m in Sources */,
 				26394A801F53BBC1009BB8AC /* BubbleChartDataSet.swift in Sources */,
 				26394AA51F53BBC1009BB8AC /* IFillFormatter.swift in Sources */,
 				264886E41E901121007A98D7 /* EaseRecordView.m in Sources */,

@@ -51,8 +51,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 @property (nonatomic,strong) STDataAnalysisViewController *analysisVC;
 
 @property (nonatomic,assign) BOOL isBluetoothOpen;
-///连接按钮View
-@property (nonatomic,strong) XueTangConnectingDeviceView *connectDeviceView;
 ///佩戴记录VC
 @property (nonatomic,strong) WearRecordViewController *wearRecordVC;
 ///趋势图
@@ -91,7 +89,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     [self setNavTitle:@"动态血糖（未连接）"];
     
     [self addSubView:self.xueTangView];
-    [self addSubView:self.connectDeviceView];
     
     WS(ws);
     
@@ -170,8 +167,11 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     [SVProgressHUD dismiss];
     
     //显示连接按钮
-    [self.connectDeviceView setHidden:false];
+    [self.xueTangView.ringView setStatus:GLRingTimeUnunitedStatus];
     [self.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
+    
+    [self.xueTangView.shiShiView.connectStateLbl setText:@"监测：关"];
+    [self.xueTangView.shiShiView.connectSwitch setOn:false];
     
     //清除绑定时间
     [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
@@ -195,13 +195,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     [GLCache writeCacheArr:@[] name:SamTargetWarningArr];
     
     [self.xueTangView.lineView refreshLineView];
-    [self.xueTangView.dataAndTargetView realodTargetData];
+    [self.xueTangView.recordView realodTargetData];
     NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
     [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
     //    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
     
     //刷新头部View的连接状态
     [self.xueTangView.shiShiView reloadViewbyBinDingState];
+    
 }
 
 #pragma mark - 处理连接设备的各种回调
@@ -437,6 +438,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 [SVProgressHUD showWithStatus:@"正在开启监测"];
                 [self getStartMonitor];
             }else{
+                GL_ALERT_S(@"已结束监测");
                 //初始化CGM本地数据
                 [self initCGMData];
             }
@@ -833,19 +835,18 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     //上传开始佩戴记录成功
                     GL_ALERT_S(@"设备开启监测成功");
                     
-                    //重设预警值
-                    [ws.connectDeviceView setHidden:true];
-                    
                     //修改提示状态
                     [_xueTangView.shiShiView reloadViewbyBinDingState];
                     
                     //开始极化
-                    [self.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
+                    [ws.xueTangView turnShiShiView];
+                    [ws.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
                     GL_DisLog(@"已上传开始佩戴记录");
                     
                 } else {
                     //上传结束佩戴记录成功，停止设备
                     GL_DisLog(@"已上传结束佩戴记录,开始停止设备");
+                    
                     [ws getsStopMonitor];
                 }
                 
@@ -1141,7 +1142,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         [SVProgressHUD showWithStatus:@"正在停止监测"];
         [self recordWearingTime:GLEndRecord];
     } confirm:^{
-        [self.xueTangView.shiShiView.connectSwitch setOn:true];
     }];
 }
 
@@ -1186,17 +1186,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     //开始搜索设备
                     [[SMDBlueToothManager sharedManger] autoSearchDeviceInBackground];
                     
-                    [ws.xueTangView.shiShiView sendSubviewToBack:ws.xueTangView.deviceTV];
-                    [UIView transitionFromView:(ws.xueTangView.shiShiView)
-                                        toView:(ws.xueTangView.deviceTV)
-                                      duration: 0.7
-                                       options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
-                                    completion:^(BOOL finished) {
-                                        if (finished) {
-                                            
-                                        }
-                                    }
-                     ];
+                    //转到设备列表
+                    [ws.xueTangView turnShiShiView];
                     
                     //设置设备列表为搜索状态
                     [ws.xueTangView.deviceTV setStatus:SearchDeviceStatusNone];
@@ -1313,13 +1304,13 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             }
         };
         
-        _xueTangView.dataAndTargetView.tagertBtnClick = ^(){
-            [ws pushWithController:ws.targetVC];
-        };
-        
-        _xueTangView.dataAndTargetView.dataBtnClick = ^(){
-            [ws pushWithController:ws.analysisVC];
-        };
+//        _xueTangView.dataAndTargetView.tagertBtnClick = ^(){
+//            [ws pushWithController:ws.targetVC];
+//        };
+//        
+//        _xueTangView.dataAndTargetView.dataBtnClick = ^(){
+//            [ws pushWithController:ws.analysisVC];
+//        };
         
         [_xueTangView tableViewDidSelect:^(NSIndexPath *indexPath) {
             switch (indexPath.row) {

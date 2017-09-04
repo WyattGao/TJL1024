@@ -16,23 +16,29 @@
 {
     _status = status;
     
-    switch (status) {
-        case GLRingTimeUnunitedStatus:     //未连接
-            [self.connectionBtn setHidden:false];
-            [self.hintLbl setHidden:true];
-            break;
-        case GLRIngTimeConnectingStatus:   //已在连接中
-            [self.connectionBtn setHidden:true];
-            [self.hintLbl setHidden:false];
-            break;
-        case GLRingTimePolarizationStatus: //极化中
-            [self.connectionBtn setHidden:true];
-            [self.hintLbl setHidden:false];
-            [self startTimeKeeping];
-            break;
-        default:
-            break;
-    }
+    GL_DISPATCH_MAIN_QUEUE(^{
+        switch (status) {
+            case GLRingTimeUnunitedStatus:     //未连接
+                [self.connectionBtn setHidden:false];
+                [self.hintLbl setHidden:true];
+                [self.polarizationTimeLbl setHidden:true];
+                [self changeHintLblSatuts:GLRingTimeHintLabelPolarizationStatus WithHour:0 WithAbnormalCount:0];
+                [self.timer setFireDate:[NSDate distantFuture]];
+                break;
+            case GLRIngTimeConnectingStatus:   //已在连接中
+                [self.connectionBtn setHidden:true];
+                [self.hintLbl setHidden:false];
+                [self.polarizationTimeLbl setHidden:true];
+                break;
+            case GLRingTimePolarizationStatus: //极化中
+                [self.connectionBtn setHidden:true];
+                [self.hintLbl setHidden:false];
+                [self startTimeKeeping];
+                break;
+            default:
+                break;
+        }
+    });
 }
 
 - (void)changeHintLblSatuts:(GLRingTimeHintLabelStatus)status WithHour:(NSInteger)hour WithAbnormalCount:(NSInteger)abnormalCount
@@ -41,6 +47,7 @@
         case GLRingTimeHintLabelPolarizationStatus:
             self.hintLbl.textColor = TCOL_MAIN;
             self.hintLbl.font      = GL_FONT(14);
+            self.hintLbl.text      = @"设备极化中\n大概需要20分钟";
             break;
         case GLRingTimeHintLabelNormal:
             self.hintLbl.font      = GL_FONT(18);
@@ -136,13 +143,24 @@
     
     [self addSubview:self.connectionBtn];
     [self addSubview:self.hintLbl];
+    [self addSubview:self.polarizationTimeLbl];
     
     WS(ws);
     
     [self.connectionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(ws);
         make.size.mas_equalTo(CGSizeMake(140, 50));
-    }];    
+    }];
+    
+    [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(ws);
+        make.width.mas_equalTo(126);
+    }];
+    
+    [self.polarizationTimeLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.hintLbl.mas_bottom).offset(22);
+        make.centerX.equalTo(ws);
+    }];
     
     float dist = 104;//半径
     for (int i= 1; i<= 24;i++) {
@@ -214,6 +232,8 @@
         _hintLbl.font          = GL_FONT(18);
         _hintLbl.textAlignment = NSTextAlignmentCenter;
         _hintLbl.textColor     = TCOL_MAIN;
+        _hintLbl.hidden        = true;
+        _hintLbl.numberOfLines = 0;
     }
     return _hintLbl;
 }
@@ -247,7 +267,7 @@
 {
     if (!_polarizationTimeLbl) {
         _polarizationTimeLbl               = [UILabel new];
-        _polarizationTimeLbl.font          = GL_FONT_BY_NAME(@"Courier", 14);
+        _polarizationTimeLbl.font          = GL_FONT_BY_NAME(@"Courier", 15);
         _polarizationTimeLbl.textColor     = RGB(153, 153, 153);
         _polarizationTimeLbl.textAlignment = NSTextAlignmentCenter;
     }

@@ -11,7 +11,7 @@
 
 @interface WoEnterPhoneNumberViewController ()
 
-@property (nonatomic,strong) WoEnterPhoneNumberView                  *enterPhoneNumberView;
+@property (nonatomic,strong) WoEnterPhoneNumberView              *enterPhoneNumberView;
 
 @property (nonatomic,strong) WoGetVerificationCodeViewController *changePassWordVC; /**< 修改密码获取验证码 */
 

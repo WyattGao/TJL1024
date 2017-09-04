@@ -21,13 +21,11 @@
 
 @interface XueTangView : GLTableView
 
-///数据分析与控糖目标
-@property (nonatomic,strong) XueTangDataAnalysisAndMonitoringTargetView  *dataAndTargetView;
 ///实时血糖值
 @property (nonatomic,strong) XueTangShiShiXueTangView *shiShiView;
 ///历史血糖值
 @property (nonatomic,strong) XueTangLiShiZhiView *liShiZhiView;
-///连接按钮
+///记录按钮
 @property (nonatomic,strong) XueTangRecordView *recordView;
 ///折线图
 @property (nonatomic,strong) XueTangLineView *lineView;

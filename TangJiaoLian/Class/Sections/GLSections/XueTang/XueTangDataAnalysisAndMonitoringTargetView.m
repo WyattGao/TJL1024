@@ -12,8 +12,13 @@
 
 - (void)realodTargetData
 {
-    NSString *targetTitle = [NSString stringWithFormat:@"%@~%@",[GL_USERDEFAULTS getStringValue:SamTargetLow],[GL_USERDEFAULTS getStringValue:SamTargetHeight]];
-    [self.monitoringTargetBtn setTitle:targetTitle forState:UIControlStateNormal];
+    GL_DISPATCH_MAIN_QUEUE(^{
+        NSString *targetTitle = [NSString stringWithFormat:@"%@~%@",[GL_USERDEFAULTS getStringValue:SamTargetLow],[GL_USERDEFAULTS getStringValue:SamTargetHeight]];
+        if (![[GL_USERDEFAULTS getStringValue:SamTargetLow] length]) {
+            targetTitle = @"2.9~11.1";
+        }
+        [self.monitoringTargetBtn setTitle:targetTitle forState:UIControlStateNormal];
+    });
 }
 
 - (void)tagertBtnClick:(UIButton *)sender

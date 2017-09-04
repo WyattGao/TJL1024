@@ -56,10 +56,7 @@
 
 - (void)createData
 {
-#if DEBUG
-#else
     [self sendCodeRequst];
-#endif
 }
 
 - (void)sendCodeRequst
@@ -97,43 +94,6 @@
         };
 
         _mainView.nextBtnClick = ^{
-            switch (ws.viewType) {
-                case GetVerificationCodePassWord:
-                    [ws pushWithController:ws.changePassWordVC];
-                    break;
-                case GetVerificationCodeOldPhone:
-                    [ws pushWithController:ws.enterPhoneVC];
-                    break;
-                case GetVerificationCodeNewPhone:
-                {
-                    //将手机号改为新手机号
-                    NSDictionary *postDic = @{
-                                              FUNCNAME : @"updUserMobile",
-                                              INFIELD : @{
-                                                      @"DEVICE" : @"1",
-                                                      @"ACCOUNT" : USER_ACCOUNT,
-                                                      @"PHONE" : [GL_USERDEFAULTS getStringValue:@"PHONE"],
-                                                      @"NEWPHONE" : ws.phoneNumberStr
-                                                      }
-                                              };
-                    [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
-                        if (GETTAG) {
-                            if (GETRETVAL) {
-                                [GL_USERDEFAULTS setValue:ws.phoneNumberStr forKey:@"PHONE"];
-                                [ws pushWithController:ws.changeFinishVC];
-                            }
-                        }
-                    } failure:^(GLRequest *request, NSError *error) {
-                        
-                    }];
-                    
-                }
-                    break;
-                default:
-                    break;
-            }
-
-            
             NSDictionary *postDic = @{
                                       FUNCNAME : @"checkVerifyCode",
                                       INFIELD  : @{
@@ -144,11 +104,41 @@
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
-//                        if (ws.viewType == ChangePassWord) {
-//                            [ws pushWithController:ws.changePassWordVC];
-//                        } else {
-//                            [ws pushWithController:ws.changePhoneVC];
-//                        }
+                        switch (ws.viewType) {
+                            case GetVerificationCodePassWord:
+                                [ws pushWithController:ws.changePassWordVC];
+                                break;
+                            case GetVerificationCodeOldPhone:
+                                [ws pushWithController:ws.enterPhoneVC];
+                                break;
+                            case GetVerificationCodeNewPhone:
+                            {
+                                //将手机号改为新手机号
+                                NSDictionary *postDic = @{
+                                                          FUNCNAME : @"updUserMobile",
+                                                          INFIELD : @{
+                                                                  @"DEVICE" : @"1",
+                                                                  @"ACCOUNT" : USER_ACCOUNT,
+                                                                  @"PHONE" : [GL_USERDEFAULTS getStringValue:@"PHONE"],
+                                                                  @"NEWPHONE" : ws.phoneNumberStr
+                                                                  }
+                                                          };
+                                [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+                                    if (GETTAG) {
+                                        if (GETRETVAL) {
+                                            [GL_USERDEFAULTS setValue:ws.phoneNumberStr forKey:@"PHONE"];
+                                            [ws pushWithController:ws.changeFinishVC];
+                                        }
+                                    }
+                                } failure:^(GLRequest *request, NSError *error) {
+                                    
+                                }];
+                                
+                            }
+                                break;
+                            default:
+                                break;
+                        }
                     } else {
                         GL_ALERT_E(GETRETMSG);
                     }

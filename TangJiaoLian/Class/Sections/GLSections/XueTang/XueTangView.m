@@ -24,7 +24,7 @@
         [UIView transitionFromView:(self.shiShiView)
                             toView:(self.deviceTV)
                           duration: 0.7
-                           options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
+                           options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionShowHideTransitionViews
                         completion:^(BOOL finished) {
                             if (finished) {
                                 
@@ -36,7 +36,7 @@
         [UIView transitionFromView:(self.deviceTV)
                             toView:(self.shiShiView)
                           duration: 0.7
-                           options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
+                           options: UIViewAnimationOptionTransitionFlipFromRight+UIViewAnimationOptionShowHideTransitionViews
                         completion:^(BOOL finished) {
                             if (finished) {
                                 
@@ -70,9 +70,6 @@
             return 90.0f;
             break;
         case 3:
-            return 362.2f;
-            break;
-        case 4:
             return 80.0f;
             break;
         default:
@@ -95,8 +92,7 @@
                    break;
             case 1:[cell addSubviewByCellFrame:self.recordView];       break;
             case 2:[cell addSubviewByCellFrame:self.wearRecordBtnView];break;
-            case 3:[cell addSubviewByCellFrame:self.dataAndTargetView];break;
-            case 4:[cell addSubviewByCellFrame:self.lineView];         break;
+            case 3:[cell addSubviewByCellFrame:self.lineView];         break;
             default:break;
         }
     }
@@ -129,13 +125,6 @@
     return _shiShiView;
 }
 
-- (XueTangDataAnalysisAndMonitoringTargetView *)dataAndTargetView
-{
-    if (!_dataAndTargetView) {
-        _dataAndTargetView = [XueTangDataAnalysisAndMonitoringTargetView new];
-    }
-    return _dataAndTargetView;
-}
 
 - (XueTangRecordView *)recordView
 {
