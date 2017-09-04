@@ -11,13 +11,45 @@
 
 @interface XueTangView ()
 
+@property (nonatomic,assign,getter=isTurnShiOpTop) BOOL turnShiOpTop; /**< 记录View翻转的状态 */
+
 @end
 
 @implementation XueTangView
 
+- (void)turnShiShiView
+{
+    if (self.isTurnShiOpTop) {
+        [self.shiShiView sendSubviewToBack:self.deviceTV];
+        [UIView transitionFromView:(self.shiShiView)
+                            toView:(self.deviceTV)
+                          duration: 0.7
+                           options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
+                        completion:^(BOOL finished) {
+                            if (finished) {
+                                
+                            }
+                        }
+         ];
+    } else {
+        [self.deviceTV sendSubviewToBack:self.shiShiView];
+        [UIView transitionFromView:(self.deviceTV)
+                            toView:(self.shiShiView)
+                          duration: 0.7
+                           options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
+                        completion:^(BOOL finished) {
+                            if (finished) {
+                                
+                            }
+                        }
+         ];
+    }
+    self.turnShiOpTop = !self.turnShiOpTop;
+}
+
 - (void)createUI
 {
-    
+    self.turnShiOpTop = true;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -127,6 +159,14 @@
         _deviceTV = [XueTangDeviceListTableView new];
     }
     return _deviceTV;
+}
+
+- (XueTangRingTimeView *)ringView
+{
+    if (!_ringView) {
+        _ringView = self.shiShiView.ringView;
+    }
+    return _ringView;
 }
 
 @end

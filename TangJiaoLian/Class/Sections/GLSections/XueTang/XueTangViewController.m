@@ -34,7 +34,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 @property(strong,nonatomic)CBCentralManager *CBCManager;
 
-@property (nonatomic,strong) NSMutableArray *devicesArr;
+@property (nonatomic,strong) NSMutableArray *devicesArr; /**< 存放搜索到的设备列表 */
 
 @property (nonatomic,strong) XueTangView *xueTangView;
 
@@ -53,12 +53,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 @property (nonatomic,assign) BOOL isBluetoothOpen;
 ///连接按钮View
 @property (nonatomic,strong) XueTangConnectingDeviceView *connectDeviceView;
-///极化计时蒙版
-@property (nonatomic,strong) XueTangPolarizationView *polarizationView;
 ///佩戴记录VC
 @property (nonatomic,strong) WearRecordViewController *wearRecordVC;
 ///趋势图
 @property (nonatomic,strong) RunChartViewController *runChartVC;
+
+@property (nonatomic,strong) dispatch_source_t refreshTimetTimer;
+
+@property (nonatomic,strong) XueTangDeviceListCell *deviceCell; /**< 记录点击连接设备的cell */
 
 @end
 
@@ -66,12 +68,12 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 - (void)viewWillAppear:(BOOL)animated
 {
-
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-
+    
 }
 
 - (void)viewDidLoad {
@@ -90,7 +92,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     
     [self addSubView:self.xueTangView];
     [self addSubView:self.connectDeviceView];
-    [self addSubView:self.polarizationView];
     
     WS(ws);
     
@@ -144,21 +145,20 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
  */
 - (void)TimeToMonitor
 {
-    WS(ws);
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        __block NSInteger i = 0;
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_source_t _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
-        dispatch_source_set_timer(_timer,dispatch_walltime(NULL, 0),1.0 * NSEC_PER_SEC, 0);
-        dispatch_source_set_event_handler(_timer, ^{
-            [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
-            i ++;
-            DLog(@"计数器 : %ld",i);
-        });
-        dispatch_resume(_timer);
-    });
-
+//    WS(ws);
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        __block NSInteger i = 0;
+//        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+//        _refreshTimetTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+//        dispatch_source_set_timer(_refreshTimetTimer,dispatch_walltime(NULL, 0),1.0 * NSEC_PER_SEC, 0);
+//        dispatch_source_set_event_handler(_refreshTimetTimer, ^{
+//            
+//            [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
+//            i ++;
+//        });
+//        dispatch_resume(_refreshTimetTimer);
+//    });
 }
 
 
@@ -172,7 +172,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     //显示连接按钮
     [self.connectDeviceView setHidden:false];
     [self.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
-
+    
     //清除绑定时间
     [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
     [GL_USERDEFAULTS setObject:nil forKey:SamEndBinDingDeviceTime];
@@ -198,7 +198,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     [self.xueTangView.dataAndTargetView realodTargetData];
     NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
     [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
-//    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
+    //    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
     
     //刷新头部View的连接状态
     [self.xueTangView.shiShiView reloadViewbyBinDingState];
@@ -210,26 +210,50 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 {
     GL_DisLog(@"获得蓝牙搜索结果");
     
-    BOOL isAuthorizedConnection = [SMDBlueToothManager sharedManger].isAuthorizedConnection;
-    BOOL hasConnectedSensor     = [LFHardwareConnector shareConnector].hasConnectedSensor;
+    WS(ws);
     
-    NSLog(@"授权结果 discoverDevice --%d",isAuthorizedConnection);
-    NSLog(@"链接结果 discoverDevice ---%d",hasConnectedSensor);
-    
-    GL_DisLog([NSString stringWithFormat:@"授权结果 ： %d",isAuthorizedConnection]);
-    GL_DisLog([NSString stringWithFormat:@"链接结果 :  %d",hasConnectedSensor]);
-    
-    //扫描设备中,请稍后...
-    LFPeripheral *sensor = (LFPeripheral *)[notification object];
-    NSLog(@"sensor.sensorName------->>>>>%@",sensor.sensorName);
-    
-    if ([sensor.sensorName isEqualToString:[GL_USERDEFAULTS getStringValue:SamBangDingDeviceName]]) {
+    if (ISBINDING) { //若果已经绑定设备，则先监测设备的连接状态
+        BOOL isAuthorizedConnection = [SMDBlueToothManager sharedManger].isAuthorizedConnection;
+        BOOL hasConnectedSensor     = [LFHardwareConnector shareConnector].hasConnectedSensor;
         
-        GL_DisLog(@"搜索到绑定的设备,停止搜索并开始连接设备");
-        [SVProgressHUD showWithStatus:@"正在连接设备"];
-        [[SMDBlueToothManager sharedManger] stopScanningDevice];
-        _sensor = sensor;
-        [self startConnectDevice];
+        NSLog(@"授权结果 discoverDevice --%d",isAuthorizedConnection);
+        NSLog(@"链接结果 discoverDevice ---%d",hasConnectedSensor);
+        
+        GL_DisLog([NSString stringWithFormat:@"授权结果 ： %d",isAuthorizedConnection]);
+        GL_DisLog([NSString stringWithFormat:@"链接结果 :  %d",hasConnectedSensor]);
+        
+        //扫描设备中,请稍后...
+        LFPeripheral *sensor = (LFPeripheral *)[notification object];
+        NSLog(@"sensor.sensorName------->>>>>%@",sensor.sensorName);
+        
+        if ([sensor.sensorName isEqualToString:[GL_USERDEFAULTS getStringValue:SamBangDingDeviceName]]) {
+            
+            GL_DisLog(@"搜索到绑定的设备,停止搜索并开始连接设备");
+            [SVProgressHUD showWithStatus:@"正在连接设备"];
+            [[SMDBlueToothManager sharedManger] stopScanningDevice];
+            _sensor = sensor;
+            [self startConnectDevice];
+        }
+    } else { //未绑定设备，展示搜索到的设备信息
+        LFPeripheral *sensor = (LFPeripheral *)[notification object];
+        
+        BOOL isSenorInArray = NO;
+        for (LFPeripheral *device in self.devicesArr) {
+            if ([device.identifier isEqualToString:sensor.identifier]) {
+                isSenorInArray = YES;
+            }
+        }
+        
+        if (!isSenorInArray) {
+            GL_DISPATCH_MAIN_QUEUE(^{
+                [ws.devicesArr addObject:sensor];
+                if (ws.xueTangView.deviceTV.status != SearchDeviceStatusSucceed) {
+                    ws.xueTangView.deviceTV.status = SearchDeviceStatusSucceed;
+                }
+                ws.xueTangView.deviceTV.tbDataSouce = ws.devicesArr;
+                [ws.xueTangView.deviceTV reloadData];
+            });
+        }
     }
 }
 
@@ -263,7 +287,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         }
     } else {
         //设备未连接过，未授权过
-        [[SMDBlueToothManager sharedManger] getConnectionForSensor:_sensor completion:^(BOOL success){
+        [[SMDBlueToothManager sharedManger] getConnectionForSensor:self.sensor completion:^(BOOL success){
             // 连接成功
             GL_DisLog(@"动态血糖设备连接成功");
             
@@ -282,7 +306,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 //链接和授权成功后 开发发命令
                 [self getAuthroBeginSuccess];
             }else{//  授权失败
-
+                
                 GL_DisLog(@"设备授权失败，重新查看授权状态");
                 
                 //查看授权状态
@@ -315,7 +339,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 //连接成功
                 NSLog(@"动态血糖设备连接成功");
                 [GLTools noti:@"动态血糖设备连接成功" sound:false];
-
+                
                 //如果是首次连接的设备，先检查电压
                 if (![GL_USERDEFAULTS objectForKey:@"SamStartBinDingDeviceTime"]) {
                     GL_DisLog(@"设备首次连接成功，判断电压是否可以维持");
@@ -354,7 +378,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     //如果有绑定设备的时间，说明之前一直在使用，只需连接上即可
     if ([GL_USERDEFAULTS objectForKey:SamStartBinDingDeviceTime]) {
         [SVProgressHUD showWithStatus:@"正在同步数据"];
-
+        
         GL_DisLog(@"存在设备绑定时间，设备为重连");
         
         //此时可以获取设备里的数据，进行上传
@@ -366,7 +390,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             //极化还未完成,继续极化
             [SVProgressHUD dismiss];
             GL_DisLog(@"重连之前，设备极化没有结束，继续极化");
-            [self.polarizationView startTimeKeeping];
+            [self.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
         }
     }else{
         [SVProgressHUD showWithStatus:@"正在获取设备状态"];
@@ -495,7 +519,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             [[LFHardwareConnector shareConnector] cancelPeripheral:_sensor];
         } else {
             GL_DisLog(@"设备连接中，设备电量低于20%，提示更换电池");
-
+            
             // 已经链接了设备后获取的电压，正常提示即可
             [GLTools noti:@"动态血糖设备电量即将耗尽，请及时更换电池" sound:NO];
         }
@@ -515,7 +539,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 - (void)receivedCurrent:(NSNotification *)notification
 {
     float current = [[[notification object] objectForKey:@"current"] floatValue];
-
+    
     if ((int)current>=600) {
         [GLTools CGMUILocalNotification:HEIGH600];
     }else if ((int)current<30){
@@ -625,15 +649,15 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                               @"collectedtime":collectedtimeStr,
                               @"currentvalue":[NSString stringWithFormat:@"%.1lf",[allCurrentValue[i] floatValue]]};
         [allBloodValueArr addObject:dic];
-
+        
         
         //检查血糖值是否需要预警
-        if (i== allCurrentValue.count-1) {
+        if (i == allCurrentValue.count-1) {
             //只预警最新的血糖值
             [GLTools checkBloodValueWarning:dic];
         }
     }
-
+    
     WS(ws);
     
     DLog(@"将数据存到本地---%@",allBloodValueArr);
@@ -642,14 +666,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     dispatch_async(dispatch_get_main_queue(), ^{
         //刷新折线图
         [ws.xueTangView.lineView refreshLineView];
-//        ws.xueTangView.shiShiView.zuiXinLbl.text = bloodValue;
+        //        ws.xueTangView.shiShiView.zuiXinLbl.text = bloodValue;
         [ws.xueTangView.liShiZhiView reloadDataWithBloodArr:[[allBloodValueArr reverseObjectEnumerator] allObjects]];
         
         //上次上传的index
         NSInteger upLoadIndex = [GL_USERDEFAULTS getIntegerValue:SamBloodUpLoadIdx];
         NSMutableArray *upLoadArr = [NSMutableArray array];
         
-         if(upLoadIndex >= allBloodValueArr.count) {
+        if(upLoadIndex >= allBloodValueArr.count) {
             //如果下标比本地之前的数据还要高 咋改为上传本地最新的一条数据
             upLoadIndex = allBloodValueArr.count - 1;
         }
@@ -662,14 +686,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         
         //将数据上传网络
         NSDictionary *postDic =@{
-                                  @"FuncName":@"saveSamGlucose",
-                                  @"InField":@{
-                                          @"ACCOUNT":USER_ACCOUNT,	//账号
-                                          @"DEVICE":@"1",	//设备号
-                                          @"VALUES":upLoadArr,
-                                          @"VERSION":GL_VERSION
-                                          }
-                                  };
+                                 @"FuncName":@"saveSamGlucose",
+                                 @"InField":@{
+                                         @"ACCOUNT":USER_ACCOUNT,	//账号
+                                         @"DEVICE":@"1",	//设备号
+                                         @"VALUES":upLoadArr,
+                                         @"VERSION":GL_VERSION
+                                         }
+                                 };
         
         [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
             if (GETTAG) {
@@ -682,7 +706,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     
                 }
             } else {
-            
+                
             }
         } failure:^(GLRequest *request, NSError *error) {
             
@@ -738,7 +762,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         case CBManagerStatePoweredOn: //蓝牙已开启
         {
             _isBluetoothOpen = true;
-
+            
             if (ISBINDING) {
                 message = @"蓝牙已经成功开启，稍后……";
                 
@@ -754,11 +778,11 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                         } else {
                             //设备未连接，开始搜索设备
                             [[SMDBlueToothManager sharedManger] startScanningDevice];
-//                            double delayInSeconds = 20.0;
-//                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-//                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//                                
-//                            });
+                            //                            double delayInSeconds = 20.0;
+                            //                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                            //                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                            //
+                            //                            });
                         }
                     }
                 } else {
@@ -804,6 +828,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
         if (GETTAG) {
             if (GETRETVAL) {
+                                
                 if (type == GLStartRecord) {
                     //上传开始佩戴记录成功
                     GL_ALERT_S(@"设备开启监测成功");
@@ -815,18 +840,22 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     [_xueTangView.shiShiView reloadViewbyBinDingState];
                     
                     //开始极化
-                    [ws.polarizationView startTimeKeeping];
+                    [self.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
                     GL_DisLog(@"已上传开始佩戴记录");
+                    
                 } else {
                     //上传结束佩戴记录成功，停止设备
                     GL_DisLog(@"已上传结束佩戴记录,开始停止设备");
                     [ws getsStopMonitor];
                 }
+                
             } else {
                 GL_ALERT_E(GETRETMSG);
                 if (type == GLStartRecord) {
                     //上传开始连接失败，取消外围连接,初始化连接状态
                     [[LFHardwareConnector shareConnector] cancelPeripheral:_sensor];
+                    //修改所选设备cell的状态
+                    [ws.deviceCell changeCellForConnectionStatus:GLConnectionFailed];
                     [self initCGMData];
                 } else {
                     //上传结束失败，如果是已经上传过，则继续断开设备
@@ -845,6 +874,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             if (type == GLStartRecord) {
                 //上传开始连接失败，取消外围连接
                 [[LFHardwareConnector shareConnector] cancelPeripheral:_sensor];
+                //修改所选设备cell的状态
+                [ws.deviceCell changeCellForConnectionStatus:GLConnectionFailed];
                 [self initCGMData];
             } else {
                 //上传结束失败，如果是已经上传过，则继续断开设备
@@ -859,6 +890,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         if (type == GLStartRecord) {
             //上传开始连接失败，取消外围连接
             [[LFHardwareConnector shareConnector] cancelPeripheral:_sensor];
+            //修改所选设备cell的状态
+            [ws.deviceCell changeCellForConnectionStatus:GLConnectionFailed];
             [self initCGMData];
             GL_ALERT_E(@"网络不稳定，未能成功开启监测，请稍后再试");
         } else {
@@ -870,7 +903,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 /**
  上传参比血糖
-
+ 
  @param dic @{VALUE：5.6，collectedtime：2017-03-26 11:50:58"}
  */
 - (void)upLoadReferGlucose:(NSDictionary *)dic
@@ -908,14 +941,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 - (void)getBloodValue
 {
     NSDictionary *postDic = @{
-                          @"FuncName":@"getSamGlucose",
-                          @"InField":@{
-                                  @"ACCOUNT":USER_ACCOUNT,	//账号
-                                  @"DEVICE":@"1",	//设备号
-                                  @"BEGINTIME":CGM_Start_Time,	//开始时间
-                                  @"ENDTIME":CGM_End_Time		//结束时间
-                                  }
-                          };
+                              @"FuncName":@"getSamGlucose",
+                              @"InField":@{
+                                      @"ACCOUNT":USER_ACCOUNT,	//账号
+                                      @"DEVICE":@"1",	//设备号
+                                      @"BEGINTIME":CGM_Start_Time,	//开始时间
+                                      @"ENDTIME":CGM_End_Time		//结束时间
+                                      }
+                              };
     
     [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
         if (GETTAG) {
@@ -940,15 +973,15 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         case GLRecordBloodType: //参比血糖
         {
             NSDictionary *postDic = @{
-                                   @"FuncName":@"getSamReferGlucose",
-                                   @"InField":@{
-                                           @"ACCOUNT":USER_ACCOUNT,	//账号
-                                           @"DEVICE":@"1",	//设备号
-                                           @"BEGINTIME":(CGM_Start_Time),	//开始时间
-                                           @"ENDTIME":(CGM_End_Time),		//结束时间
-                                           @"VERSION":GL_VERSION
-                                           }
-                                   };
+                                      @"FuncName":@"getSamReferGlucose",
+                                      @"InField":@{
+                                              @"ACCOUNT":USER_ACCOUNT,	//账号
+                                              @"DEVICE":@"1",	//设备号
+                                              @"BEGINTIME":(CGM_Start_Time),	//开始时间
+                                              @"ENDTIME":(CGM_End_Time),		//结束时间
+                                              @"VERSION":GL_VERSION
+                                              }
+                                      };
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
@@ -966,19 +999,19 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         case GLRecordFoodType:  //饮食
         {
             NSDictionary *postDic = @{
-                                   @"FuncName":@"getBloodDiet",
-                                   @"InField":@{
-                                           @"ACCOUNT":USER_ACCOUNT,	//帐号
-                                           @"YEAR":@"",	//年份
-                                           @"MONTH":@"",		//月份
-                                           //REPLACEADD
-                                           @"BEGINDATE":(CGM_Start_Time),	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                           @"ENDDATE":(CGM_End_Time),	//结束日期
-                                           @"DEVICE":@"1"
-                                           },
-                                   @"OutField":@[
-                                           ]
-                                   };
+                                      @"FuncName":@"getBloodDiet",
+                                      @"InField":@{
+                                              @"ACCOUNT":USER_ACCOUNT,	//帐号
+                                              @"YEAR":@"",	//年份
+                                              @"MONTH":@"",		//月份
+                                              //REPLACEADD
+                                              @"BEGINDATE":(CGM_Start_Time),	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":(CGM_End_Time),	//结束日期
+                                              @"DEVICE":@"1"
+                                              },
+                                      @"OutField":@[
+                                              ]
+                                      };
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
@@ -995,19 +1028,19 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         case GLRecordRrugs:     //用药
         {
             NSDictionary *postDic = @{
-                                   @"FuncName":@"getBloodMedication",
-                                   @"InField":@{
-                                           @"ACCOUNT":USER_ACCOUNT,		//帐号
-                                           @"YEAR":@"",	//年份
-                                           @"MONTH":@"",		//月份
-                                           @"TYPE":@"1",		//1普通用药,2胰岛素
-                                           @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                           @"ENDDATE":CGM_End_Time,	//结束日期
-                                           @"DEVICE":@"1"
-                                           },
-                                   @"OutField":@[
-                                           ]
-                                   };
+                                      @"FuncName":@"getBloodMedication",
+                                      @"InField":@{
+                                              @"ACCOUNT":USER_ACCOUNT,		//帐号
+                                              @"YEAR":@"",	//年份
+                                              @"MONTH":@"",		//月份
+                                              @"TYPE":@"1",		//1普通用药,2胰岛素
+                                              @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":CGM_End_Time,	//结束日期
+                                              @"DEVICE":@"1"
+                                              },
+                                      @"OutField":@[
+                                              ]
+                                      };
             
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if (GETTAG) {
@@ -1025,19 +1058,19 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         case GLRecordInsulin:   //胰岛素
         {
             NSDictionary *postDic = @{
-                                   @"FuncName":@"getBloodMedication",
-                                   @"InField":@{
-                                           @"ACCOUNT":USER_ACCOUNT,		//帐号
-                                           @"YEAR":@"",	//年份
-                                           @"MONTH":@"",		//月份
-                                           @"TYPE":@"2",		//1普通用药,2胰岛素
-                                           @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                           @"ENDDATE":CGM_End_Time,	//结束日期
-                                           @"DEVICE":@"1"
-                                           },
-                                   @"OutField":@[
-                                           ]
-                                   };
+                                      @"FuncName":@"getBloodMedication",
+                                      @"InField":@{
+                                              @"ACCOUNT":USER_ACCOUNT,		//帐号
+                                              @"YEAR":@"",	//年份
+                                              @"MONTH":@"",		//月份
+                                              @"TYPE":@"2",		//1普通用药,2胰岛素
+                                              @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":CGM_End_Time,	//结束日期
+                                              @"DEVICE":@"1"
+                                              },
+                                      @"OutField":@[
+                                              ]
+                                      };
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if ( GETTAG) {
                     if (GETRETVAL) {
@@ -1054,18 +1087,18 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         case GLRecordSport: //运动
         {
             NSDictionary *postDic = @{
-                                   @"FuncName":@"getBloodMotion",
-                                   @"InField":@{
-                                           @"ACCOUNT":USER_ACCOUNT,		//帐号
-                                           @"YEAR":@"",	//年份
-                                           @"MONTH":@"",		//月份
-                                           @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                           @"ENDDATE":CGM_End_Time,	//结束日期
-                                           @"DEVICE":@"1"
-                                           },
-                                   @"OutField":@[
-                                           ]
-                                   };
+                                      @"FuncName":@"getBloodMotion",
+                                      @"InField":@{
+                                              @"ACCOUNT":USER_ACCOUNT,		//帐号
+                                              @"YEAR":@"",	//年份
+                                              @"MONTH":@"",		//月份
+                                              @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":CGM_End_Time,	//结束日期
+                                              @"DEVICE":@"1"
+                                              },
+                                      @"OutField":@[
+                                              ]
+                                      };
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
@@ -1130,17 +1163,29 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 ws.xueTangView.shiShiView.ringView.connectBtnClick();
             }
         };
-        
+#pragma mark - 时间环回调
+        //极化结束
+        _xueTangView.ringView.polarizationFinish = ^{
+            GL_DISPATCH_MAIN_QUEUE(^{
+                ws.xueTangView.userInteractionEnabled = true;
+                [JHSysAlertUtil presentAlertViewWithTitle:@"极化完成" message:@"请输入参比血糖" confirmTitle:@"确定" handler:^{
+                    [ws.popView show];
+                }];
+            });
+        };
         //点击连接设备按钮回调
-        _xueTangView.shiShiView.ringView.connectBtnClick = ^{
+        _xueTangView.ringView.connectBtnClick = ^{
             if ([ws isLogin]) {
                 if ([LFHardwareConnector shareConnector].delegate != [SMDBlueToothManager sharedManger]) {
                     [LFHardwareConnector shareConnector].delegate = [SMDBlueToothManager sharedManger];
                 }
                 
                 if (!ws.isBluetoothOpen){
-                    [self openBluetooth];
+                    [ws openBluetooth];
                 } else {
+                    //开始搜索设备
+                    [[SMDBlueToothManager sharedManger] autoSearchDeviceInBackground];
+                    
                     [ws.xueTangView.shiShiView sendSubviewToBack:ws.xueTangView.deviceTV];
                     [UIView transitionFromView:(ws.xueTangView.shiShiView)
                                         toView:(ws.xueTangView.deviceTV)
@@ -1148,20 +1193,68 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                                        options: UIViewAnimationOptionTransitionFlipFromLeft+UIViewAnimationOptionCurveEaseInOut
                                     completion:^(BOOL finished) {
                                         if (finished) {
+                                            
                                         }
                                     }
                      ];
-                }
+                    
+                    //设置设备列表为搜索状态
+                    [ws.xueTangView.deviceTV setStatus:SearchDeviceStatusNone];
+
+                    //超时计算
+                    double delayInSeconds = 30.0f;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        //停止搜索设备
+                        [[SMDBlueToothManager sharedManger] stopAutoSearchDeviceInBackground];
+                        if (ws.xueTangView.deviceTV.tbDataSouce.count == 0) {
+                            [ws.xueTangView.deviceTV setStatus:SearchDeviceStatusFailed];
+                        }
+                    });
+             }
+            }
+        };
+        
+        //连接指定设备点击事件
+        _xueTangView.deviceTV.connectClick = ^(XueTangDeviceListCell *cell) {
+            //停止搜索设备
+            [[SMDBlueToothManager sharedManger] stopAutoSearchDeviceInBackground];
+            //连接设备
+            [SVProgressHUD showWithStatus:@"正在连接设备"];
+            ws.sensor     = cell.entity;
+            ws.deviceCell = cell;
+            //修改点击连接cell的状态
+            [ws.deviceCell changeCellForConnectionStatus:GLConnectionUnfinished];
+            [ws startConnectDevice];
+        };
+        
+        _xueTangView.deviceTV.retryBtn.buttonClick = ^(GLButton *sender) {
+            if (sender == ws.xueTangView.deviceTV.retryBtn) {
+                ws.xueTangView.shiShiView.ringView.connectBtnClick();
+            } else {
+                //停止搜索设备
+                [[SMDBlueToothManager sharedManger] stopAutoSearchDeviceInBackground];
+                //开始搜索设备
+                [[SMDBlueToothManager sharedManger] autoSearchDeviceInBackground];
+                
+                //超时计算
+                double delayInSeconds = 30.0f;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    //停止搜索设备
+                    [[SMDBlueToothManager sharedManger] stopAutoSearchDeviceInBackground];
+                });
             }
         };
         
         _xueTangView.shiShiView.tendencyBtnClick = ^{
             [ws pushWithController:ws.runChartVC];
         };
-        
+
+#pragma mark - 记录按钮点击
         _xueTangView.recordView.recordViewClick = ^(GLRecordType type){
             switch (type) {
-                case GLRecordBloodType:
+                case GLRecordBloodType: //记录参比血糖
                     [ws.popView show];
                     break;
                 case GLRecordFoodType: //饮食
@@ -1242,21 +1335,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     return _xueTangView;
 }
 
-- (XueTangDeviceListViewController *)listVC
-{
-    if (!_listVC) {
-        _listVC = [XueTangDeviceListViewController new];
-        WS(ws);
-        //选择搜索到的设备的回调
-        _listVC.connectDevice = ^(LFPeripheral *device){
-            [SVProgressHUD showWithStatus:@"正在连接设备"];
-            _sensor = device;
-            [ws startConnectDevice];
-        };
-    }
-    return _listVC;
-}
-
 - (GLRecordInputPopUpView *)popView
 {
     if (!_popView) {
@@ -1279,7 +1357,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         WS(ws);
         _targetVC.refreshTarget = ^(){
             //刷新监控目标值
-//            [ws.xueTangView.dataAndTargetView realodTargetData];
+            //            [ws.xueTangView.dataAndTargetView realodTargetData];
             [ws.xueTangView.recordView  realodTargetData];
             //刷新折现图的监控目标区域
             [ws.xueTangView.lineView refreshLineView];
@@ -1299,30 +1377,30 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     return _analysisVC;
 }
 
-- (XueTangPolarizationView *)polarizationView
-{
-    if (!_polarizationView) {
-    _polarizationView = [[XueTangPolarizationView alloc]initWithFrame:self.view.frame];
-        WS(ws);
-        //极化完成回调
-        _polarizationView.polarizationFinish = ^(BOOL isFinish){
-            if (isFinish) {
-                //极化结束
-                GL_DISPATCH_MAIN_QUEUE(^{
-                    ws.xueTangView.userInteractionEnabled = true;
-                    [JHSysAlertUtil presentAlertViewWithTitle:@"极化完成" message:@"请输入参比血糖" confirmTitle:@"确定" handler:^{
-                        [ws.popView show];
-                    }];
-                });
-            } else {
-                //极化开始/重新开始
-                [ws.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
-                ws.xueTangView.userInteractionEnabled = false;
-            }
-        };
-    }
-    return _polarizationView;
-}
+//- (XueTangPolarizationView *)polarizationView
+//{
+//    if (!_polarizationView) {
+//        _polarizationView = [[XueTangPolarizationView alloc]initWithFrame:self.view.frame];
+//        WS(ws);
+//        //极化完成回调
+//        _polarizationView.polarizationFinish = ^(BOOL isFinish){
+//            if (isFinish) {
+//                //极化结束
+//                GL_DISPATCH_MAIN_QUEUE(^{
+//                    ws.xueTangView.userInteractionEnabled = true;
+//                    [JHSysAlertUtil presentAlertViewWithTitle:@"极化完成" message:@"请输入参比血糖" confirmTitle:@"确定" handler:^{
+//                        [ws.popView show];
+//                    }];
+//                });
+//            } else {
+//                //极化开始/重新开始
+//                [ws.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
+//                ws.xueTangView.userInteractionEnabled = false;
+//            }
+//        };
+//    }
+//    return _polarizationView;
+//}
 
 - (WearRecordViewController *)wearRecordVC
 {
@@ -1340,15 +1418,23 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     return _runChartVC;
 }
 
+- (NSMutableArray *)devicesArr
+{
+    if (!_devicesArr) {
+        _devicesArr = [NSMutableArray new];
+    }
+    return _devicesArr;
+}
+
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

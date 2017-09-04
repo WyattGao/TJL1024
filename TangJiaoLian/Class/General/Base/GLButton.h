@@ -18,9 +18,21 @@ typedef NS_ENUM(NSInteger,BtnGraphicLayout){
     TEXTCENTER = 6   /**< 文字居中 */
 };
 
+
 typedef NS_ENUM(NSInteger,GLButtonType){
     GLTypeSubmit = 0   /**< 提交类按钮 */
 };
+
+
+
+@class GLButton;
+
+/**
+ 按钮点击事件block
+
+ @param sender 按钮对象
+ */
+typedef void(^ButtonClick)(GLButton *sender);
 
 @interface GLButton : UIButton
 
@@ -53,6 +65,8 @@ typedef NS_ENUM(NSInteger,GLButtonType){
 
 @property (nonatomic,assign) BtnGraphicLayout graphicLayoutState;  /**< 文字图片排序方式 */
 @property (nonatomic,assign) CGFloat graphicLayoutSpacing;         /**< 文字图片间距 */
+
+@property (nonatomic,copy) ButtonClick buttonClick; /**< 按钮点击事件block */
 
 /**
  *  设置按钮背景色

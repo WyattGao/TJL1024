@@ -63,6 +63,7 @@
 #define GL_FONT_BY_NAME(n, s) [UIFont fontWithName:[NSString stringWithFormat:@"%@",n] size:(s)]
 #define GL_FONT_B(s)          [UIFont boldSystemFontOfSize:s]
 #define GL_FONT(s)            [UIFont systemFontOfSize:s]
+//#define GL_FONT(s)            [UIFont fontWithName:@"Courier" size:(s)]
 
 
 //================================
@@ -175,7 +176,7 @@ CG_INLINE void runDispatchGetMainQueue(void (^block)(void)) {
         block();
     }
     else {
-        dispatch_sync(dispatch_get_main_queue(), block);
+        dispatch_async(dispatch_get_main_queue(), block);
     }
 }
 CG_INLINE void GL_DISPATCH_MAIN_QUEUE(void (^block)(void)) {

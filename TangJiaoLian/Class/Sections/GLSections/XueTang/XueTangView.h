@@ -36,4 +36,12 @@
 ///设备列表View
 @property (nonatomic,strong) XueTangDeviceListTableView *deviceTV;
 
+@property (nonatomic,strong) XueTangRingTimeView *ringView;
+
+
+/**
+ 翻转实时数据View,切换连接设备和设备列表页面
+ */
+- (void)turnShiShiView;
+
 @end

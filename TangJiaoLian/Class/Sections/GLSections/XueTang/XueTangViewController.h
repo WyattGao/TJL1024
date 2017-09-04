@@ -11,5 +11,4 @@
 @interface XueTangViewController : GLViewController
 
 
-
 @end

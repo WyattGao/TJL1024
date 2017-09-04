@@ -50,39 +50,39 @@
     return _timer;
 }
 
-- (void)timeKeeping
-{
-    GL_DISPATCH_MAIN_QUEUE(^{
-        NSInteger timeInter = 20 * 60 - ([[NSDate date] timeIntervalSince1970] - [[[GL_USERDEFAULTS stringForKey:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970]);
-        NSDate *date        = [NSDate dateWithTimeIntervalInMilliSecondSince1970:timeInter];
-        self.timeLbl.text   = [NSString stringWithFormat:@"极化中 %@",[date toString:@"mm:ss"]];
-        
-        if (timeInter <= 0) {
-            //停止计时器
-            GL_DISPATCH_MAIN_QUEUE(^{
-                [self.timer setFireDate:[NSDate distantFuture]];
-                self.hidden = true;
-                [GL_USERDEFAULTS setBool:true forKey:SamPolarizationFinish];
-                [GL_USERDEFAULTS synchronize];
-                if (_polarizationFinish) {
-                    _polarizationFinish(true);
-                }
-            });
-        }
-    });
-}
-
-- (void)startTimeKeeping
-{
-    GL_DISPATCH_MAIN_QUEUE(^{
-        if (_polarizationFinish) {
-            _polarizationFinish(false);
-        }
-        self.hidden = false;
-        [self.timer setFireDate:[NSDate date]];
-        [self.timer fire];
-    });
-}
+//- (void)timeKeeping
+//{
+//    GL_DISPATCH_MAIN_QUEUE(^{
+//        NSInteger timeInter = 20 * 60 - ([[NSDate date] timeIntervalSince1970] - [[[GL_USERDEFAULTS stringForKey:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970]);
+//        NSDate *date        = [NSDate dateWithTimeIntervalInMilliSecondSince1970:timeInter];
+//        self.timeLbl.text   = [NSString stringWithFormat:@"极化中 %@",[date toString:@"mm:ss"]];
+//        
+//        if (timeInter <= 0) {
+//            //停止计时器
+//            GL_DISPATCH_MAIN_QUEUE(^{
+//                [self.timer setFireDate:[NSDate distantFuture]];
+//                self.hidden = true;
+//                [GL_USERDEFAULTS setBool:true forKey:SamPolarizationFinish];
+//                [GL_USERDEFAULTS synchronize];
+//                if (_polarizationFinish) {
+//                    _polarizationFinish(true);
+//                }
+//            });
+//        }
+//    });
+//}
+//
+//- (void)startTimeKeeping
+//{
+//    GL_DISPATCH_MAIN_QUEUE(^{
+//        if (_polarizationFinish) {
+//            _polarizationFinish(false);
+//        }
+//        self.hidden = false;
+//        [self.timer setFireDate:[NSDate date]];
+//        [self.timer fire];
+//    });
+//}
 
 
 

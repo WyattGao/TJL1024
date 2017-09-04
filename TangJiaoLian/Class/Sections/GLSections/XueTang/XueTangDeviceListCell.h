@@ -7,6 +7,7 @@
 //
 
 #import "GLTableViewCell.h"
+#import "LFPeripheral.h"
 
 typedef NS_ENUM(NSInteger,GLConnectionStatus){
     ///正在连接
@@ -27,6 +28,9 @@ typedef NS_ENUM(NSInteger,GLConnectionStatus){
 
 ///连接状态
 @property (nonatomic,strong) UILabel *connectionStatusLbl;
+
+@property (nonatomic,assign) BOOL cellSelected;
+
 
 ///根据连接状态修改Cell
 - (void)changeCellForConnectionStatus:(GLConnectionStatus)status;

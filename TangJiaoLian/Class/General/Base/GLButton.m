@@ -53,6 +53,7 @@
 
 - (void)loadView
 {
+    [self addTarget:self action:@selector(touchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     [self addTarget:self action:@selector(touchDown:) forControlEvents:UIControlEventTouchDown];
     
     
@@ -340,7 +341,13 @@
     if (sender.selected) {
         sender.selected = true;
     }
-    
+}
+
+- (void)touchUpInside:(GLButton *)sender
+{
+    if (self.buttonClick) {
+        self.buttonClick(sender);
+    }
 }
 
 @end

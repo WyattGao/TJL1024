@@ -8,16 +8,14 @@
 
 #import "GLView.h"
 
-
-
 /**
  极化完成回调
  */
-typedef void(^PolarizationFinish)(BOOL isFinish);
+//typedef void(^PolarizationFinish)(BOOL isFinish);
 
 @interface XueTangPolarizationView : GLView
 
-@property (nonatomic,copy) PolarizationFinish polarizationFinish;
+//@property (nonatomic,copy) PolarizationFinish polarizationFinish;
 
 - (void)startTimeKeeping;
 

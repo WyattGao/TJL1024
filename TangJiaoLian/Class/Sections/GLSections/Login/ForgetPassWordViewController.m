@@ -397,6 +397,7 @@
                                     [sender setTitle:[NSString stringWithFormat:@"重新发送"] forState:UIControlStateNormal];
                                 });
                             }else{
+                                
                                 int seconds = timeout % 60;
                                 NSString *strTime = [NSString stringWithFormat:@"%.2d", seconds];
                                 dispatch_async(dispatch_get_main_queue(), ^{

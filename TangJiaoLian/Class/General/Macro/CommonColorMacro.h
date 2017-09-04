@@ -85,3 +85,6 @@
 
 //按钮不可选状态颜色
 #define TCOL_BTNUNAVAILABLE RGB(204,204,204)
+
+//设备列表未选中文字颜色
+#define TCOL_DEVICELISTTEXT RGB(204,204,204)
