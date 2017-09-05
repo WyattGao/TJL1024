@@ -109,14 +109,15 @@
 - (void)setCellSelected:(BOOL)cellSelected
 {
     if (cellSelected) {
-        if (self.cellSelected) {
+        if (!self.cellSelected) {
             self.retryBtn.hidden            = false;
             [self.retryBtn setTitle:@"连接" forState:UIControlStateNormal];
             self.connectionStatusLbl.hidden = true;
             self.deviceNameLbl.textColor    = TCOL_MAIN;
         }
     } else {
-        self.retryBtn.hidden = true;
+        self.retryBtn.hidden         = true;
+        self.deviceNameLbl.textColor = TCOL_DEVICELISTTEXT;
     }
     _cellSelected = cellSelected;
 }

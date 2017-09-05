@@ -448,7 +448,7 @@
 		26FA06F11F56C43400DAD665 /* MallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA06F01F56C43400DAD665 /* MallViewController.m */; };
 		26FA06F41F56C44700DAD665 /* TrainingCampViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA06F31F56C44700DAD665 /* TrainingCampViewController.m */; };
 		26FA06F81F5CF46D00DAD665 /* DeviceListEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA06F71F5CF46D00DAD665 /* DeviceListEntity.m */; };
-		26FA07001F5D29D900DAD665 /* RingTimeHintLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA06FF1F5D29D900DAD665 /* RingTimeHintLabel.m */; };
+		26FA07051F5E3A8F00DAD665 /* RingRealTimeDataView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FA07041F5E3A8F00DAD665 /* RingRealTimeDataView.m */; };
 		26FC97C01E8CF77100B5FBAA /* SpringsBoxView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97BB1E8CF77100B5FBAA /* SpringsBoxView.m */; };
 		26FC97C11E8CF77100B5FBAA /* STListSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97BD1E8CF77100B5FBAA /* STListSelectionView.m */; };
 		26FC97C21E8CF77100B5FBAA /* STPersonInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FC97BF1E8CF77100B5FBAA /* STPersonInfoCell.m */; };
@@ -1269,8 +1269,8 @@
 		26FA06F31F56C44700DAD665 /* TrainingCampViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrainingCampViewController.m; sourceTree = "<group>"; };
 		26FA06F61F5CF46D00DAD665 /* DeviceListEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceListEntity.h; sourceTree = "<group>"; };
 		26FA06F71F5CF46D00DAD665 /* DeviceListEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceListEntity.m; sourceTree = "<group>"; };
-		26FA06FE1F5D29D900DAD665 /* RingTimeHintLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingTimeHintLabel.h; sourceTree = "<group>"; };
-		26FA06FF1F5D29D900DAD665 /* RingTimeHintLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingTimeHintLabel.m; sourceTree = "<group>"; };
+		26FA07031F5E3A8F00DAD665 /* RingRealTimeDataView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingRealTimeDataView.h; sourceTree = "<group>"; };
+		26FA07041F5E3A8F00DAD665 /* RingRealTimeDataView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingRealTimeDataView.m; sourceTree = "<group>"; };
 		26FC97BA1E8CF77100B5FBAA /* SpringsBoxView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpringsBoxView.h; sourceTree = "<group>"; };
 		26FC97BB1E8CF77100B5FBAA /* SpringsBoxView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpringsBoxView.m; sourceTree = "<group>"; };
 		26FC97BC1E8CF77100B5FBAA /* STListSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STListSelectionView.h; sourceTree = "<group>"; };
@@ -3351,8 +3351,8 @@
 				26A8FE331E7E874E00173280 /* XueTangDeviceListTableView.m */,
 				26A8FE351E7E878E00173280 /* XueTangDeviceListCell.h */,
 				26A8FE361E7E878E00173280 /* XueTangDeviceListCell.m */,
-				26FA06FE1F5D29D900DAD665 /* RingTimeHintLabel.h */,
-				26FA06FF1F5D29D900DAD665 /* RingTimeHintLabel.m */,
+				26FA07031F5E3A8F00DAD665 /* RingRealTimeDataView.h */,
+				26FA07041F5E3A8F00DAD665 /* RingRealTimeDataView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -3656,7 +3656,6 @@
 				26394AD91F53BBC1009BB8AC /* XAxisRendererHorizontalBarChart.swift in Sources */,
 				269A66521F556601002E7163 /* WoEnterPhoneNumberView.m in Sources */,
 				26FA06F41F56C44700DAD665 /* TrainingCampViewController.m in Sources */,
-				26FA07001F5D29D900DAD665 /* RingTimeHintLabel.m in Sources */,
 				264885381E8FFBF7007A98D7 /* GLTextView.m in Sources */,
 				264886C31E901121007A98D7 /* EaseConvertToCommonEmoticonsHelper.m in Sources */,
 				2648869A1E901121007A98D7 /* DACircularProgressView.m in Sources */,
@@ -3930,6 +3929,7 @@
 				26181B371E8E588500883EE9 /* WearRecordCell.m in Sources */,
 				264886BB1E901121007A98D7 /* EaseMessageModel.m in Sources */,
 				26394A641F53BBC1009BB8AC /* CandleStickChartView.swift in Sources */,
+				26FA07051F5E3A8F00DAD665 /* RingRealTimeDataView.m in Sources */,
 				26A2338A1E7920FD0042BA09 /* GLEntity.m in Sources */,
 				264886AE1E901121007A98D7 /* PSTCollectionViewController.m in Sources */,
 				26A233A31E7A38D10042BA09 /* XueTangLiShiZhiCellTableViewCell.m in Sources */,

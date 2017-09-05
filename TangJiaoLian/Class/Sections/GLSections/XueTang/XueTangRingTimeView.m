@@ -16,24 +16,34 @@
 {
     _status = status;
     
+    [self.connectionBtn       setHidden:true];
+    [self.hintLbl             setHidden:true];
+    [self.polarizationTimeLbl setHidden:true];
+    [self.timeDataView        setHidden:true];
+    
     GL_DISPATCH_MAIN_QUEUE(^{
         switch (status) {
             case GLRingTimeUnunitedStatus:     //未连接
                 [self.connectionBtn setHidden:false];
-                [self.hintLbl setHidden:true];
-                [self.polarizationTimeLbl setHidden:true];
                 [self changeHintLblSatuts:GLRingTimeHintLabelPolarizationStatus WithHour:0 WithAbnormalCount:0];
                 [self.timer setFireDate:[NSDate distantFuture]];
+                
+                for (NSInteger i = 1;i <= 24;i++) {
+                    GLButton *timeBtn = [self viewWithTag:30 + i];
+                    [timeBtn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
+                    [timeBtn setUserInteractionEnabled:false];
+                }
                 break;
-            case GLRIngTimeConnectingStatus:   //已在连接中
-                [self.connectionBtn setHidden:true];
+            case GLRingTimeCheckedStatus:   //时间按钮选中
                 [self.hintLbl setHidden:false];
-                [self.polarizationTimeLbl setHidden:true];
                 break;
             case GLRingTimePolarizationStatus: //极化中
-                [self.connectionBtn setHidden:true];
                 [self.hintLbl setHidden:false];
+                [self.polarizationTimeLbl setHidden:false];
                 [self startTimeKeeping];
+                break;
+            case GLRingTimeConnectingStatus: //连接中
+                [self.timeDataView setHidden:false];
                 break;
             default:
                 break;
@@ -65,6 +75,7 @@
 //极化计时
 - (void)timeKeeping
 {
+    WS(ws);
     GL_DISPATCH_MAIN_QUEUE(^{
         NSInteger timeInter           = 20 * 60 - ([[NSDate date] timeIntervalSince1970] - [[[GL_USERDEFAULTS stringForKey:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970]);
         NSDate *date                  = [NSDate dateWithTimeIntervalInMilliSecondSince1970:timeInter];
@@ -73,14 +84,20 @@
         if (timeInter <= 0) {
             //停止计时器
             GL_DISPATCH_MAIN_QUEUE(^{
-                [self.timer setFireDate:[NSDate distantFuture]];
-                self.hidden = true;
+                [ws.timer setFireDate:[NSDate distantFuture]];
+                ws.hidden = true;
                 [GL_USERDEFAULTS setBool:true forKey:SamPolarizationFinish];
                 [GL_USERDEFAULTS synchronize];
-                if (_polarizationFinish) {
-                    _polarizationFinish(true);
+                if (ws.polarizationFinish) {
+                    ws.polarizationFinish();
                 }
             });
+        }
+        
+        if (timeInter == 11) {
+            if (ws.polarizationElevenMinutes) {
+                ws.polarizationElevenMinutes();
+            }
         }
     });
 }
@@ -102,6 +119,8 @@
     if (![self.nowHour isEqualToString:[[NSDate date] toString:@"H"]]) {
         self.nowHour = [[NSDate date] toString:@"H"];
         GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
+        [hourBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
+        [hourBtn setUserInteractionEnabled:false];
         [self animateFirstRoundWithHourBtn:hourBtn];
     }
 //    }
@@ -137,6 +156,7 @@
     }
 }
 
+#pragma mark - createUI
 - (void)createUI
 {
     self.backgroundColor = TCOL_BG;
@@ -144,6 +164,7 @@
     [self addSubview:self.connectionBtn];
     [self addSubview:self.hintLbl];
     [self addSubview:self.polarizationTimeLbl];
+    [self addSubview:self.timeDataView];
     
     WS(ws);
     
@@ -162,6 +183,14 @@
         make.centerX.equalTo(ws);
     }];
     
+    [self.timeDataView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.center.equalTo(ws);
+        make.size.mas_equalTo(CGSizeMake(180, 180));
+    }];
+    
+    NSString *binDingHour = [[[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"H"];
+    NSString *nowHour     = [[NSDate date] toString:@"H"];
+
     float dist = 104;//半径
     for (int i= 1; i<= 24;i++) {
         float angle = degreesToRadians((360 / 24) * i);
@@ -176,19 +205,17 @@
         btn.layer.masksToBounds = true;
         btn.highlighted         = false;
         
-        //默认灰色背景
-        [btn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
-        //选中
-        [btn setBackgroundColor:TCOL_RINGTIMESEL forState:UIControlStateSelected];
-        //高亮异常红色
-//        [btn setBackgroundColor:TCOL_RINGTIMEWAR forState:UIControlStateHighlighted];
-        //高亮无异常绿色
-        [btn setBackgroundColor:TCOL_RINGTIMEPASS forState:UIControlStateDisabled];
-        
         if (i == 24) {
             [btn setTitle:@"0" forState:UIControlStateNormal];
         } else {
             [btn setTitle:[@(i) stringValue] forState:UIControlStateNormal];
+        }
+        
+        if (ISBINDING && ([btn.lbl.text integerValue] >= [binDingHour integerValue]) &&  ([btn.lbl.text integerValue] <= [nowHour integerValue])) {
+            [btn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
+        } else {
+            [btn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
+            btn.userInteractionEnabled = false;
         }
         
         [btn.lbl setFont:GL_FONT(8)];
@@ -204,7 +231,11 @@
     
     [self refreshTwinklingBtn];
     
-    [self setStatus:GLRingTimeUnunitedStatus];
+    if (ISBINDING) {
+        [self setStatus:GLRingTimeConnectingStatus];
+    } else {
+        [self setStatus:GLRingTimeUnunitedStatus];
+    }
 }
 
 - (void)timeBtnClick:(UIButton *)sender
@@ -219,8 +250,10 @@
     sender.selected  = !sender.selected;
     if (sender.selected) {
         //显示预警信息
+        [self setStatus:GLRingTimeCheckedStatus];
     } else {
         //取消显示预警信息
+        [self setStatus:GLRingTimeConnectingStatus];
     }
 }
 
@@ -272,6 +305,15 @@
         _polarizationTimeLbl.textAlignment = NSTextAlignmentCenter;
     }
     return _polarizationTimeLbl;
+}
+
+- (RingRealTimeDataView *)timeDataView
+{
+    if (!_timeDataView) {
+        _timeDataView        = [RingRealTimeDataView new];
+        _timeDataView.hidden = true;
+    }
+    return _timeDataView;
 }
 
 - (NSTimer *)timer

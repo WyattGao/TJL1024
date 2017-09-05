@@ -60,6 +60,10 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 @property (nonatomic,strong) XueTangDeviceListCell *deviceCell; /**< 记录点击连接设备的cell */
 
+@property (nonatomic,strong) NSTimer *getValueTimer; /**< 计时器，每三分半钟收取一次数据 */
+
+@property (nonatomic,assign) BOOL isStartGettingDatav; /**< 是否开始获取数据 */
+
 @end
 
 @implementation XueTangViewController
@@ -142,22 +146,27 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
  */
 - (void)TimeToMonitor
 {
-//    WS(ws);
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        __block NSInteger i = 0;
-//        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-//        _refreshTimetTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
-//        dispatch_source_set_timer(_refreshTimetTimer,dispatch_walltime(NULL, 0),1.0 * NSEC_PER_SEC, 0);
-//        dispatch_source_set_event_handler(_refreshTimetTimer, ^{
-//            
-//            [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
-//            i ++;
-//        });
-//        dispatch_resume(_refreshTimetTimer);
-//    });
-}
+    WS(ws);
+    __block NSInteger lastDate = 0;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        _refreshTimetTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
+        dispatch_source_set_timer(_refreshTimetTimer,dispatch_walltime(NULL, 0),10.0 * NSEC_PER_SEC, 0);
+        dispatch_source_set_event_handler(_refreshTimetTimer, ^{
 
+            [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
+            if (ws.isStartGettingDatav) { //是否开始主动获取数据
+                if (([[NSDate date] timeIntervalSince1970] - lastDate) >= 210 || lastDate == 0) { //每3分半获取一次
+                    //主动获取数据
+                    [self getDeviceAllData];
+                    lastDate = [[NSDate date] timeIntervalSince1970];
+                }
+            }
+        });
+        dispatch_resume(_refreshTimetTimer);
+    });
+}
 
 /**
  初始化CGM本地数据
@@ -386,12 +395,18 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         if ([GL_USERDEFAULTS boolForKey:SamPolarizationFinish]) {
             //极化已经完成
             //获取设备里的总数据量,上传设备中未上传的数据
-            [self getDeviceAllData];
+//            [self getDeviceAllData];
+            self.isStartGettingDatav = true;
         } else {
             //极化还未完成,继续极化
             [SVProgressHUD dismiss];
             GL_DisLog(@"重连之前，设备极化没有结束，继续极化");
             [self.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
+            
+            NSInteger polarizationTime = ([[NSDate date] timeIntervalSince1970] - [[[GL_USERDEFAULTS stringForKey:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970]) / 60 ;
+            if (polarizationTime >= 11) {
+                self.isStartGettingDatav = true;
+            }
         }
     }else{
         [SVProgressHUD showWithStatus:@"正在获取设备状态"];
@@ -668,7 +683,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     dispatch_async(dispatch_get_main_queue(), ^{
         //刷新折线图
         [ws.xueTangView.lineView refreshLineView];
-        //        ws.xueTangView.shiShiView.zuiXinLbl.text = bloodValue;
+        [ws.xueTangView.ringView.timeDataView setRealTimeLblTextByBloodValue:bloodValue];
         [ws.xueTangView.liShiZhiView reloadDataWithBloodArr:[[allBloodValueArr reverseObjectEnumerator] allObjects]];
         
         //上次上传的index
@@ -1173,6 +1188,11 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 }];
             });
         };
+        
+        _xueTangView.ringView.polarizationElevenMinutes = ^{
+            ws.isStartGettingDatav = true;
+        };
+        
         //点击连接设备按钮回调
         _xueTangView.ringView.connectBtnClick = ^{
             if ([ws isLogin]) {
@@ -1348,7 +1368,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         WS(ws);
         _targetVC.refreshTarget = ^(){
             //刷新监控目标值
-            //            [ws.xueTangView.dataAndTargetView realodTargetData];
             [ws.xueTangView.recordView  realodTargetData];
             //刷新折现图的监控目标区域
             [ws.xueTangView.lineView refreshLineView];
@@ -1416,6 +1435,29 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     }
     return _devicesArr;
 }
+
+//- (NSTimer *)getValueTimer
+//{
+//    if (!_getValueTimer) {
+//        _getValueTimer = [NSTimer scheduledTimerWithTimeInterval:60*3.5 target:self selector:@selector(getDeviceAllData) userInfo:nil repeats:true];
+//        [[NSRunLoop currentRunLoop] addTimer:_getValueTimer forMode:NSRunLoopCommonModes];
+//    }
+//    return _getValueTimer;
+//}
+//
+//- (void)getValueTimerStart
+//{
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.getValueTimer setFireDate:[NSDate date]];
+//            [self.getValueTimer fire];
+//        });
+//    });
+//    
+//    //    dispatch_source_cancel(_getValueTimer);
+//    //    // 开启定时器
+//    //    dispatch_resume(_getValueTimer);
+//}
 
 
 /*
