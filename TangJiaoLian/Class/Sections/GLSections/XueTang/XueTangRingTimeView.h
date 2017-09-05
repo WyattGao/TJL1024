@@ -58,6 +58,8 @@ typedef void(^PolarizationElevenMinutes)();
 
 @property (nonatomic,strong) RingRealTimeDataView      *timeDataView;/**< 显示最新实时数据 */
 
+@property (nonatomic,strong) GLButton                  *tmpTimeBtn;/**< 覆盖正在执行动画 */
+
 /**
  根据时间刷新闪烁按钮的状态
  */

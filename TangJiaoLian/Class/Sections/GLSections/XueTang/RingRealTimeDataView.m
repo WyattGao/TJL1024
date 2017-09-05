@@ -14,13 +14,14 @@
 {
     NSMutableAttributedString *attributedStr = [[NSMutableAttributedString alloc]initWithString:[bloodValue stringByAppendingString:@" mmol/L"]];
     [attributedStr addAttribute:NSFontAttributeName
-                          value:GL_FONT_BY_NAME(@"Courier", 36.0f)
+                          value:GL_FONT(36.0f)
                           range:NSMakeRange(0, attributedStr.length - 5)];
-    [attributedStr addAttribute:NSForegroundColorAttributeName
+    [attributedStr addAttribute:NSFontAttributeName
                           value:[UIFont systemFontOfSize:18.0f]
                           range:NSMakeRange(attributedStr.length - 6, 5)];
-    
+    [attributedStr addAttribute:NSForegroundColorAttributeName value:TCOL_MAIN range:NSMakeRange(0, attributedStr.length)];
     self.realTimeLbl.attributedText = attributedStr;
+    
 }
 
 - (void)createUI
@@ -47,7 +48,14 @@
         _realTimeLbl               = [UILabel new];
         _realTimeLbl.textColor     = TCOL_BG;
         _realTimeLbl.textAlignment = NSTextAlignmentCenter;
-        [self setRealTimeLblTextByBloodValue:@"0.0"];
+        
+        
+        NSString *realTimeValue = @"0.0";
+        if ([[[[GLCache readCacheArrWithName:SamBloodValueArr] lastObject] getStringValue:@"value"] length]) {
+            realTimeValue = [[[GLCache readCacheArrWithName:SamBloodValueArr] lastObject] getStringValue:@"value"];
+        }
+
+        [self setRealTimeLblTextByBloodValue:realTimeValue];
     }
     return _realTimeLbl;
 }

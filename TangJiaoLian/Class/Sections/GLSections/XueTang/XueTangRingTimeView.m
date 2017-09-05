@@ -53,6 +53,8 @@
 
 - (void)changeHintLblSatuts:(GLRingTimeHintLabelStatus)status WithHour:(NSInteger)hour WithAbnormalCount:(NSInteger)abnormalCount
 {
+    NSInteger lastHour = hour == 0 ? 23 : (hour - 1);
+    
     switch (status) {
         case GLRingTimeHintLabelPolarizationStatus:
             self.hintLbl.textColor = TCOL_MAIN;
@@ -62,10 +64,12 @@
         case GLRingTimeHintLabelNormal:
             self.hintLbl.font      = GL_FONT(18);
             self.hintLbl.textColor = TCOL_MAIN;
+            self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到现在\n您的血糖共出现0次异常",lastHour];
             break;
         case GLRingTimeHintLabelAbNormal:
             self.hintLbl.font      = GL_FONT(18);
             self.hintLbl.textColor = TCOL_GLUCOSEHEIGHT;
+            self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到现在\n您的血糖共出现\n%ld次异常",lastHour,abnormalCount];
             break;
         default:
             break;
@@ -120,8 +124,12 @@
         self.nowHour = [[NSDate date] toString:@"H"];
         GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
         [hourBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
-        [hourBtn setUserInteractionEnabled:false];
         [self animateFirstRoundWithHourBtn:hourBtn];
+        
+        [self.tmpTimeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.size.equalTo(hourBtn);
+            make.center.equalTo(hourBtn);
+        }];
     }
 //    }
 }
@@ -129,7 +137,7 @@
 //为小时按钮生成呼吸效果
 - (void)animateFirstRoundWithHourBtn:(GLButton *)hourBtn
 {
-    hourBtn.alpha = 0.4f;
+    hourBtn.alpha = 0.3f;
     [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
         hourBtn.alpha = 1.0f;
     } completion:^(BOOL finished) {
@@ -140,7 +148,7 @@
 - (void)animateSecondRoundWithHourBtn:(GLButton *)hourBtn
 {
     [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        hourBtn.alpha = 0.4f;
+        hourBtn.alpha = 0.3f;
     } completion:^(BOOL finished) {
         [self animateFirstRoundWithHourBtn:hourBtn];
     }];
@@ -153,6 +161,48 @@
 {
     if (_connectBtnClick) {
         _connectBtnClick();
+    }
+}
+
+//闪烁按钮点击事件
+- (void)tmpTimeBtnClick:(GLButton *)sender
+{
+    //获取当前正在闪烁的按钮
+    GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
+    [self timeBtnClick:hourBtn];
+}
+
+//时间按钮点击事件
+- (void)timeBtnClick:(GLButton *)sender
+{
+    //取消所有按钮的选中状态
+    for (NSInteger i = 1;i <= 24;i++) {
+        GLButton *btn = (GLButton *)[self viewWithTag:30 + i];
+        if (btn.tag != sender.tag) {
+            btn.selected = false;
+        }
+    }
+    sender.selected  = !sender.selected;
+    if (sender.selected) {
+        //显示预警信息
+        [self setStatus:GLRingTimeCheckedStatus];
+        
+        NSArray *bloodValueArr = [GLCache readCacheArrWithName:SamBloodValueArr];
+        NSInteger count = 0;
+        for (NSDictionary *valueDic in bloodValueArr) {
+            NSString *hour = [[[valueDic getStringValue:@"collectedtime"] toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"HH"];
+            CGFloat value = [valueDic getFloatValue:@"value"];
+            if ([hour isEqualToString:sender.text] && value > 0 && (value <= [GL_USERDEFAULTS getFloatValue:SamTargetLow] ||
+                                                                    value >= [GL_USERDEFAULTS getFloatValue:SamTargetHeight])) {
+                count ++;
+            }
+        }
+        
+        [self changeHintLblSatuts:count == 0 ? GLRingTimeHintLabelNormal : GLRingTimeHintLabelAbNormal WithHour:[sender.text integerValue] WithAbnormalCount:count];
+        
+    } else {
+        //取消显示预警信息
+        [self setStatus:GLRingTimeConnectingStatus];
     }
 }
 
@@ -175,7 +225,7 @@
     
     [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(ws);
-        make.width.mas_equalTo(126);
+        make.width.mas_equalTo(150);
     }];
     
     [self.polarizationTimeLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -204,6 +254,8 @@
         btn.layer.cornerRadius  = 8;
         btn.layer.masksToBounds = true;
         btn.highlighted         = false;
+        [btn.lbl setFont:GL_FONT(8)];
+        [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
         if (i == 24) {
             [btn setTitle:@"0" forState:UIControlStateNormal];
@@ -211,49 +263,31 @@
             [btn setTitle:[@(i) stringValue] forState:UIControlStateNormal];
         }
         
-        if (ISBINDING && ([btn.lbl.text integerValue] >= [binDingHour integerValue]) &&  ([btn.lbl.text integerValue] <= [nowHour integerValue])) {
+        [btn setBackgroundColor:TCOL_RINGTIMESEL forState:UIControlStateSelected];
+
+        if ((ISBINDING &&  ([btn.lbl.text integerValue] >= [binDingHour integerValue]) &&  ([btn.lbl.text integerValue] <= [nowHour integerValue]))) {
             [btn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
         } else {
             [btn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
             btn.userInteractionEnabled = false;
         }
-        
-        [btn.lbl setFont:GL_FONT(8)];
+
         [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
         [btn addTarget:self action:@selector(timeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         CGPoint center = CGPointMake(SCREEN_WIDTH/2 + x,240/2 -  y);
-        btn.center = center;
+        btn.center     = center;
         
         [self addSubview:btn];
     }
     
-    [self refreshTwinklingBtn];
+    [self addSubview:self.tmpTimeBtn];
     
     if (ISBINDING) {
         [self setStatus:GLRingTimeConnectingStatus];
     } else {
         [self setStatus:GLRingTimeUnunitedStatus];
-    }
-}
-
-- (void)timeBtnClick:(UIButton *)sender
-{
-    //取消所有按钮的选中状态
-    for (NSInteger i = 1;i <= 24;i++) {
-        GLButton *btn = (GLButton *)[self viewWithTag:30 + i];
-        if (btn.tag != sender.tag) {
-            btn.selected = false;
-        }
-    }
-    sender.selected  = !sender.selected;
-    if (sender.selected) {
-        //显示预警信息
-        [self setStatus:GLRingTimeCheckedStatus];
-    } else {
-        //取消显示预警信息
-        [self setStatus:GLRingTimeConnectingStatus];
     }
 }
 
@@ -322,6 +356,15 @@
         _timer =   [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(timeKeeping) userInfo:nil repeats:true];
     }
     return _timer;
+}
+
+- (GLButton *)tmpTimeBtn
+{
+    if (!_tmpTimeBtn) {
+        _tmpTimeBtn = [GLButton new];
+        [_tmpTimeBtn addTarget:self action:@selector(tmpTimeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _tmpTimeBtn;
 }
 
 
