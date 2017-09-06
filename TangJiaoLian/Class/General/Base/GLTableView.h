@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "GLEntity.h"
 #import "GLTableViewCell.h"
+#import <UITableView_FDTemplateLayoutCell/UITableView+FDTemplateLayoutCell.h>
 
 typedef void(^TableViewDidSelect)(NSIndexPath *indexPath);
 

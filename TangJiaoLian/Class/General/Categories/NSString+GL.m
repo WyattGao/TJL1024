@@ -19,6 +19,11 @@
     return date;
 }
 
+- (NSDate *)toDateDefault
+{
+    return [self toDate:@"yyyy-MM-dd HH:mm:ss"];
+}
+
 + (id)MD5EncryptionWithString:(NSString *)str
 {
     if (str == nil) {

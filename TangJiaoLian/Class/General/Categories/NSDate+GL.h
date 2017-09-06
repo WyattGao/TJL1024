@@ -18,4 +18,12 @@
 
 + (NSString *)nowDateString;
 
+
+/**
+ 根据日期对象获取星期几的字符串
+
+ @return 返回星期几的字符串
+ */
+- (NSString *)toWeekString;
+
 @end

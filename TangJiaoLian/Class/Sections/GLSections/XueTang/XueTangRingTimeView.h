@@ -30,13 +30,16 @@ typedef NS_ENUM(NSInteger,GLRingTimeHintLabelStatus){
 };
 
 
-@interface XueTangRingTimeView : GLView
-
 typedef void(^ConnectBtnClick)();
 
 typedef void(^PolarizationFinish)();
 
 typedef void(^PolarizationElevenMinutes)();
+
+typedef void(^DataAnalysisBtnClick)();
+
+
+@interface XueTangRingTimeView : GLView
 
 @property (nonatomic,strong) UILabel                   *hintLbl;/**< 异常提示 */
 
@@ -59,6 +62,10 @@ typedef void(^PolarizationElevenMinutes)();
 @property (nonatomic,strong) RingRealTimeDataView      *timeDataView;/**< 显示最新实时数据 */
 
 @property (nonatomic,strong) GLButton                  *tmpTimeBtn;/**< 覆盖正在执行动画 */
+
+@property (nonatomic,copy  ) DataAnalysisBtnClick      dataAnalysisBtnClick;/**< 数据分析按钮点击回调 */
+
+@property (nonatomic,strong) GLButton                  *helpBtn;/**< 帮助按钮 */
 
 /**
  根据时间刷新闪烁按钮的状态

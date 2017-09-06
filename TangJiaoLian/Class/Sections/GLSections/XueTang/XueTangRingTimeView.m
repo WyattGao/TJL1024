@@ -123,13 +123,18 @@
     if (![self.nowHour isEqualToString:[[NSDate date] toString:@"H"]]) {
         self.nowHour = [[NSDate date] toString:@"H"];
         GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
-        [hourBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
+        
         [self animateFirstRoundWithHourBtn:hourBtn];
         
         [self.tmpTimeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.size.equalTo(hourBtn);
             make.center.equalTo(hourBtn);
         }];
+        
+        if (ISBINDING) {
+            [hourBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
+            [hourBtn setUserInteractionEnabled:true];
+        }
     }
 //    }
 }
@@ -169,7 +174,9 @@
 {
     //获取当前正在闪烁的按钮
     GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
-    [self timeBtnClick:hourBtn];
+    if (ISBINDING) { //绑定状态下可以触发点击事件
+        [self timeBtnClick:hourBtn];
+    }
 }
 
 //时间按钮点击事件
@@ -215,6 +222,7 @@
     [self addSubview:self.hintLbl];
     [self addSubview:self.polarizationTimeLbl];
     [self addSubview:self.timeDataView];
+    [self addSubview:self.helpBtn];
     
     WS(ws);
     
@@ -238,8 +246,14 @@
         make.size.mas_equalTo(CGSizeMake(180, 180));
     }];
     
-    NSString *binDingHour = [[[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"H"];
-    NSString *nowHour     = [[NSDate date] toString:@"H"];
+    [self.helpBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(20, 20));
+        make.top.equalTo(ws).offset(14);
+        make.right.equalTo(ws.mas_right).offset(-34);
+    }];
+    
+    NSDate *binDingTimeDate1 = [[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"];
+    NSDate *binDingTimeDate2 = [[binDingTimeDate1 toString:@"yyyy-MM-dd HH:00:00"] toDate:@"yyyy-MM-dd HH:mm:ss"];
 
     float dist = 104;//半径
     for (int i= 1; i<= 24;i++) {
@@ -264,8 +278,16 @@
         }
         
         [btn setBackgroundColor:TCOL_RINGTIMESEL forState:UIControlStateSelected];
-
-        if ((ISBINDING &&  ([btn.lbl.text integerValue] >= [binDingHour integerValue]) &&  ([btn.lbl.text integerValue] <= [nowHour integerValue]))) {
+        
+        
+        NSDate *btnHourTime = [[[NSDate date] toString:[NSString stringWithFormat:@"yyyy-MM-dd %@:00:00",btn.text]] toDate:@"yyyy-MM-dd HH:mm:ss"];
+    
+        //按钮显示时间与绑定时间的时差
+        NSTimeInterval bingdinTimeBetween = [btnHourTime timeIntervalSinceDate:binDingTimeDate2];
+        //按钮显示时间与当前时间的时差
+        NSTimeInterval nowTimeBetween = [btnHourTime timeIntervalSinceDate:[NSDate date]];
+        
+        if (ISBINDING && bingdinTimeBetween >= 0 && nowTimeBetween <= 0) {
             [btn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
         } else {
             [btn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
@@ -346,6 +368,12 @@
     if (!_timeDataView) {
         _timeDataView        = [RingRealTimeDataView new];
         _timeDataView.hidden = true;
+        WS(ws);
+        _timeDataView.dataAnalysisBtn.buttonClick = ^(GLButton *sender) {
+            if (ws.dataAnalysisBtnClick) {
+                ws.dataAnalysisBtnClick();
+            }
+        };
     }
     return _timeDataView;
 }
@@ -367,5 +395,13 @@
     return _tmpTimeBtn;
 }
 
+- (GLButton *)helpBtn
+{
+    if (!_helpBtn) {
+        _helpBtn = [GLButton new];
+        [_helpBtn setImage:GL_IMAGE(@"帮助-使用说明") forState:UIControlStateNormal];
+    }
+    return _helpBtn;
+}
 
 @end

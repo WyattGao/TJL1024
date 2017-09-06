@@ -77,7 +77,7 @@
 //高血糖数值颜色
 #define TCOL_GLUCOSEHEIGHT RGB(255, 102, 102)
 
-//低血糖数值颜色
+//环形按钮选中颜色
 #define TCOL_GLUCOSLOW RGB(255, 153, 0)
 
 //修改手机号密码高亮字符

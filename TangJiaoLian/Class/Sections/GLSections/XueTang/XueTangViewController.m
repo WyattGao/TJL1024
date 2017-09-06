@@ -22,6 +22,7 @@
 #import "STMedicationController.h"
 #import "WearRecordViewController.h"
 #import "RunChartViewController.h"
+#import "RingTimeHelpViewController.h"
 
 typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     ///开始佩戴记录
@@ -48,7 +49,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 @property (nonatomic,strong) XueTangTargerViewController *targetVC;
 
-@property (nonatomic,strong) STDataAnalysisViewController *analysisVC;
+@property (nonatomic,strong) STDataAnalysisViewController *analysisVC; /**< 数据分析控制器 */
 
 @property (nonatomic,assign) BOOL isBluetoothOpen;
 ///佩戴记录VC
@@ -63,6 +64,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 @property (nonatomic,strong) NSTimer *getValueTimer; /**< 计时器，每三分半钟收取一次数据 */
 
 @property (nonatomic,assign) BOOL isStartGettingDatav; /**< 是否开始获取数据 */
+
+@property (nonatomic,strong) RingTimeHelpViewController *ringTimeHelpVC; /**< 环信时间按钮操作帮助 */
 
 @end
 
@@ -90,7 +93,12 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 - (void)createUI
 {
-    [self setNavTitle:@"动态血糖（未连接）"];
+    if (ISBINDING) {
+        [self setNavTitle:@"动态血糖（正在连接）"];
+    } else {
+        [self setNavTitle:@"动态血糖（未连接）"];
+    }
+    
     
     [self addSubView:self.xueTangView];
     
@@ -387,6 +395,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     
     //如果有绑定设备的时间，说明之前一直在使用，只需连接上即可
     if ([GL_USERDEFAULTS objectForKey:SamStartBinDingDeviceTime]) {
+        [self setNavTitle:@"动态血糖（已连接）"];
+
         [SVProgressHUD showWithStatus:@"正在同步数据"];
         
         GL_DisLog(@"存在设备绑定时间，设备为重连");
@@ -858,6 +868,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     [ws.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
                     GL_DisLog(@"已上传开始佩戴记录");
                     
+                    //修改标题提示
+                    [self setNavTitle:@"动态血糖（已连接）"];
                 } else {
                     //上传结束佩戴记录成功，停止设备
                     GL_DisLog(@"已上传结束佩戴记录,开始停止设备");
@@ -1189,6 +1201,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             });
         };
         
+        //极化11分钟，开始主动获取数据
         _xueTangView.ringView.polarizationElevenMinutes = ^{
             ws.isStartGettingDatav = true;
         };
@@ -1226,6 +1239,18 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             }
         };
         
+        //点击数据分析回调
+        _xueTangView.ringView.dataAnalysisBtnClick = ^{
+            ws.analysisVC.startTimeStr = [GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime];
+            ws.analysisVC.endTimeStr   = [GLTools getNowTime];
+            [ws pushWithController:ws.analysisVC];
+        };
+        
+        _xueTangView.ringView.helpBtn.buttonClick = ^(GLButton *sender) {
+            [ws pushWithController:ws.ringTimeHelpVC];
+        };
+
+#pragma mark - 连接设备回调
         //连接指定设备点击事件
         _xueTangView.deviceTV.connectClick = ^(XueTangDeviceListCell *cell) {
             //停止搜索设备
@@ -1381,8 +1406,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 {
     if (!_analysisVC) {
         _analysisVC              = [STDataAnalysisViewController new];
-        _analysisVC.startTimeStr = [GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime];
-        _analysisVC.endTimeStr   = [GL_USERDEFAULTS getStringValue:SamEndBinDingDeviceTime];
     }
     return _analysisVC;
 }
@@ -1426,6 +1449,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         _runChartVC = [RunChartViewController new];
     }
     return _runChartVC;
+}
+
+- (RingTimeHelpViewController *)ringTimeHelpVC
+{
+    if (!_ringTimeHelpVC) {
+        _ringTimeHelpVC = [RingTimeHelpViewController new];
+    }
+    return _ringTimeHelpVC;
 }
 
 - (NSMutableArray *)devicesArr

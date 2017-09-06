@@ -76,4 +76,33 @@
 }
 
 
++ (NSAttributedString *)strWithStr:(NSString *)str AndColorArr:(NSArray<UIColor *> *)colorArr ColorWithIndexArr:(NSArray *)indexArr
+{
+    
+    NSMutableAttributedString *tmpStr = [[NSMutableAttributedString alloc] initWithString:str];
+    
+    NSMutableArray *idxArr = [NSMutableArray arrayWithArray:indexArr];
+    if ([idxArr.lastObject integerValue] == -1) {
+        [idxArr removeLastObject];
+        [idxArr addObject:@(str.length - [idxArr.lastObject integerValue])];
+    } else if (idxArr.count % 2){
+        [idxArr addObject:@(str.length - [idxArr.lastObject integerValue])];
+    } else if (idxArr.count == 2){
+        [idxArr addObject:idxArr.lastObject];
+        [idxArr addObject:@(str.length - [idxArr.lastObject integerValue])];
+    }
+    
+    NSInteger j = 1;
+    NSInteger k = 0;
+    
+    for (NSInteger i = 0;i < colorArr.count;i++) {
+        [tmpStr addAttribute:NSForegroundColorAttributeName value:colorArr[i] range:NSMakeRange([idxArr[k] integerValue],[idxArr[j] integerValue])];
+        j += 2;
+        k += 2;
+    }
+    
+    
+    return tmpStr;
+}
+
 @end

@@ -19,6 +19,14 @@
  */
 - (NSDate *)toDate:(NSString *)formatStr;
 
+
+/**
+ 通过默认格式转换字符串为时间对象
+
+ @return 转换后的时间对象
+ */
+- (NSDate *)toDateDefault;
+
 /**
  * @brief MD5加密
  */

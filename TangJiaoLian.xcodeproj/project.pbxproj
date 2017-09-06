@@ -321,6 +321,9 @@
 		269D886D1EDE63C500540253 /* FeedBackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269D886C1EDE63C500540253 /* FeedBackViewController.m */; };
 		269D88701EDE643000540253 /* FeedBackView.m in Sources */ = {isa = PBXBuildFile; fileRef = 269D886F1EDE643000540253 /* FeedBackView.m */; };
 		269D88761EDEB6DD00540253 /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269D88751EDEB6DD00540253 /* AboutViewController.m */; };
+		269E0B1A1F5FDFD0006FE69C /* RingTimeHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269E0B191F5FDFD0006FE69C /* RingTimeHelpViewController.m */; };
+		269E0B201F5FE10A006FE69C /* RingTimeHelpView.m in Sources */ = {isa = PBXBuildFile; fileRef = 269E0B1F1F5FE10A006FE69C /* RingTimeHelpView.m */; };
+		269E0B231F5FE26F006FE69C /* RingTimeHelpCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 269E0B221F5FE26F006FE69C /* RingTimeHelpCell.m */; };
 		26A233821E7920440042BA09 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A233811E7920440042BA09 /* GLView.m */; };
 		26A233851E79205F0042BA09 /* XueTangShiShiXueTangView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A233841E79205F0042BA09 /* XueTangShiShiXueTangView.m */; };
 		26A2338A1E7920FD0042BA09 /* GLEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A233891E7920FD0042BA09 /* GLEntity.m */; };
@@ -1013,6 +1016,12 @@
 		269D886F1EDE643000540253 /* FeedBackView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedBackView.m; sourceTree = "<group>"; };
 		269D88741EDEB6DD00540253 /* AboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
 		269D88751EDEB6DD00540253 /* AboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AboutViewController.m; sourceTree = "<group>"; };
+		269E0B181F5FDFD0006FE69C /* RingTimeHelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingTimeHelpViewController.h; sourceTree = "<group>"; };
+		269E0B191F5FDFD0006FE69C /* RingTimeHelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingTimeHelpViewController.m; sourceTree = "<group>"; };
+		269E0B1E1F5FE10A006FE69C /* RingTimeHelpView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingTimeHelpView.h; sourceTree = "<group>"; };
+		269E0B1F1F5FE10A006FE69C /* RingTimeHelpView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingTimeHelpView.m; sourceTree = "<group>"; };
+		269E0B211F5FE26F006FE69C /* RingTimeHelpCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingTimeHelpCell.h; sourceTree = "<group>"; };
+		269E0B221F5FE26F006FE69C /* RingTimeHelpCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingTimeHelpCell.m; sourceTree = "<group>"; };
 		26A233801E7920440042BA09 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		26A233811E7920440042BA09 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
 		26A233831E79205F0042BA09 /* XueTangShiShiXueTangView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XueTangShiShiXueTangView.h; sourceTree = "<group>"; };
@@ -2514,6 +2523,15 @@
 			path = TangJiaoLian/Class/Sections/GLSections/About;
 			sourceTree = SOURCE_ROOT;
 		};
+		269E0B171F5FDF9D006FE69C /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				269E0B181F5FDFD0006FE69C /* RingTimeHelpViewController.h */,
+				269E0B191F5FDFD0006FE69C /* RingTimeHelpViewController.m */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
 		26A2337C1E791F670042BA09 /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -2987,7 +3005,7 @@
 		26CCA91A1E78D4BF001D0E05 /* XueTang */ = {
 			isa = PBXGroup;
 			children = (
-				26FA06FA1F5D28C200DAD665 /* ConnectingDevice  */,
+				26FA06FA1F5D28C200DAD665 /* RingTime */,
 				264887201E9B58B3007A98D7 /* HomePage */,
 				26181B3E1E8E7AD400883EE9 /* WearRecord */,
 			);
@@ -3333,13 +3351,14 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
-		26FA06FA1F5D28C200DAD665 /* ConnectingDevice  */ = {
+		26FA06FA1F5D28C200DAD665 /* RingTime */ = {
 			isa = PBXGroup;
 			children = (
+				269E0B171F5FDF9D006FE69C /* ViewController */,
 				26FA06FD1F5D293F00DAD665 /* Model */,
 				26FA06FC1F5D292A00DAD665 /* View */,
 			);
-			name = "ConnectingDevice ";
+			name = RingTime;
 			sourceTree = "<group>";
 		};
 		26FA06FC1F5D292A00DAD665 /* View */ = {
@@ -3353,6 +3372,10 @@
 				26A8FE361E7E878E00173280 /* XueTangDeviceListCell.m */,
 				26FA07031F5E3A8F00DAD665 /* RingRealTimeDataView.h */,
 				26FA07041F5E3A8F00DAD665 /* RingRealTimeDataView.m */,
+				269E0B1E1F5FE10A006FE69C /* RingTimeHelpView.h */,
+				269E0B1F1F5FE10A006FE69C /* RingTimeHelpView.m */,
+				269E0B211F5FE26F006FE69C /* RingTimeHelpCell.h */,
+				269E0B221F5FE26F006FE69C /* RingTimeHelpCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -3900,6 +3923,7 @@
 				26D0B1C41E820EC2009F1774 /* DNAssetsViewCell.m in Sources */,
 				264886951E901121007A98D7 /* MWPhoto.m in Sources */,
 				264886C41E901121007A98D7 /* EaseMessageReadManager.m in Sources */,
+				269E0B201F5FE10A006FE69C /* RingTimeHelpView.m in Sources */,
 				26A8FE311E7E848600173280 /* XueTangDeviceListViewController.m in Sources */,
 				26D0B4551E89F72D009F1774 /* Example2Controller.m in Sources */,
 				264886811E901121007A98D7 /* MJRefreshComponent.m in Sources */,
@@ -3926,6 +3950,7 @@
 				26394AE31F53BBC1009BB8AC /* TransformerHorizontalBarChart.swift in Sources */,
 				26181B4C1E8F3B9400883EE9 /* WearRecordDetailTableView.m in Sources */,
 				264886961E901121007A98D7 /* MWPhotoBrowser.m in Sources */,
+				269E0B231F5FE26F006FE69C /* RingTimeHelpCell.m in Sources */,
 				26181B371E8E588500883EE9 /* WearRecordCell.m in Sources */,
 				264886BB1E901121007A98D7 /* EaseMessageModel.m in Sources */,
 				26394A641F53BBC1009BB8AC /* CandleStickChartView.swift in Sources */,
@@ -3987,6 +4012,7 @@
 				264886B01E901121007A98D7 /* PSTCollectionViewFlowLayout.m in Sources */,
 				264886701E901121007A98D7 /* EaseUI.m in Sources */,
 				2648869F1E901121007A98D7 /* EMSDWebImageDownloaderOperation.m in Sources */,
+				269E0B1A1F5FDFD0006FE69C /* RingTimeHelpViewController.m in Sources */,
 				26394A791F53BBC1009BB8AC /* BarChartData.swift in Sources */,
 				26394A601F53BBC1009BB8AC /* ChartAnimationEasing.swift in Sources */,
 				26D0B42C1E88F63B009F1774 /* STDataAnalysisViewTriangle.m in Sources */,

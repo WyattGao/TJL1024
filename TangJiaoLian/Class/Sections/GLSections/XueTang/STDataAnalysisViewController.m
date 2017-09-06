@@ -50,7 +50,7 @@
     [super viewDidLoad];
     [self initNav];
     [self initUI];
-//    [self initData];
+    //    [self initData];
 }
 
 - (void)initNav
@@ -68,9 +68,9 @@
     
     WS(ws);
     
-    [_tvHeader mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.tvHeader mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(ws.view).offset(64);
-        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 156));
+        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 130));
         make.centerX.equalTo(ws.view);
     }];
     
@@ -108,12 +108,12 @@
     
     _dataSource    = [NSMutableArray array];
     
-   if (_startTimeStr.length == 0) {
-      _startTimeStr = @"";
-   }
-   if (_endTimeStr.length == 0) {
-      _endTimeStr = @"";
-   }
+    if (_startTimeStr.length == 0) {
+        _startTimeStr = @"";
+    }
+    if (_endTimeStr.length == 0) {
+        _endTimeStr = @"";
+    }
     
     if (_startTimeStr.length) {
         NSDictionary *dic =@{
@@ -178,45 +178,45 @@
 
 - (UIView *)tvHeader
 {
-        if (!_tvHeader) {
-    
-    UIView *line = [UIView new];
-    _tvHeader    = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 154)];
-    
-    line.backgroundColor      = TCOL_MAIN;
-    _tvHeader.backgroundColor = RGB(255, 255, 255);
-    
-    [_tvHeader addSubview:line];
-    [_tvHeader addSubview:self.tvHeaderSV];
-    [_tvHeader addSubview:self.thisMothLbl];
-    [_tvHeader addSubview:self.BloodWarningLbl];
-    
-    [line mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 1));
-        make.bottom.equalTo(_tvHeader.mas_bottom);
-        make.centerX.equalTo(_tvHeader);
-    }];
-    
-    [_thisMothLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(_tvHeader.mas_right).offset(-12);
-        make.top.equalTo(_tvHeader).offset(12.3);
-    }];
-    
-    [_BloodWarningLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(_tvHeader.mas_right).offset(-12);
-        make.bottom.equalTo(_tvHeader).offset(-2);
-    }];
-    
-    
-    STDataAnalysisViewTriangle *analysisView = [STDataAnalysisViewTriangle new];
-    [_tvHeader addSubview:analysisView];
-    
-    [analysisView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(_tvHeader).offset(32.8);
-        make.bottom.equalTo(_tvHeader.mas_bottom);
-        make.size.mas_equalTo(CGSizeMake(32.2, 19));
-    }];
-        }
+    if (!_tvHeader) {
+        
+        UIView *line = [UIView new];
+        _tvHeader    = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 130)];
+        
+        line.backgroundColor      = TCOL_MAIN;
+        _tvHeader.backgroundColor = RGB(255, 255, 255);
+        
+        [_tvHeader addSubview:line];
+        [_tvHeader addSubview:self.tvHeaderSV];
+        [_tvHeader addSubview:self.thisMothLbl];
+//        [_tvHeader addSubview:self.BloodWarningLbl];
+        
+        [line mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 1));
+            make.bottom.equalTo(_tvHeader.mas_bottom);
+            make.centerX.equalTo(_tvHeader);
+        }];
+        
+        [self.thisMothLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(_tvHeader.mas_left).offset(15);
+            make.top.equalTo(_tvHeader).offset(8);
+        }];
+        
+//        [_BloodWarningLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.right.equalTo(_tvHeader.mas_right).offset(-12);
+//            make.bottom.equalTo(_tvHeader).offset(-2);
+//        }];
+        
+        //三角形
+//        STDataAnalysisViewTriangle *analysisView = [STDataAnalysisViewTriangle new];
+//        [_tvHeader addSubview:analysisView];
+//        
+//        [analysisView mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.left.equalTo(_tvHeader).offset(32.8);
+//            make.bottom.equalTo(_tvHeader.mas_bottom);
+//            make.size.mas_equalTo(CGSizeMake(32.2, 19));
+//        }];
+    }
     return _tvHeader;
 }
 
@@ -225,7 +225,7 @@
 {
     if (!_thisMothLbl) {
         _thisMothLbl = [UILabel new];
-        _thisMothLbl.font = GL_FONT(20);
+        _thisMothLbl.font = GL_FONT(18);
         _thisMothLbl.textColor = TCOL_MAIN;
         _thisMothLbl.text = [[_startTimeStr toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"yyyy年-MM月"];
     }
@@ -252,129 +252,126 @@
 - (UIScrollView *)tvHeaderSV
 {
     if (!_tvHeaderSV) {
-    NSMutableArray *dateArr;
-    if (_dataSource && _dataSource.count) {
-        dateArr = [NSMutableArray new];
         
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateStyle:NSDateFormatterMediumStyle];
-        [formatter setTimeStyle:NSDateFormatterShortStyle];
-        [formatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"];
-        NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Beijing"];
-        [formatter setTimeZone:timeZone];
-        __block NSString *tmpTimeStr = [[_dataSource firstObject] getStringValue:@"collectedtime"];
-        __block NSString *tmpDD      = [[formatter dateFromString:tmpTimeStr] toString:@"dd"];
-        [dateArr addObject:tmpDD];
-        [_dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            tmpTimeStr = [obj getStringValue:@"collectedtime"];
-            NSString * dataNum = [[formatter dateFromString:tmpTimeStr] toString:@"dd"];
-            if (![dateArr containsObject:dataNum]) {
-                [dateArr addObject:dataNum];
-                NSLog(@"-----------日---------%@",dataNum);
-
-            }
-//            if ([tmpDD isEqualToString:[[formatter dateFromString:tmpTimeStr] toString:@"dd"]]) {
-//                tmpDD = [[formatter dateFromString:tmpTimeStr] toString:@"dd"];
-////                if ([dateArr containsObject:tmpDD]) {
-////                     ;
-////                }
-//                [dateArr addObject:tmpDD];
-//                
-//            }
-        }];
-    }
-    
-    
-    _tvHeaderSV = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 154)];
-    
-    MASViewAttribute *tmpMasRight = [MASViewAttribute new];
-    
-    //        _tvHeaderSV.contentSize = CGSizeMake((50 + 19.4) * 7 + 13 - 6.4 + SCREEN_WIDTH - (13 + 70.5), 0);
-    _tvHeaderSV.contentSize = CGSizeMake((50 + 19.4) * dateArr.count + 13 - 6.4 + SCREEN_WIDTH - (13 + 70.5), 0);
-    
-    _tvHeaderSV.showsHorizontalScrollIndicator = NO;
-    _tvHeaderSV.delegate = self;
-    [_tvHeaderSV setContentOffset:CGPointMake(0, 0) animated:YES];
-    
-    for (NSInteger i = 0;i < dateArr.count;i++) {
-        
-        NSString *btnTitle = dateArr[i];
-        
-        UIButton *btn = [UIButton new];
-        [_tvHeaderSV addSubview:btn];
-        
-        
-        //            btn.layer.cornerRadius = 50/2;
-        //            btn.layer.masksToBounds = YES;
-        //            [btn setBackgroundColor:RGB(140, 216, 120)];
-        
-        //            if ([[[NSDate date] toString:@"dd"] integerValue] <= i) {
-        //                [btn setBackgroundImage:[UIImage imageNamed:@"365yonghuxinxi2_03"] forState:UIControlStateNormal];
-        //            } else {
-        [btn setBackgroundImage:[UIImage imageNamed:@"圆背景"] forState:UIControlStateNormal];
-        //            }
-        [btn setTitle:btnTitle forState:UIControlStateNormal];
-        [btn setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
-        [btn.titleLabel setFont:GL_FONT(24)];
-        [btn addTarget:self action:@selector(dayBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-        [btn setTag:30 + i];
-        [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(_tvHeaderSV).offset(5);
-            if (!i) {
-                make.left.mas_equalTo(13);
-            } else {
-                make.left.mas_equalTo(tmpMasRight).offset(19);
-            }
-            make.size.mas_equalTo(CGSizeMake(50, 50));
-        }];
-        
-        tmpMasRight = btn.mas_right;
-    }
-    
+        NSMutableArray *dateArr;
+        if (_dataSource && _dataSource.count) {
+            dateArr = [NSMutableArray new];
+            
+            __block NSDate   *firstDate  = [[[_dataSource firstObject] getStringValue:@"collectedtime"] toDateDefault];
+            __block NSString *lastTimeStr = [firstDate toString:@"yyyy-MM-dd"];
+            [dateArr addObject:firstDate];
+            [_dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                NSString *tmpTimeStr = [[[obj getStringValue:@"collectedtime"] toDateDefault] toString:@"yyyy-MM-dd"];
+                if (![tmpTimeStr isEqualToString:lastTimeStr]) {
+                    [dateArr addObject:[tmpTimeStr toDate:@"yyyy-MM-dd"]];
+                }
+                lastTimeStr = tmpTimeStr;
+            }];
         }
+        
+        
+        _tvHeaderSV = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 130)];
+        
+        MASViewAttribute *tmpMasRight = [MASViewAttribute new];
+        
+        //    _tvHeaderSV.contentSize = CGSizeMake((50 + 19.4) * dateArr.count + 13 - 6.4 + SCREEN_WIDTH - (13 + 70.5), 0);
+        _tvHeaderSV.contentSize = CGSizeMake((40 + 15) * dateArr.count, 0);
+        
+        _tvHeaderSV.showsHorizontalScrollIndicator = NO;
+        _tvHeaderSV.delegate = self;
+        [_tvHeaderSV setContentOffset:CGPointMake(0, 0) animated:YES];
+        
+        for (NSInteger i = 0;i < dateArr.count;i++) {
+            
+            NSDate   *date = [dateArr objectAtIndex:i];
+            NSString *btnTitle = [date toString:@"d"];
+            
+            GLButton *btn = [GLButton new];
+            UILabel  *lbl = [UILabel new];
+            
+            [_tvHeaderSV addSubview:btn];
+            [_tvHeaderSV addSubview:lbl];
+            
+            [btn setBackgroundColor:RGB(247, 247, 247) forState:UIControlStateNormal];
+            [btn setBackgroundColor:TCOL_MAIN forState:UIControlStateSelected];
+            [btn setCornerRadius:40/2];
+            [btn setBorderWidth:1];
+            [btn setBorderColor:RGB(204, 204, 204)];
+            [btn setTitle:btnTitle forState:UIControlStateNormal];
+            [btn setTitleColor:RGB(153, 153, 153) forState:UIControlStateNormal];
+            [btn setTitleColor:RGB(255, 255, 255) forState:UIControlStateSelected];
+            [btn.titleLabel setFont:GL_FONT(24)];
+            [btn addTarget:self action:@selector(dayBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+            [btn setTag:30 + i];
+            
+            [lbl setFont:GL_FONT(10)];
+            [lbl setTextColor:TCOL_NORMALETEXT];
+            [lbl setTextAlignment:NSTextAlignmentCenter];
+            [lbl setText:[date toWeekString]];
+            [lbl setTag:300 + i];
+            
+            [btn mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(_tvHeaderSV).offset(51);
+                if (!i) {
+                    make.left.mas_equalTo(15);
+                } else {
+                    make.left.mas_equalTo(tmpMasRight).offset(15);
+                }
+                make.size.mas_equalTo(CGSizeMake(40, 40));
+            }];
+            
+            [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.centerX.equalTo(btn);
+                make.top.equalTo(btn.mas_bottom).offset(8);
+            }];
+            
+            tmpMasRight = btn.mas_right;
+        }
+        
+    }
     return _tvHeaderSV;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (scrollView == _tvHeaderSV) {
-        for (UIView *view in scrollView.subviews) {
-            if ([view isKindOfClass:[UIButton class]]) {
-                UIButton *btn = (UIButton *)view;
-                CGRect rect   = [view convertRect:view.bounds toView:self.view];
-                DLog(@"%@ , %lf",btn.titleLabel.text,rect.origin.x);
-                if (rect.origin.x  >= 0 && rect.origin.x < 70) {
-                    if (btn.width == 50) {
-                        _selBtnStr = btn.titleLabel.text;
-                        [btn mas_updateConstraints:^(MASConstraintMaker *make) {
-                            make.size.mas_equalTo(CGSizeMake(70.5, 70.5));
-                        }];
-                        [btn.titleLabel setFont:GL_FONT(36)];
-                        [UIView animateWithDuration:0.5f animations:^{
-                            [scrollView layoutIfNeeded];
-                        } completion:^(BOOL finished) {}];
-                    }
-                } else if(rect.origin.x < 0 || rect.origin.x >= 70) {
-                    if (btn.width > 50) {
-                        [btn mas_updateConstraints:^(MASConstraintMaker *make) {
-                            make.size.mas_equalTo(CGSizeMake(50, 50));
-                        }];
-                        [btn.titleLabel setFont:GL_FONT(24)];
-                        [UIView animateWithDuration:0.5f animations:^{
-                            [scrollView layoutIfNeeded];
-                        } completion:^(BOOL finished) {}];
-                    }
-                }
-            }
-        }
-    }
+    //    if (scrollView == _tvHeaderSV) {
+    //        for (UIView *view in scrollView.subviews) {
+    //            if ([view isKindOfClass:[UIButton class]]) {
+    //                UIButton *btn = (UIButton *)view;
+    //                CGRect rect   = [view convertRect:view.bounds toView:self.view];
+    //                DLog(@"%@ , %lf",btn.titleLabel.text,rect.origin.x);
+    //                if (rect.origin.x  >= 0 && rect.origin.x < 70) {
+    //                    if (btn.width == 50) {
+    //                        _selBtnStr = btn.titleLabel.text;
+    //                        [btn mas_updateConstraints:^(MASConstraintMaker *make) {
+    //                            make.size.mas_equalTo(CGSizeMake(70.5, 70.5));
+    //                        }];
+    //                        [btn.titleLabel setFont:GL_FONT(36)];
+    //                        [UIView animateWithDuration:0.5f animations:^{
+    //                            [scrollView layoutIfNeeded];
+    //                        } completion:^(BOOL finished) {}];
+    //                    }
+    //                } else if(rect.origin.x < 0 || rect.origin.x >= 70) {
+    //                    if (btn.width > 50) {
+    //                        [btn mas_updateConstraints:^(MASConstraintMaker *make) {
+    //                            make.size.mas_equalTo(CGSizeMake(50, 50));
+    //                        }];
+    //                        [btn.titleLabel setFont:GL_FONT(24)];
+    //                        [UIView animateWithDuration:0.5f animations:^{
+    //                            [scrollView layoutIfNeeded];
+    //                        } completion:^(BOOL finished) {}];
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
 {
-    if (scrollView == _tvHeaderSV) {
-        [self changeTableviewData];
-    }
+    //    if (scrollView == _tvHeaderSV) {
+    //        [self changeTableviewData];
+    //    }
 }
 
 //- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -387,16 +384,16 @@
     __block CGFloat bCount      = 0;
     __block CGFloat sCount      = 0;
     __block CGFloat lCount      = 0;
-                    count       = 0;
+    count       = 0;
     __block CGFloat maxNum      = 0;/**<最高血糖*/
     __block CGFloat miniNUm     = 0;/**<最低血糖*/
     __block CGFloat allNum      = 0;
     __block CGFloat sdbgNum     = 0; /**< 血糖波动系数 */
     __block CGFloat normalCount = 0;  /**< 正常血糖数 */
-
+    
     //2016年12月01日11:51:29
     __block CGFloat validCount  = 0;  /**< 有效的血糖数据 大于0*/
-
+    
     
     __block CGFloat tmpMaxScope1 = 0; /**< 最大波动幅度 */
     __block CGFloat previousNum1 = 0; /**< 保存前一天的数据 */
@@ -410,7 +407,7 @@
     [formatter setTimeZone:timeZone];
     
     _processingArr = [NSMutableArray array];
-        
+    WS(ws);
     [_dataSource enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
         NSString *tmpTimeStr = [[formatter dateFromString: [obj getStringValue:@"collectedtime"]] toString:@"dd"];
@@ -418,7 +415,7 @@
         
         if (tmpValue > 0) {
             if ([tmpTimeStr isEqualToString:_selBtnStr]) {
-                _thisMothLbl.text = [[formatter dateFromString: [obj getStringValue:@"collectedtime"]] toString:@"YYYY年MM月"];
+                ws.thisMothLbl.text = [[formatter dateFromString: [obj getStringValue:@"collectedtime"]] toString:@"YYYY年MM月"];
                 [tmpArr addObject:@(tmpValue)];
                 allNum += tmpValue;
                 count ++;
@@ -487,13 +484,13 @@
         [_processingArr addObject:@{@"暂无血糖数据":@""}];
     } else {
         /*
-        [_processingArr addObject:@{@"高血糖占时间比(PT)(>=11.1mmoL/L)"     : [NSString stringWithFormat:@"%.0lf%%",bCount / count * 100]}];
-        [_processingArr addObject:@{@"高血糖占时间比(PT)(>=7.8mmoL/L))"      : [NSString stringWithFormat:@"%.0lf%%",sCount / count * 100]}];
-        [_processingArr addObject:@{@"正常血糖时间百分比(3.9-7.8)" : [NSString stringWithFormat:@"%.0lf%%",normalCount / count * 100]}];
-        [_processingArr addObject:@{@"低血糖占时间比(PT)(<=3.9mmoL/L)"      : [NSString stringWithFormat:@"%.0lf%%",lCount / count * 100]}];
-        [_processingArr addObject:@{@"单日平均血糖值"              : [NSString stringWithFormat:@"%.2lf",aver]}];
-        [_processingArr addObject:@{@"最大血糖波动幅度(LAGE)"      : [NSString stringWithFormat:@"%.2lf",tmpMaxScope1]}];
-        [_processingArr addObject:@{@"血糖波动系数(血糖平均标准差SDBG)mmoL/L"        : [NSString stringWithFormat:@"%.2lf",sdbgNum]}];
+         [_processingArr addObject:@{@"高血糖占时间比(PT)(>=11.1mmoL/L)"     : [NSString stringWithFormat:@"%.0lf%%",bCount / count * 100]}];
+         [_processingArr addObject:@{@"高血糖占时间比(PT)(>=7.8mmoL/L))"      : [NSString stringWithFormat:@"%.0lf%%",sCount / count * 100]}];
+         [_processingArr addObject:@{@"正常血糖时间百分比(3.9-7.8)" : [NSString stringWithFormat:@"%.0lf%%",normalCount / count * 100]}];
+         [_processingArr addObject:@{@"低血糖占时间比(PT)(<=3.9mmoL/L)"      : [NSString stringWithFormat:@"%.0lf%%",lCount / count * 100]}];
+         [_processingArr addObject:@{@"单日平均血糖值"              : [NSString stringWithFormat:@"%.2lf",aver]}];
+         [_processingArr addObject:@{@"最大血糖波动幅度(LAGE)"      : [NSString stringWithFormat:@"%.2lf",tmpMaxScope1]}];
+         [_processingArr addObject:@{@"血糖波动系数(血糖平均标准差SDBG)mmoL/L"        : [NSString stringWithFormat:@"%.2lf",sdbgNum]}];
          */
         //血糖监测次数
         [_processingArr addObject:@{@"血糖监测次数":[NSString stringWithFormat:@"%lu",tmpArr.count]}];
@@ -503,28 +500,28 @@
         [_processingArr addObject:@{@"平均血糖(MGB)mmoL/L":[NSString stringWithFormat:@"%.2lf",aver]}];
         //高血糖占时间比 >=11.1
         [_processingArr addObject:@{@"高血糖占时间比(PT)(>=11.1mmoL/L)"     : [NSString stringWithFormat:@"%.0lf%%",bCount / count * 100]}];
-        
+
         //高血糖占时间比 >=7.8 && <11.1
         [_processingArr addObject:@{@"高血糖占时间比(PT)(>=7.8mmoL/L))"      : [NSString stringWithFormat:@"%.0lf%%",sCount / count * 100]}];
-        
+
         //低血糖占时间比 <=3.9
         [_processingArr addObject:@{@"低血糖占时间比(PT)(<=3.9mmoL/L)"      : [NSString stringWithFormat:@"%.0lf%%",lCount / count * 100]}];
-        
+
         //正常血时间占比 > 3.9 && < 11.1
         [_processingArr addObject:@{@"正常血糖时间百分比(3.9-7.8)" : [NSString stringWithFormat:@"%.0lf%%",normalCount / count * 100]}];
-        
+
         //最高值
         [_processingArr addObject:@{@"最高值"    :[NSString stringWithFormat:@"%.2f",maxNum]}];
 
         //最低值
-        
+
         [_processingArr addObject:@{@"最低值"    :[NSString stringWithFormat:@"%.2f",miniNUm]}];
-        
+
         //血糖波动系数
         [_processingArr addObject:@{@"血糖波动系数(SDBG)mmoL/L"        : [NSString stringWithFormat:@"%.2lf",sdbgNum]}];
     }
     
-    _dataDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(normalCount),@"正常血糖数",@(bCount),@"高血糖数",@(lCount),@"低血糖数",@(aver),@"平均血糖",@(sdbgNum),@"血糖波动系数",@(maxNum),@"最高血糖值",@(miniNUm),@"最低血糖值",nil];
+    _dataDic = [NSMutableDictionary dictionaryWithObjectsAndKeys:@(normalCount),@"正常血糖数",@(bCount),@"高血糖数",@(lCount),@"低血糖数",@(isnan(aver)?0:aver),@"平均血糖",@(isnan(sdbgNum)?0:sdbgNum),@"血糖波动系数",@(maxNum),@"最高血糖值",@(miniNUm),@"最低血糖值",nil];
     
     
     [_mainTV reloadData];
@@ -536,7 +533,7 @@
         _pieLegendView = [UIView new];
         
         
-
+        
     }
     return _pieLegendView;
 }
@@ -548,7 +545,7 @@
             return 170;
             break;
         case 1:
-            return 70;
+            return 60;
             break;
         case 2:
             return 280;
@@ -675,6 +672,19 @@
                 break;
             case 1:
             {
+                NSString *averageValueStr    = [NSString stringWithFormat:@"%.1lfmmol/L\n血糖平均值",[_dataDic getFloatValue:@"平均血糖"]];
+                NSString *volatilityValueStr = [NSString stringWithFormat:@"%.2lfmmol/L\n血糖波动系数",[_dataDic getFloatValue:@"血糖波动系数"]];
+                
+                //平均值，波动系数提示文本改变字符颜色
+                NSMutableAttributedString *averageValueMutableStr    = [NSMutableAttributedString setAllText:averageValueStr andSpcifiStr:@"血糖平均值" withColor:RGB(153,153,153) specifiStrFont:GL_FONT(14)];
+                NSMutableAttributedString *volatilityValueMutableStr = [NSMutableAttributedString setAllText:volatilityValueStr andSpcifiStr:@"血糖波动系数" withColor:RGB(153, 153, 153) specifiStrFont:GL_FONT(14)];
+                
+                //设置行间距
+                NSMutableParagraphStyle *warnParagraph = [[NSMutableParagraphStyle alloc] init];
+                warnParagraph.lineSpacing = 1;
+                [averageValueMutableStr addAttribute:NSParagraphStyleAttributeName value:warnParagraph range:NSMakeRange(0, averageValueMutableStr.length)];
+                [volatilityValueMutableStr addAttribute:NSParagraphStyleAttributeName value:warnParagraph range:NSMakeRange(0, volatilityValueMutableStr.length)];
+                
                 for (NSInteger i = 0;i < 2;i++) {
                     UIView *line = [UIView new];
                     UILabel *lbl = [UILabel new];
@@ -682,13 +692,13 @@
                     [cell.contentView addSubview:line];
                     [cell.contentView addSubview:lbl];
                     
-                    line.backgroundColor = TCOL_LINE;
+                    line.backgroundColor = TCOL_MAIN;
                     
                     lbl.font             = GL_FONT(17);
-                    lbl.textColor        = TCOL_NORMALETEXT;
+                    lbl.textColor        = TCOL_MAIN;
                     lbl.numberOfLines    = 2;
+                    lbl.attributedText   = @[averageValueMutableStr,volatilityValueMutableStr][i];
                     lbl.textAlignment    = NSTextAlignmentCenter;
-                    lbl.text             = @[[NSString stringWithFormat:@"血糖平均值 %.1lfmmol/L",[_dataDic getFloatValue:@"平均血糖"]],[NSString stringWithFormat:@"血糖波动系数 %.2lfmmol/L",[_dataDic getFloatValue:@"血糖波动系数"]]][i];
                     
                     [line mas_makeConstraints:^(MASConstraintMaker *make) {
                         if (!i) {
@@ -701,7 +711,7 @@
                     }];
                     
                     [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
-                        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH/2 - 15, 70));
+                        make.width.mas_equalTo(SCREEN_WIDTH/2);
                         make.centerY.equalTo(cell.contentView);
                         make.left.equalTo(cell.contentView).offset(SCREEN_WIDTH/2 * i);
                     }];
@@ -721,19 +731,21 @@
             case 2:
             {
                 for (NSInteger i = 0;i < 2;i++) {
-                    UUChart *barChart = [[UUChart alloc]initWithFrame:CGRectMake(i * SCREEN_WIDTH/2, 30, SCREEN_WIDTH/2, 220) dataSource:self style:UUChartStyleBar];
+                    UUChart *barChart = [[UUChart alloc]initWithFrame:CGRectMake(i * SCREEN_WIDTH/2, 30 + 18, SCREEN_WIDTH/2, 220 - 18) dataSource:self style:UUChartStyleBar];
                     barChart.tag = 90 + i;
                     [barChart showInView:cell.contentView];
                     
-                    UILabel *titleLbl  = [UILabel new];
+                    UILabel *titleLbl      = [UILabel new];
                     [cell.contentView addSubview:titleLbl];
-                    titleLbl.font      = GL_FONT(15);
-                    titleLbl.textColor = TCOL_SUBHEADTEXT;
-                    titleLbl.text      = @[@"参比血糖误差",@"最低最高值(mmol/L)"][i];
+                    titleLbl.font          = GL_FONT(14);
+                    titleLbl.textColor     = TCOL_SUBHEADTEXT;
+                    titleLbl.text          = @[@"参比血糖误差",@"最低最高值(mmol/L)"][i];
+                    titleLbl.textAlignment = NSTextAlignmentCenter;
                     
                     [titleLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-                        make.top.equalTo(cell.contentView).offset(10);
-                        make.left.equalTo(cell.contentView).offset(13 + (SCREEN_WIDTH/2 * i));
+                        make.top.equalTo(cell.contentView).offset(16);
+                        make.left.equalTo(cell.contentView).offset(SCREEN_WIDTH/2 * i);
+                        make.width.mas_equalTo(SCREEN_WIDTH/2);
                     }];
                 }
                 
@@ -753,7 +765,7 @@
                 break;
         }
     }
-
+    
     
     return cell;
 }
@@ -811,8 +823,8 @@
     UUChart *chat2 = [UUChart new];
     chat2.tag = 91;
     
-   NSArray *arr1 = [self chartConfigAxisYValue:chat1];
-   NSArray *arr2 = [self chartConfigAxisYValue:chat2];
+    NSArray *arr1 = [self chartConfigAxisYValue:chat1];
+    NSArray *arr2 = [self chartConfigAxisYValue:chat2];
     
     NSArray *tmpArr = [NSArray arrayWithObjects:arr1[0][0],arr1[1][0],arr2[0][0],arr2[1][0],nil];
     
@@ -834,11 +846,32 @@
 
 - (void)dayBtnClick:(UIButton *)sender
 {
-    if (sender.width != 70.5) {
-        [_tvHeaderSV setContentOffset:CGPointMake(sender.x - 13 - 20.5 - 5, 0) animated:false];
-        _selBtnStr = sender.titleLabel.text;
-        [self changeTableviewData];
+    for (UIView *view in self.tvHeader.subviews) {
+        if ([view isKindOfClass:[GLButton class]]) {
+            //日期按钮
+            GLButton *btn = (GLButton *)view;
+            btn.selected  = false;
+            btn.borderColor = RGB(204, 204, 204);
+            btn.borderWidth = 1;
+            
+            //星期标签
+            UILabel *lbl = [UILabel new];
+            lbl = [self.view viewWithTag:300 + btn.tag - 30];
+            lbl.textColor = TCOL_NORMALETEXT;
+        }
     }
+    
+    __block UILabel *selectLbl = [UILabel new];
+    [UIView animateWithDuration:0.3f animations:^{
+        sender.selected     = true;
+        sender.borderWidth  = 3;
+        sender.borderColor  = RGB(9, 170, 129);
+        selectLbl           = [self.view viewWithTag:300 + sender.tag - 30];
+        selectLbl.textColor = TCOL_MAIN;
+    }];
+    
+    _selBtnStr = sender.titleLabel.text;
+    [self changeTableviewData];
 }
 
 - (void)didReceiveMemoryWarning {
