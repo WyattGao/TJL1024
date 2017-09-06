@@ -23,10 +23,10 @@
 {
     self = [super init];
     if (self) {
-        [self createUI];
         self.dataSource     = self;
         self.delegate       = self;
         self.separatorStyle = UITableViewCellSeparatorStyleNone;
+        [self createUI];
     }
     return self;
 }

@@ -53,7 +53,9 @@
 
 - (void)changeHintLblSatuts:(GLRingTimeHintLabelStatus)status WithHour:(NSInteger)hour WithAbnormalCount:(NSInteger)abnormalCount
 {
-    NSInteger lastHour = hour == 0 ? 23 : (hour - 1);
+    NSInteger nextHour = hour == 23 ? 0 : (hour + 1);
+    
+    NSString *selectHourStr = [[@(hour) stringValue] isEqualToString:[[NSDate date] toString:@"H"]] ? @"现在" : [NSString stringWithFormat:@"%ld点之间",nextHour];
     
     switch (status) {
         case GLRingTimeHintLabelPolarizationStatus:
@@ -64,12 +66,12 @@
         case GLRingTimeHintLabelNormal:
             self.hintLbl.font      = GL_FONT(18);
             self.hintLbl.textColor = TCOL_MAIN;
-            self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到现在\n您的血糖共出现0次异常",lastHour];
+            self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到%@\n您的血糖共出现\n0次异常",hour,selectHourStr];
             break;
         case GLRingTimeHintLabelAbNormal:
             self.hintLbl.font      = GL_FONT(18);
             self.hintLbl.textColor = TCOL_GLUCOSEHEIGHT;
-            self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到现在\n您的血糖共出现\n%ld次异常",lastHour,abnormalCount];
+            self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到%@\n您的血糖共出现\n%ld次异常",hour,selectHourStr,abnormalCount];
             break;
         default:
             break;
@@ -119,7 +121,7 @@
 //根据时间刷新闪烁按钮的状态
 - (void)refreshTwinklingBtn
 {
-//    if (ISBINDING) {
+    //    if (ISBINDING) {
     if (![self.nowHour isEqualToString:[[NSDate date] toString:@"H"]]) {
         self.nowHour = [[NSDate date] toString:@"H"];
         GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
@@ -134,9 +136,11 @@
         if (ISBINDING) {
             [hourBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
             [hourBtn setUserInteractionEnabled:true];
+            //刷新按钮状态
+            [self refreshAllTimebuttonWarningState];
         }
     }
-//    }
+    //    }
 }
 
 //为小时按钮生成呼吸效果
@@ -194,22 +198,52 @@
         //显示预警信息
         [self setStatus:GLRingTimeCheckedStatus];
         
-        NSArray *bloodValueArr = [GLCache readCacheArrWithName:SamBloodValueArr];
-        NSInteger count = 0;
-        for (NSDictionary *valueDic in bloodValueArr) {
-            NSString *hour = [[[valueDic getStringValue:@"collectedtime"] toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"HH"];
-            CGFloat value = [valueDic getFloatValue:@"value"];
-            if ([hour isEqualToString:sender.text] && value > 0 && (value <= [GL_USERDEFAULTS getFloatValue:SamTargetLow] ||
-                                                                    value >= [GL_USERDEFAULTS getFloatValue:SamTargetHeight])) {
-                count ++;
-            }
-        }
+//        NSArray *bloodValueArr = [GLCache readCacheArrWithName:SamBloodValueArr];
+//        NSInteger count = 0;
+//        for (NSDictionary *valueDic in bloodValueArr) {
+//            NSString *hour = [[[valueDic getStringValue:@"collectedtime"] toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"HH"];
+//            CGFloat value = [valueDic getFloatValue:@"value"];
+//            if ([hour isEqualToString:sender.text] && value > 0 && (value <= [GL_USERDEFAULTS getFloatValue:SamTargetLow] ||
+//                                                                    value >= [GL_USERDEFAULTS getFloatValue:SamTargetHeight])) {
+//                count ++;
+//            }
+//        }
         
-        [self changeHintLblSatuts:count == 0 ? GLRingTimeHintLabelNormal : GLRingTimeHintLabelAbNormal WithHour:[sender.text integerValue] WithAbnormalCount:count];
-        
+        NSInteger count = [self.warningDic getIntegerValue:sender.text];
+
+        [self changeHintLblSatuts:count ?  GLRingTimeHintLabelAbNormal : GLRingTimeHintLabelNormal WithHour:[sender.text integerValue] WithAbnormalCount:count];
+
     } else {
         //取消显示预警信息
         [self setStatus:GLRingTimeConnectingStatus];
+    }
+}
+
+- (void)refreshAllTimebuttonWarningState
+{
+    for (NSInteger i = 0; i <= 24; i++) {
+        [self.warningDic setValue:@"0" forKey:[@(i) stringValue]];
+    }
+
+    NSArray *bloodValueArr = [GLCache readCacheArrWithName:SamBloodValueArr];
+    for (NSDictionary *valueDic in bloodValueArr) {
+        NSDate *date   = [[valueDic getStringValue:@"collectedtime"] toDateDefault];
+        //取同一天的数据
+        if ([[date toString:@"dd"] isEqualToString:[[NSDate date] toString:@"dd"]]) {
+            NSString *hour = [date toString:@"H"];
+            CGFloat value  = [valueDic getFloatValue:@"value"];
+            //保存每一个小时的异常数据
+            if (value > 0 && (value <= [GL_USERDEFAULTS getFloatValue:SamTargetLow] || value >= [GL_USERDEFAULTS getFloatValue:SamTargetHeight])) {
+                GLButton *timeBtn = [self viewWithTag:30 + ([hour integerValue] == 0 ? 24 : [hour integerValue])];
+                //如果警告按钮不是红色则改为红色
+                if (!CGColorEqualToColor(timeBtn.nomBackGroundColor.CGColor, TCOL_RINGTIMEWAR.CGColor)) {
+                    [timeBtn setBackgroundColor:TCOL_RINGTIMEWAR forState:UIControlStateNormal];
+                }
+                NSInteger count = [[self.warningDic objectForKey:hour] integerValue];
+                count += 1;
+                [self.warningDic setValue:[@(count) stringValue] forKey:hour];
+            }
+        }
     }
 }
 
@@ -247,14 +281,14 @@
     }];
     
     [self.helpBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.size.mas_equalTo(CGSizeMake(20, 20));
-        make.top.equalTo(ws).offset(14);
-        make.right.equalTo(ws.mas_right).offset(-34);
+        make.size.mas_equalTo(CGSizeMake(30, 30));
+        make.top.equalTo(ws).offset(9);
+        make.right.equalTo(ws.mas_right).offset(-29);
     }];
     
     NSDate *binDingTimeDate1 = [[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *binDingTimeDate2 = [[binDingTimeDate1 toString:@"yyyy-MM-dd HH:00:00"] toDate:@"yyyy-MM-dd HH:mm:ss"];
-
+    
     float dist = 104;//半径
     for (int i= 1; i<= 24;i++) {
         float angle = degreesToRadians((360 / 24) * i);
@@ -281,7 +315,7 @@
         
         
         NSDate *btnHourTime = [[[NSDate date] toString:[NSString stringWithFormat:@"yyyy-MM-dd %@:00:00",btn.text]] toDate:@"yyyy-MM-dd HH:mm:ss"];
-    
+        
         //按钮显示时间与绑定时间的时差
         NSTimeInterval bingdinTimeBetween = [btnHourTime timeIntervalSinceDate:binDingTimeDate2];
         //按钮显示时间与当前时间的时差
@@ -293,7 +327,7 @@
             [btn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
             btn.userInteractionEnabled = false;
         }
-
+        
         [btn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         
         [btn addTarget:self action:@selector(timeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -303,6 +337,8 @@
         
         [self addSubview:btn];
     }
+    
+    [self refreshAllTimebuttonWarningState];
     
     [self addSubview:self.tmpTimeBtn];
     
@@ -402,6 +438,17 @@
         [_helpBtn setImage:GL_IMAGE(@"帮助-使用说明") forState:UIControlStateNormal];
     }
     return _helpBtn;
+}
+
+- (NSMutableDictionary *)warningDic
+{
+    if (!_warningDic) {
+        _warningDic = [NSMutableDictionary dictionary];
+        for (NSInteger i = 0; i <= 24; i++) {
+            [_warningDic setValue:@"0" forKey:[@(i) stringValue]];
+        }
+    }
+    return _warningDic;
 }
 
 @end
