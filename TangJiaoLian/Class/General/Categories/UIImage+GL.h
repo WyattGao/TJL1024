@@ -20,4 +20,12 @@
  */
 + (UIImage *)compressImage:(UIImage *)image toByte:(NSUInteger)maxLength;
 
+/**
+ * @brief 通过颜色值获取一个纯色图片
+ * @param color 颜色值
+ * @param size 尺寸
+ */
++ (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
+
+
 @end

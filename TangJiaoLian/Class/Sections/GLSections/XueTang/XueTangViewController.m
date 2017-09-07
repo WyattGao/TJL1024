@@ -14,7 +14,6 @@
 #import "sanbg.h"
 #import "LoginViewController.h"
 #import "MBProgressHUD+Add.h"
-#import "GLRecordInputPopUpView.h"
 #import "XueTangTargerViewController.h"
 #import "STDataAnalysisViewController.h"
 #import "STSportController.h"
@@ -23,6 +22,7 @@
 #import "WearRecordViewController.h"
 #import "RunChartViewController.h"
 #import "RingTimeHelpViewController.h"
+#import "SlideRuleView.h"
 
 typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     ///开始佩戴记录
@@ -45,7 +45,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 ///存放参比血糖的数组
 @property (nonatomic,strong) NSMutableArray *referenceArr;
 
-@property (nonatomic,strong) GLRecordInputPopUpView *popView;
+@property (nonatomic,strong) SlideRuleView *slideRuleView;/**< 血糖滑尺 */
 
 @property (nonatomic,strong) XueTangTargerViewController *targetVC;
 
@@ -220,6 +220,11 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     //刷新头部View的连接状态
     [self.xueTangView.shiShiView reloadViewbyBinDingState];
     
+    //初始化饮食用药胰岛素运动记录的时间
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordInsulinTime];
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordMedicinalTime];
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordDietTime];
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordSportsTime];
 }
 
 #pragma mark - 处理连接设备的各种回调
@@ -868,6 +873,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     [ws.xueTangView.ringView setStatus:GLRingTimePolarizationStatus];
                     GL_DisLog(@"已上传开始佩戴记录");
                     
+                    //刷新纪录按钮的状态
+                    [ws.xueTangView.recordView changeDisplayStatus];
+                    
                     //修改标题提示
                     [self setNavTitle:@"动态血糖（已连接）"];
                 } else {
@@ -1196,7 +1204,12 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             GL_DISPATCH_MAIN_QUEUE(^{
                 ws.xueTangView.userInteractionEnabled = true;
                 [JHSysAlertUtil presentAlertViewWithTitle:@"极化完成" message:@"请输入参比血糖" confirmTitle:@"确定" handler:^{
-                    [ws.popView show];
+                    CGFloat lastReferenceValue = 50.0f;
+                    NSArray *referenceArr = [NSMutableArray arrayWithArray:[GLCache readCacheArrWithName:SamReferenceArr]];
+                    if (referenceArr.count) {
+                        lastReferenceValue = [[referenceArr lastObject] getFloatValue:@"value"] * 10.0f;
+                    }
+                    [ws.slideRuleView showWithCurrentValue:50.0f];
                 }];
             });
         };
@@ -1289,22 +1302,90 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 
 #pragma mark - 记录按钮点击
         _xueTangView.recordView.recordViewClick = ^(GLRecordType type){
+            NSString *nowTime = [GLTools getNowTime];
             switch (type) {
                 case GLRecordBloodType: //记录参比血糖
-                    [ws.popView show];
+                {
+                    CGFloat lastReferenceValue = 50.0f;
+                    NSArray *referenceArr = [NSMutableArray arrayWithArray:[GLCache readCacheArrWithName:SamReferenceArr]];
+                    if (referenceArr.count) {
+                        lastReferenceValue = [[referenceArr lastObject] getFloatValue:@"value"] * 10.0f;
+                    }
+                    [ws.slideRuleView showWithCurrentValue:50.0f];
+                }
                     break;
                 case GLRecordFoodType: //饮食
                 {
+                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordDietTime] toDateDefault]] >= 10) {
+                        NSDictionary *postDic = @{
+                                                  FUNCNAME : @"saveBloodDiet",
+                                                  INFIELD  : @{
+                                                          @"DEVICE" : @"1"
+                                                          },
+                                                  INTABLE  : @{
+                                                          @"ID"           : @"",
+                                                          @"ACCOUNT"      : USER_ACCOUNT,
+                                                          @"DIETTIME"     : nowTime,
+                                                          @"DIETTYPE"     : @"早餐"
+                                                          }
+                                                  };
+                        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+                            if (GETTAG) {
+                                if (GETRETVAL) {
+                                    //记录饮食成功
+                                    [ws getRecotdDataWithType:GLRecordFoodType];
+                                    [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
+                                    [GL_USERDEFAULTS setValue:nowTime forKey:SamRecordDietTime];
+                                }
+                            }
+                        } failure:^(GLRequest *request, NSError *error) {
+                            GL_AFFAil;
+                        }];
+                    } else {
+                        //提示10分钟内只能记录一次
+                        [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnTimings WithType:type];
+                    }
+                    /*
                     STDietRecordViewController *dietVC = [STDietRecordViewController new];
                     [ws pushWithController:dietVC];
                     dietVC.refreshDietRecord = ^(){
                         [ws getRecotdDataWithType:GLRecordFoodType];
                         [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
                     };
+                     */
                 }
                     break;
                 case GLRecordInsulin:  //胰岛素
                 {
+                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordInsulinTime] toDateDefault]] >= 10) {
+                        NSDictionary *postDic = @{
+                                                  FUNCNAME : @"saveBloodMedication",
+                                                  INFIELD  : @{
+                                                          @"DEVICE" : @"1"
+                                                          },
+                                                  INTABLE : @{
+                                                          @"ACCOUNT" : USER_ACCOUNT,
+                                                          @"MEDICATIONTIME" : nowTime,
+                                                          @"DETAIL" : @[@{@"NAME":@"",
+                                                                          @"DOSE":@"",
+                                                                          @"USAGE":@"4"}]
+                                                          }
+                                                  };
+                        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+                            if (GETTAG) {
+                                if (GETRETVAL) {
+                                    [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
+                                    [GL_USERDEFAULTS setValue:nowTime forKey:SamRecordInsulinTime];
+                                }
+                            }
+                        } failure:^(GLRequest *request, NSError *error) {
+                            GL_AFFAil;
+                        }];
+                    } else {
+                        //提示10分钟内只能记录一次
+                        [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnTimings WithType:type];
+                    }
+                    /*
                     STMedicationController *medicatVC = [STMedicationController new];
                     medicatVC.isYiDaoSu = true;
                     medicatVC.cellNum = 3;
@@ -1314,10 +1395,41 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                         [ws getRecotdDataWithType:GLRecordInsulin];
                         [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
                     };
+                     */
                 }
                     break;
                 case GLRecordRrugs: //口服药
                 {
+                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordMedicinalTime] toDateDefault]] >= 10) {
+                        NSDictionary *postDic = @{
+                                                  FUNCNAME : @"saveBloodMedication",
+                                                  INFIELD  : @{
+                                                          @"DEVICE" : @"1"
+                                                          },
+                                                  INTABLE : @{
+                                                          @"ACCOUNT" : USER_ACCOUNT,
+                                                          @"MEDICATIONTIME" : nowTime,
+                                                          @"DETAIL" : @[@{@"NAME":@"",
+                                                                          @"DOSE":@"",
+                                                                          @"USAGE":@"1"}]
+                                                          }
+                                                  };
+                        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+                            if (GETTAG) {
+                                if (GETRETVAL) {
+                                    [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
+                                    [GL_USERDEFAULTS setValue:nowTime forKey:SamRecordMedicinalTime];
+                                }
+                            }
+                        } failure:^(GLRequest *request, NSError *error) {
+                            GL_AFFAil;
+                        }];
+                    } else {
+                        //提示10分钟内只能记录一次
+                        [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnTimings WithType:type];
+                    }
+
+                    /*
                     STMedicationController *medicatVC = [STMedicationController new];
                     medicatVC.isYiDaoSu = false;
                     medicatVC.cellNum    = 3;
@@ -1327,16 +1439,48 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                         [ws getRecotdDataWithType:GLRecordRrugs];
                         [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
                     };
+                     */
                 }
                     break;
                 case GLRecordSport: //运动
                 {
+                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordSportsTime] toDateDefault]] >= 10) {
+                        NSDictionary *postDic = @{
+                                                  FUNCNAME : @"saveBloodMotion",
+                                                  @"InField":@{
+                                                          @"DEVICE":@"1",		//0:android 1:ios
+                                                          @"ID":@"",		//运动id
+                                                          @"ACCOUNT":USER_ACCOUNT,	//用户账号
+                                                          @"MOTIONTIME":nowTime,	//运动时间
+                                                          @"MOTIONTYPE":@"计步器"
+                                                          },
+                                                  @"OutField":@[
+                                                          @"RETVAL",
+                                                          @"RETMSG"
+                                                          ]
+                                                  };
+                        [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+                            if (GETTAG) {
+                                if (GETRETVAL) {
+                                    [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
+                                    [GL_USERDEFAULTS setValue:nowTime forKey:SamRecordSportsTime];
+                                }
+                            }
+                        } failure:^(GLRequest *request, NSError *error) {
+                            GL_AFFAil;
+                        }];
+                    } else {
+                        //提示10分钟内只能记录一次
+                        [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnTimings WithType:type];
+                    }
+                    /*
                     STSportController *sportVC = [STSportController new];
                     [ws pushWithController:sportVC];
                     sportVC.refreshSportRecord = ^(){
                         [ws getRecotdDataWithType:GLRecordSport];
                         [ws.xueTangView.recordView realodRecordBtnStatus:GLRecordBtnSuccess WithType:type];
                     };
+                     */
                 }
                     break;
                 case GLRecordTarget:
@@ -1371,18 +1515,16 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     return _xueTangView;
 }
 
-- (GLRecordInputPopUpView *)popView
+- (SlideRuleView *)slideRuleView
 {
-    if (!_popView) {
-        _popView = [[GLRecordInputPopUpView alloc]initWithPopUpViewType:GLPopUpViewBlood];
-        
-        //上传参比血糖
+    if (!_slideRuleView) {
+        _slideRuleView = [SlideRuleView slideRuleViewWithType:GLSlideRuleViewReferenceBloodType];
         WS(ws);
-        [_popView popUpViewSubmit:^(NSDictionary *dic) {
-            [ws upLoadReferGlucose:dic];
+        [_slideRuleView getSlectReferenceValueDic:^(NSDictionary *valueDic) {
+            [ws upLoadReferGlucose:valueDic];
         }];
     }
-    return _popView;
+    return _slideRuleView;
 }
 
 - (XueTangTargerViewController *)targetVC

@@ -134,7 +134,7 @@
         }];
         
         if (ISBINDING) {
-            [hourBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
+            [hourBtn setImage:[UIImage imageWithColor:TCOL_MAIN size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
             [hourBtn setUserInteractionEnabled:true];
             //刷新按钮状态
             [self refreshAllTimebuttonWarningState];
@@ -237,7 +237,7 @@
                 GLButton *timeBtn = [self viewWithTag:30 + ([hour integerValue] == 0 ? 24 : [hour integerValue])];
                 //如果警告按钮不是红色则改为红色
                 if (!CGColorEqualToColor(timeBtn.nomBackGroundColor.CGColor, TCOL_RINGTIMEWAR.CGColor)) {
-                    [timeBtn setBackgroundColor:TCOL_RINGTIMEWAR forState:UIControlStateNormal];
+                    [timeBtn setImage:[UIImage imageWithColor:TCOL_RINGTIMEWAR size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
                 }
                 NSInteger count = [[self.warningDic objectForKey:hour] integerValue];
                 count += 1;
@@ -286,6 +286,7 @@
         make.right.equalTo(ws.mas_right).offset(-29);
     }];
     
+    //绘制环形时间按钮
     NSDate *binDingTimeDate1 = [[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *binDingTimeDate2 = [[binDingTimeDate1 toString:@"yyyy-MM-dd HH:00:00"] toDate:@"yyyy-MM-dd HH:mm:ss"];
     
@@ -296,10 +297,12 @@
         float x = sin(angle) * dist;
         
         GLButton *btn           = [GLButton buttonWithType:UIButtonTypeCustom];
-        btn.width               = 16;
-        btn.height              = 16;
+        [self addSubview:btn];
+        
+        btn.width               = 28;
+        btn.height              = 28;
         btn.tag                 = 30 + i;
-        btn.layer.cornerRadius  = 8;
+        btn.cornerRadius        = btn.width/2;
         btn.layer.masksToBounds = true;
         btn.highlighted         = false;
         [btn.lbl setFont:GL_FONT(8)];
@@ -311,7 +314,8 @@
             [btn setTitle:[@(i) stringValue] forState:UIControlStateNormal];
         }
         
-        [btn setBackgroundColor:TCOL_RINGTIMESEL forState:UIControlStateSelected];
+//        [btn setBackgroundColor:TCOL_RINGTIMESEL forState:UIControlStateSelected];
+        [btn setImage:[UIImage imageWithColor:TCOL_RINGTIMESEL size:CGSizeMake(16, 16)] forState:UIControlStateSelected];
         
         
         NSDate *btnHourTime = [[[NSDate date] toString:[NSString stringWithFormat:@"yyyy-MM-dd %@:00:00",btn.text]] toDate:@"yyyy-MM-dd HH:mm:ss"];
@@ -322,9 +326,9 @@
         NSTimeInterval nowTimeBetween = [btnHourTime timeIntervalSinceDate:[NSDate date]];
         
         if (ISBINDING && bingdinTimeBetween >= 0 && nowTimeBetween <= 0) {
-            [btn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageWithColor:TCOL_MAIN size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
         } else {
-            [btn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
+            [btn setImage:[UIImage imageWithColor:TCOL_RINGTIMENOR size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
             btn.userInteractionEnabled = false;
         }
         
@@ -335,7 +339,13 @@
         CGPoint center = CGPointMake(SCREEN_WIDTH/2 + x,240/2 -  y);
         btn.center     = center;
         
-        [self addSubview:btn];
+        //设置btn的imageview
+        btn.iv.cornerRadius  = 16/2;
+        btn.iv.masksToBounds = true;
+        [btn.iv mas_remakeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(btn);
+            make.size.mas_equalTo(CGSizeMake(16, 16));
+        }];
     }
     
     [self refreshAllTimebuttonWarningState];

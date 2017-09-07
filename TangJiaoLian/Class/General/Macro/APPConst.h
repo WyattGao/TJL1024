@@ -46,6 +46,14 @@
 #define SAMISLOWWARNING @"SAMISLOWWARNING"
 //是否进行过佩戴位置预警
 #define SAMISWEARWARNING @"SAMISWEARWARNING"
+//饮食的记录时间
+#define SamRecordDietTime @"SamRecordDietTime"
+//用药的记录时间
+#define SamRecordMedicinalTime @"SamRecordMedicinalTime"
+//胰岛素的记录时间
+#define SamRecordInsulinTime @"SamRecordInsulinTime"
+//运动的记录时间
+#define SamRecordSportsTime @"SamRecordSportsTime"
 
 
 /**

@@ -95,8 +95,10 @@
         _ringHeaderView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 240)];
         _ringHeaderView.backgroundColor = [UIColor whiteColor];
         
-        UILabel *hintLbl = [UILabel new];
+        UILabel *hintLbl       = [UILabel new];
+        UIImageView *gestureIV = [[UIImageView alloc]initWithImage:GL_IMAGE(@"点击手势")];
         [_ringHeaderView addSubview:hintLbl];
+        [_ringHeaderView addSubview:gestureIV];
         
         hintLbl.text          = @"20点到21点间\n您的血糖共出现\n0次异常";
         hintLbl.textColor     = TCOL_MAIN;
@@ -151,11 +153,19 @@
             btn.center     = center;
             
             [_ringHeaderView addSubview:btn];
+            
+            if (i == 20) {
+                [gestureIV mas_makeConstraints:^(MASConstraintMaker *make) {
+                    make.top.equalTo(btn.mas_bottom).offset(-5);
+                    make.left.equalTo(btn.mas_left).offset(-3.5);
+                }];
+            }
         }
+        
+        [_ringHeaderView bringSubviewToFront:gestureIV];
 
     }
     return _ringHeaderView;
-    
 }
 
 @end

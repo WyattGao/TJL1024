@@ -57,7 +57,6 @@
 {
     self = [super init];
     if (self) {
-        _TYPE = Default;
         [self createUI];
     }
 
@@ -148,7 +147,7 @@
         datePicker.minimumDate        = [NSDate dateWithTimeIntervalSince1970:times];
         return datePicker;
     } else {
-        UIPickerView *datePicker   = [UIPickerView new];                        /**< 日期PickerView */
+        UIPickerView *datePicker   = [UIPickerView new]; /**< 日期PickerView */
         
         [self addSubview:self.backGroundBtn];
         [self addSubview:self.datePickView];
@@ -308,12 +307,16 @@
 {
     WS(ws);
     
-    [UIView animateWithDuration:0.3 animations:^{
-        [ws viewWithTag:25].alpha = 0;
-        [ws viewWithTag:26].y     = SCREEN_HEIGHT;
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-    }];
+    if (self.replaceRemoveWithHidden) {
+        [self setHidden:true];
+    } else {
+        [UIView animateWithDuration:0.3 animations:^{
+            [ws viewWithTag:25].alpha = 0;
+            [ws viewWithTag:26].y     = SCREEN_HEIGHT;
+        } completion:^(BOOL finished) {
+            [self removeFromSuperview];
+        }];
+    }
 }
 
 @end

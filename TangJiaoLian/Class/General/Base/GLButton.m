@@ -210,7 +210,7 @@
 {
     [super setSelected:selected];
     if (selected) {
-        [_iv setImage:_selImage ? _selImage : _image];
+        [_iv setImage:_selImage.size.width != 0 ? _selImage : _image]; //判断SelU
         _lbl.textColor       = _selTextColor ? _selTextColor : _textColor;
         _lbl.text            = _selText ? _selText : _text;
         [super setBackgroundColor:_selBackGroundColor ? _selBackGroundColor : _nomBackGroundColor];

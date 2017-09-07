@@ -15,4 +15,11 @@ typedef void(^RefreshTarget)();
 ///刷新主页面预警值
 @property (nonatomic,copy) RefreshTarget refreshTarget;
 
+//提示标签
+@property (nonatomic,strong) UILabel *hintLbl;
+
+@property (nonatomic,strong) GLTextField *highTargetTF; /**< 高预警值输入框 */
+
+@property (nonatomic,strong) GLTextField *lowTargetTF; /**< 低预警值输入框 */
+
 @end

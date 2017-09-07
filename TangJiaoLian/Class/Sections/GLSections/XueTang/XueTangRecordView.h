@@ -57,4 +57,10 @@ typedef void (^RecordViewClick)(GLRecordType type);
  */
 - (void)realodRecordBtnStatus:(GLRecordBtnStatus)status WithType:(GLRecordType)type;
 
+
+/**
+ 修改按钮的显示状态
+ */
+- (void)changeDisplayStatus;
+
 @end

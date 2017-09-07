@@ -16,12 +16,10 @@
     if (self) {
         [self setBackgroundColor:TCOL_RECORDNORCOLOR forState:UIControlStateNormal];
         [self setBackgroundColor:TCOL_MAIN forState:UIControlStateSelected];
-        [self setFont:GL_FONT(14)];
         [self setTitleColor:TCOL_HOMETEXTCOLOR forState:UIControlStateNormal];
         [self setFont:GL_FONT(14)];
         [self setGraphicLayoutState:PICTOP];
         [self setGraphicLayoutSpacing:7];
-        [self setTitleColor:TCOL_HOMETEXTCOLOR forState:UIControlStateNormal];
         
         [self addSubview:self.successHintView];
         
@@ -38,6 +36,7 @@
 
 - (void)setStatus:(GLRecordBtnStatus)status
 {
+    WS(ws);
     switch (status) {
         case GLRecordBtnSuccess:
         {
@@ -50,6 +49,13 @@
                 make.top.equalTo(ws.hintIV.mas_bottom).offset(5);
                 make.centerX.equalTo(ws.successHintView);
             }];
+            
+            //延时运行
+            double delayInSeconds = 5.0f;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                ws.successHintView.hidden = true;
+            });
         }
             break;
        case GLRecordBtnTimings:
@@ -65,6 +71,13 @@
                 make.center.equalTo(ws.successHintView);
                 make.width.equalTo(ws).offset(-GL_IP6_W_RATIO(13));
             }];
+            
+            //延时运行
+            double delayInSeconds = 5.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                ws.successHintView.hidden = true;
+            });
         }
             break;
         case GLRecordBtnNormal:

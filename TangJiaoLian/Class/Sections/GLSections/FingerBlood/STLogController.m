@@ -42,6 +42,8 @@
 
 @property (nonatomic,strong) NSDate *recordLoadDete;
 
+@property (nonatomic,strong) SlideRuleView *slideRuleView;
+
 @end
 
 @implementation STLogController
@@ -331,8 +333,8 @@
     }];
     btn.selected = true;
     NSInteger  bloodSugarValue = [dicc getDoubleValue:@"VALUE"] * 10;
-    [SlideRuleView showWithCurrentValue:bloodSugarValue > 0 ? bloodSugarValue : 100];
-    [SlideRuleView getValue:^(CGFloat value) {
+    [self.slideRuleView showWithCurrentValue:bloodSugarValue > 0 ? bloodSugarValue : 100];
+    [self.slideRuleView getValue:^(CGFloat value) {
         
         NSString *btnStr = btn.lbl.text;
         [btn setTitle:[NSString stringWithFormat:@"%.1lf",value/10.0f]  forState:UIControlStateNormal];
@@ -379,7 +381,7 @@
         }];
     }];
     
-    [SlideRuleView deleteValue:^{
+    [self.slideRuleView deleteValue:^{
         if ([dicc getStringValue:@"ID"].length) {
             NSDictionary *postDic = @{
                                       FUNCNAME : @"delSamReferGlucose",
@@ -403,6 +405,14 @@
                 }];
         }
     }];
+}
+
+- (SlideRuleView *)slideRuleView
+{
+    if (!_slideRuleView) {
+        _slideRuleView = [SlideRuleView slideRuleViewWithType:GLSlideRuleViewFingerBloodType];
+    }
+    return _slideRuleView;
 }
 
 @end

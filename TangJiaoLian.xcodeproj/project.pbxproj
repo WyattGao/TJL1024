@@ -521,8 +521,8 @@
 		2600D0931F42BEE00038E096 /* STLogView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STLogView.m; sourceTree = "<group>"; };
 		2600D09D1F42C6070038E096 /* Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
 		2600D09E1F42C6070038E096 /* Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
-		2600D0A41F42DE600038E096 /* SlideRuleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideRuleView.h; sourceTree = "<group>"; };
-		2600D0A51F42DE600038E096 /* SlideRuleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SlideRuleView.m; sourceTree = "<group>"; };
+		2600D0A41F42DE600038E096 /* SlideRuleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SlideRuleView.h; path = ../Sections/GLSections/FingerBlood/SlideRuleView.h; sourceTree = "<group>"; };
+		2600D0A51F42DE600038E096 /* SlideRuleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SlideRuleView.m; path = ../Sections/GLSections/FingerBlood/SlideRuleView.m; sourceTree = "<group>"; };
 		2600D0AF1F42E0380038E096 /* TRSDialScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TRSDialScrollView.h; sourceTree = "<group>"; };
 		2600D0B01F42E0380038E096 /* TRSDialScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TRSDialScrollView.m; sourceTree = "<group>"; };
 		2600D0B11F42E0380038E096 /* TRSDialView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TRSDialView.h; sourceTree = "<group>"; };
@@ -1360,8 +1360,6 @@
 				2600D0931F42BEE00038E096 /* STLogView.m */,
 				2600D09D1F42C6070038E096 /* Tools.h */,
 				2600D09E1F42C6070038E096 /* Tools.m */,
-				2600D0A41F42DE600038E096 /* SlideRuleView.h */,
-				2600D0A51F42DE600038E096 /* SlideRuleView.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -2622,6 +2620,8 @@
 		26A233FA1E7CE5FC0042BA09 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				2600D0A41F42DE600038E096 /* SlideRuleView.h */,
+				2600D0A51F42DE600038E096 /* SlideRuleView.m */,
 				26A233FB1E7CE63C0042BA09 /* GLRequest.h */,
 				26A233FC1E7CE63C0042BA09 /* GLRequest.m */,
 				26A307431E7D64D0004A3C2B /* GLAlertController.h */,

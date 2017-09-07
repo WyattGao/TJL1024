@@ -10,9 +10,15 @@
 #import "TRSDialScrollView.h"
 
 typedef void(^GetSelectValue)(CGFloat value);
+typedef void(^GetSlectReferenceValueDic)(NSDictionary *valueDic);
 typedef void(^DeleteValue)();
 
-@interface SlideRuleView : GLView
+typedef NS_ENUM(NSInteger,GLSlideRuleViewType) {
+    GLSlideRuleViewFingerBloodType = 0, /**< 指尖血 */
+    GLSlideRuleViewReferenceBloodType   /**< 参比血糖 */
+};
+
+@interface SlideRuleView : UIView
 
 ///标尺
 @property (nonatomic,strong) TRSDialScrollView *dialScrollView;
@@ -39,14 +45,28 @@ typedef void(^DeleteValue)();
 
 @property (nonatomic,copy) DeleteValue deleteValue;
 
-+ (instancetype)share;
+@property (nonatomic,strong) UIView *mainView; /**< 存放组件的主View */
+
+@property (nonatomic,assign,readonly) GLSlideRuleViewType type;
+
+@property (nonatomic,strong) UILabel *titleLbl; /**< 正上方标题标签 */
+
+@property (nonatomic,strong) GLButton *timeBtn; /**< 时间选择按钮 */
+
+@property (nonatomic,copy) GetSlectReferenceValueDic getSlectReferenceValueDic;
+
 //显示滑尺
-+ (void)showWithCurrentValue:(CGFloat)currentValue;
+- (void)showWithCurrentValue:(CGFloat)currentValue;
 //关闭滑尺
-+ (void)dismiss;
+- (void)dismiss;
 
-+ (void)getValue:(GetSelectValue)selectValue;
+//提交值
+- (void)getValue:(GetSelectValue)selectValue;
 
-+ (void)deleteValue:(DeleteValue)deleteValue;
+- (void)getSlectReferenceValueDic:(GetSlectReferenceValueDic)valueDic;
+
+- (void)deleteValue:(DeleteValue)deleteValue;
+
++ (instancetype)slideRuleViewWithType:(GLSlideRuleViewType)type;
 
 @end

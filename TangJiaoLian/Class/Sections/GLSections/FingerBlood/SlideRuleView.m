@@ -8,49 +8,44 @@
 ///滑尺
 
 #import "SlideRuleView.h"
-
-typedef NS_ENUM(NSInteger,GLSlideBtnType){
-    ///取消按钮
-    GLCancelBtn = 0,
-    ///删除按钮
-    GLDeleteBtn,
-    ///确定按钮
-    GLConfirmBtn
-};
-
+#import "STSelectDateView.h"
 
 SlideRuleView *slideRuleView;
 
+@interface SlideRuleView ()<UIScrollViewDelegate,SelecteDateDelegate>
 
-@interface SlideRuleView ()<UIScrollViewDelegate>
+@property (nonatomic,assign,readwrite) GLSlideRuleViewType type;
+
+@property (nonatomic,strong) GLButton *cancelBtn;/**< 取消按钮 */
+
+@property (nonatomic,strong) GLButton *deleteBtn;/**< 删除按钮 */
+
+@property (nonatomic,strong) GLButton *confirmBtn;/**< 确定按钮 */
+
+@property (nonatomic,strong) STSelectDateView *selectDateView;/**< 时间选择 */
 
 @end
 
 @implementation SlideRuleView
 
+- (void)showWithCurrentValue:(CGFloat)currentValue
+{   
+    self.dialScrollView.currentValue = currentValue;
 
-+ (void)showWithCurrentValue:(CGFloat)currentValue
-{
-    slideRuleView                             = [SlideRuleView share];
-    slideRuleView.dialScrollView.currentValue = currentValue;
-
-    if (![slideRuleView superview]) {
-        slideRuleView.frame = CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 240);
-        [GL_KEYWINDOW addSubview:slideRuleView];
-        
-        [UIView animateWithDuration:0.3f animations:^{
-            slideRuleView.y = SCREEN_HEIGHT - 240;
-        }];
-    }
+    [GL_KEYWINDOW addSubview:self];
+    [UIView animateWithDuration:0.3f animations:^{
+        self.backgroundColor = RGBA(0, 0, 0, 0.3f);
+        self.mainView.y      = SCREEN_HEIGHT - 240;
+    }];
 }
 
-+ (void)dismiss
+- (void)dismiss
 {
-    slideRuleView = [SlideRuleView share];
     [UIView animateWithDuration:0.3f animations:^{
-        slideRuleView.y = SCREEN_HEIGHT;
+        self.backgroundColor = RGBA(0, 0, 0, 0.0f);
+        self.mainView.y      = SCREEN_HEIGHT;
     } completion:^(BOOL finished) {
-        [slideRuleView removeFromSuperview];
+        [self removeFromSuperview];
     }];
 }
 
@@ -68,61 +63,74 @@ SlideRuleView *slideRuleView;
     _valueLbl.attributedText                      = valueMutableString;
 }
 
-- (void)btnClick:(UIButton *)sender
+#pragma mark - 点击事件
+//提交按钮点击事件
+- (void)confirmButtonClick:(GLButton *)sender
 {
-    switch (sender.tag - 10) {
-        case GLCancelBtn:
-            
-            break;
-        case GLDeleteBtn:
-            if (slideRuleView.deleteValue) {
-                slideRuleView.deleteValue();
-            }
-            break;
-        case GLConfirmBtn:
-            if (slideRuleView.selectValue) {
-                slideRuleView.selectValue(_dialScrollView.currentValue);
-            }
-            break;
-        default:
-            break;
+    if (self.type == GLSlideRuleViewFingerBloodType) {
+        NSMutableDictionary *valueDic = [NSMutableDictionary dictionary];
+        [valueDic setValue:[NSString stringWithFormat:@"%.1lf",self.dialScrollView.currentValue/10.0f] forKey:@"value"];
+        [valueDic setValue:[self.timeBtn.lbl.text stringByAppendingString:@":00"] forKey:@"collectedtime"];
+        
+        if (self.getSlectReferenceValueDic) {
+            self.getSlectReferenceValueDic(valueDic);
+        }
+    } else {
+        if (self.selectValue) {
+            self.selectValue(_dialScrollView.currentValue);
+        }
     }
-    [SlideRuleView dismiss];
 }
 
-+ (void)getValue:(GetSelectValue)selectValue
+//删除按钮点击事件
+- (void)deleteButtionClick:(UIButton *)sender
 {
-    slideRuleView = [SlideRuleView share];
-    slideRuleView.selectValue = selectValue;
+    if (self.deleteValue) {
+        self.deleteValue();
+    }
+    
+    [self dismiss];
 }
 
-+ (void)deleteValue:(DeleteValue)deleteValue
+- (void)backgroundViewClick:(UIGestureRecognizer *)gesture
 {
-    slideRuleView = [SlideRuleView share];
-    slideRuleView.deleteValue = deleteValue;
+    [self dismiss];
 }
 
 - (void)changeCurrentValueClick:(GLButton *)sender
 {
-    slideRuleView = [SlideRuleView share];
     if (sender == self.addBtn) {
-        [SlideRuleView showWithCurrentValue:self.dialScrollView.currentValue + 1];
+        [self showWithCurrentValue:self.dialScrollView.currentValue + 1];
     } else {
-        [SlideRuleView showWithCurrentValue:self.dialScrollView.currentValue - 1];
+        [self showWithCurrentValue:self.dialScrollView.currentValue - 1];
     }
 }
 
-
-
-+ (instancetype)share
+- (void)timeBtnClick:(GLButton *)sender
 {
-    @synchronized (self) {
-        if (!slideRuleView) {
-            slideRuleView = [SlideRuleView new];
-        }
-    }
-    
-    return slideRuleView;
+    self.selectDateView.hidden = false;
+}
+
+#pragma mark - block回调事件
+- (void)getValue:(GetSelectValue)selectValue
+{
+    self.selectValue = selectValue;
+}
+
+- (void)deleteValue:(DeleteValue)deleteValue
+{
+    self.deleteValue = deleteValue;
+}
+
+- (void)getSlectReferenceValueDic:(GetSlectReferenceValueDic)valueDic
+{
+    self.getSlectReferenceValueDic = valueDic;
+}
+
+#pragma mark - STSelectDateViewDelegate
+- (void)getSelecteDataWithDate:(NSDate *)date
+{
+    _timeBtn.text = [date toString:@"yyyy-MM-dd HH:mm"];
 }
 
 #pragma mark - ScrollViewDelegate
@@ -133,21 +141,41 @@ SlideRuleView *slideRuleView;
 
 
 #pragma mark - createUI
++ (instancetype)slideRuleViewWithType:(GLSlideRuleViewType)type
+{
+    slideRuleView = [SlideRuleView new];
+    if (slideRuleView) {
+        slideRuleView.type = type;
+        [slideRuleView createUI];
+    }
+    return slideRuleView;
+}
+
 - (void)createUI
 {
+    self.frame           = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    self.backgroundColor = RGBA(0, 0, 0, 0.0f);
     
-    self.backgroundColor    = RGB(247, 247, 247);
-    self.layer.shadowColor  = RGB(0, 0, 0).CGColor;
-    self.layer.shadowOffset = CGSizeMake(0, -3);
+    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(backgroundViewClick:)];
+    [self addGestureRecognizer:gesture];
     
-    [self addSubview:self.dialScrollView];
-    [self addSubview:self.hintLbl];
-    [self addSubview:self.valueLbl];
-    [self addSubview:self.unitLbl];
-    [self addSubview:self.addBtn];
-    [self addSubview:self.deductBtn];
+    [self addSubview:self.mainView];
+    [self.mainView addSubview:self.dialScrollView];
+    [self.mainView addSubview:self.hintLbl];
+    [self.mainView addSubview:self.valueLbl];
+    [self.mainView addSubview:self.unitLbl];
+    [self.mainView addSubview:self.addBtn];
+    [self.mainView addSubview:self.deductBtn];
+    [self.mainView addSubview:self.cancelBtn];
+    [self.mainView addSubview:self.confirmBtn];
     
     WS(ws);
+    
+    [ws.mainView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(ws);
+        make.bottom.equalTo(ws.mas_bottom);
+        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 240));
+    }];
     
     [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(ws);
@@ -156,7 +184,7 @@ SlideRuleView *slideRuleView;
     
     [self.valueLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(ws);
-        make.top.equalTo(ws).offset(69.1);
+        make.top.equalTo(ws.mainView).offset(69.1);
     }];
     
     [self.deductBtn mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -171,34 +199,54 @@ SlideRuleView *slideRuleView;
         make.size.mas_equalTo(CGSizeMake(20 + 30, 20 + 30));
     }];
     
-    for (NSInteger i = 0;i < 3;i++) {
-        GLButton *btn = [GLButton new];
-        [self addSubview:btn];
-        
-        [btn setTitle:@[@"取消",@"删除",@"确定"][i] forState:UIControlStateNormal];
-        [btn setTitleColor:@[RGB(102, 102, 102),RGB(255, 51, 0),RGB(0, 204, 153)][i] forState:UIControlStateNormal];
-        [btn setFont:GL_FONT(14)];
-        [btn setTextAlignment:NSTextAlignmentCenter];
-        [btn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
-        [btn setTag:10 + i];
-        
-        [btn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(ws).offset(9);
-            make.size.mas_equalTo(CGSizeMake(50, 40));
-            switch (i) {
-                case 0:
-                    make.left.equalTo(ws).offset(20);
-                    break;
-                case 1:
-                    make.centerX.equalTo(ws);
-                    break;
-                case 2:
-                    make.right.equalTo(ws.mas_right).offset(-20);
-                    break;
-                default:
-                    break;
-            }
-        }];
+    [self.cancelBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.mainView).offset(9);
+        make.size.mas_equalTo(CGSizeMake(50, 40));
+        make.left.equalTo(ws).offset(20);
+    }];
+    
+    [self.confirmBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.cancelBtn);
+        make.size.equalTo(ws.cancelBtn);
+        make.right.equalTo(ws).offset(-20);
+    }];
+    
+    switch (self.type) {
+        case GLSlideRuleViewFingerBloodType: //指尖血
+        {
+            [self.mainView addSubview:self.deleteBtn]; //添加删除按钮
+            [self.deleteBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.centerX.equalTo(ws.mainView);
+                make.top.equalTo(ws.cancelBtn);
+                make.size.equalTo(ws.cancelBtn);
+            }];
+            break;
+        }
+        case GLSlideRuleViewReferenceBloodType: //参比血糖
+        {
+            [self.mainView addSubview:self.titleLbl]; //添加标题
+            [self.mainView addSubview:self.timeBtn];
+            [self addSubview:self.selectDateView];
+            
+            [self.titleLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(ws.mainView).offset(26);
+                make.centerX.equalTo(ws.mainView);
+            }];
+            [self.timeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(ws.titleLbl.mas_bottom).offset(0);
+                make.size.mas_equalTo(CGSizeMake(150, 30));
+                make.centerX.equalTo(ws);
+            }];
+            [self.selectDateView mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.bottom.equalTo(ws.mainView.mas_top).offset(-10);
+                make.centerX.equalTo(ws);
+                make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT));
+            }];
+
+            break;
+        }
+        default:
+            break;
     }
     
     [self changeVlaueString];
@@ -304,5 +352,91 @@ SlideRuleView *slideRuleView;
     }
     return _addBtn;
 }
+
+- (UIView *)mainView
+{
+    if (!_mainView) {
+        _mainView                        = [[UIView alloc]initWithFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, 240)];
+        _mainView.backgroundColor        = [UIColor whiteColor];
+        _mainView.backgroundColor        = RGB(247, 247, 247);
+        _mainView.layer.shadowColor      = RGB(0, 0, 0).CGColor;
+        _mainView.layer.shadowOffset     = CGSizeMake(0, -3);
+        _mainView.userInteractionEnabled = true; //防止点击mainview关闭窗口
+    }
+    return _mainView;
+}
+
+- (UILabel *)titleLbl
+{
+    if (!_titleLbl) {
+        _titleLbl               = [UILabel new];
+        _titleLbl.text          = @"参比血糖";
+        _titleLbl.font          = GL_FONT(18);
+        _titleLbl.textColor     = RGB(51, 51, 51);
+        _titleLbl.textAlignment = NSTextAlignmentCenter;
+    }
+    return _titleLbl;
+}
+
+- (GLButton *)cancelBtn
+{
+    if (!_cancelBtn) {
+        _cancelBtn = [GLButton new];
+        _cancelBtn.font = GL_FONT(14);
+        _cancelBtn.text = @"取消";
+        [_cancelBtn setTitleColor:RGB(102, 102, 102) forState:UIControlStateNormal];
+        [_cancelBtn addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _cancelBtn;
+}
+
+- (GLButton *)deleteBtn
+{
+    if (!_deleteBtn) {
+        _deleteBtn           = [GLButton new];
+        _deleteBtn.font      = GL_FONT(14);
+        _deleteBtn.text      = @"删除";
+        [_deleteBtn setTitleColor:RGB(255, 51, 0) forState:UIControlStateNormal];
+        [_deleteBtn addTarget:self action:@selector(deleteButtionClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _deleteBtn;
+}
+
+- (GLButton *)confirmBtn
+{
+    if (!_confirmBtn) {
+        _confirmBtn           = [GLButton new];
+        _confirmBtn.font      = GL_FONT(14);
+        _confirmBtn.text      = @"确定";
+        [_confirmBtn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
+        [_confirmBtn addTarget:self action:@selector(confirmButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _confirmBtn;
+}
+
+- (GLButton *)timeBtn
+{
+    if (!_timeBtn) {
+        _timeBtn           = [GLButton new];
+        _timeBtn.text      = [[NSDate date] toString:@"yyyy-MM-dd HH:mm"];
+        _timeBtn.font      = GL_FONT(14);
+        [_timeBtn setTitleColor:TCOL_RINGTIMEWAR forState:UIControlStateNormal];
+        [_timeBtn addTarget:self action:@selector(timeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _timeBtn;
+}
+
+- (STSelectDateView *)selectDateView
+{
+    if (!_selectDateView) {
+        _selectDateView                         = [[STSelectDateView alloc]initWithType:DateTime];
+        _selectDateView.delegate                = self;
+        _selectDateView.backGroundBtn.hidden    = true;
+        _selectDateView.hidden                  = true;
+        _selectDateView.replaceRemoveWithHidden = true;
+    }
+    return _selectDateView;
+}
+
 
 @end

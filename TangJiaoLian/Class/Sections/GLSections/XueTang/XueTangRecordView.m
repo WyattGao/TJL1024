@@ -98,6 +98,22 @@
         }];
     }
     
+    [self changeDisplayStatus];
+}
+
+//修改按钮的点击状态
+- (void)changeDisplayStatus
+{
+    for (NSInteger i = 0;i < 5;i++) {
+        XueTangRecordBtn *btn = [self viewWithTag:10 + i];
+        if (ISBINDING) {
+            btn.userInteractionEnabled = true;
+            btn.selected               = true;
+        } else {
+            btn.userInteractionEnabled = false;
+            btn.selected               = false;
+        }
+    }
 }
 
 

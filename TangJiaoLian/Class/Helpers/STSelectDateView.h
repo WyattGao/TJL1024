@@ -57,4 +57,6 @@ typedef NS_ENUM(NSInteger) {
 
 @property (nonatomic,strong) UIButton *backGroundBtn;
 
+@property (nonatomic) BOOL replaceRemoveWithHidden;
+
 @end
