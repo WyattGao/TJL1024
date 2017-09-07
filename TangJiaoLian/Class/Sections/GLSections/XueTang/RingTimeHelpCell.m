@@ -49,7 +49,7 @@
         _hintLbl.font          = GL_FONT(14);
         _hintLbl.textColor     = RGB(51, 51, 51);
         _hintLbl.textAlignment = NSTextAlignmentLeft;
-        _hintLbl.numberOfLines = 2;
+        _hintLbl.numberOfLines = 0;
     }
     return _hintLbl;
 }
