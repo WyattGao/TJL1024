@@ -27,4 +27,15 @@
  */
 + (NSAttributedString *)strWithStr:(NSString *)str AndColorArr:(NSArray<UIColor *> *)colorArr  ColorWithIdx:(NSNumber *)idx,...NS_REQUIRES_NIL_TERMINATION;
 
+
+/**
+ 根据颜色和下标返回字符串
+
+ @param str 要修改的字符串
+ @param colorArr 颜色数组
+ @param indexArr 下标数组
+ @return 修改后的字符串
+ */
++ (NSAttributedString *)strWithStr:(NSString *)str AndColorArr:(NSArray<UIColor *> *)colorArr ColorWithIndexArr:(NSArray *)indexArr;
+
 @end

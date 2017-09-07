@@ -20,8 +20,8 @@
     [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(ws.contentView).offset(10);
         make.left.equalTo(ws.pointIV.mas_right).offset(10);
-        make.right.equalTo(ws.contentView.mas_right).offset(-20);
         make.bottom.equalTo(ws.contentView.mas_bottom).offset(-10);
+        make.width.mas_equalTo(SCREEN_WIDTH - 41 - 20);
     }];
     
     [self.pointIV mas_makeConstraints:^(MASConstraintMaker *make) {

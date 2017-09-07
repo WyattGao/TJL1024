@@ -67,6 +67,8 @@ typedef void(^DataAnalysisBtnClick)();
 
 @property (nonatomic,strong) GLButton                  *helpBtn;/**< 帮助按钮 */
 
+@property (nonatomic,strong) NSMutableDictionary       *warningDic;/**< 存放预警信息 */
+
 /**
  根据时间刷新闪烁按钮的状态
  */
