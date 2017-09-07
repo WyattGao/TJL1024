@@ -220,6 +220,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     //刷新头部View的连接状态
     [self.xueTangView.shiShiView reloadViewbyBinDingState];
     
+    //修改记录按钮显示
+    [self.xueTangView.recordView changeDisplayStatus];
     //初始化饮食用药胰岛素运动记录的时间
     [GL_USERDEFAULTS setValue:@"" forKey:SamRecordInsulinTime];
     [GL_USERDEFAULTS setValue:@"" forKey:SamRecordMedicinalTime];
@@ -468,9 +470,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 [SVProgressHUD showWithStatus:@"正在开启监测"];
                 [self getStartMonitor];
             }else{
-                GL_ALERT_S(@"已结束监测");
                 //初始化CGM本地数据
                 [self initCGMData];
+                GL_ALERT_S(@"已结束监测");
             }
         }else{
             NSLog(@"退出设备失败");
@@ -488,6 +490,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             }
             //清除记录
             [self initCGMData];
+            GL_ALERT_S(@"已结束监测");
         }
     }];
 }
@@ -1316,7 +1319,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     break;
                 case GLRecordFoodType: //饮食
                 {
-                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordDietTime] toDateDefault]] >= 10) {
+                    NSString *lastRecordTime = [GL_USERDEFAULTS getStringValue:SamRecordDietTime];
+                    if ([[NSDate date] minutesAfterDate:[lastRecordTime toDateDefault]] >= 10 || !lastRecordTime.length) {
                         NSDictionary *postDic = @{
                                                   FUNCNAME : @"saveBloodDiet",
                                                   INFIELD  : @{
@@ -1326,9 +1330,10 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                                                           @"ID"           : @"",
                                                           @"ACCOUNT"      : USER_ACCOUNT,
                                                           @"DIETTIME"     : nowTime,
-                                                          @"DIETTYPE"     : @"早餐"
+                                                          @"DIETSITUATION": @"饮食"
                                                           }
                                                   };
+                        
                         [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
                             if (GETTAG) {
                                 if (GETRETVAL) {
@@ -1357,7 +1362,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     break;
                 case GLRecordInsulin:  //胰岛素
                 {
-                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordInsulinTime] toDateDefault]] >= 10) {
+                    NSString *lastRecordTime = [GL_USERDEFAULTS getStringValue:SamRecordInsulinTime];
+                    if ([[NSDate date] minutesAfterDate:[lastRecordTime toDateDefault]] >= 10 || !lastRecordTime.length) {
                         NSDictionary *postDic = @{
                                                   FUNCNAME : @"saveBloodMedication",
                                                   INFIELD  : @{
@@ -1400,7 +1406,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     break;
                 case GLRecordRrugs: //口服药
                 {
-                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordMedicinalTime] toDateDefault]] >= 10) {
+                    NSString *lastRecordTime = [GL_USERDEFAULTS getStringValue:SamRecordMedicinalTime];
+                    if ([[NSDate date] minutesAfterDate:[lastRecordTime toDateDefault]] >= 10 || !lastRecordTime.length) {
                         NSDictionary *postDic = @{
                                                   FUNCNAME : @"saveBloodMedication",
                                                   INFIELD  : @{
@@ -1444,7 +1451,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     break;
                 case GLRecordSport: //运动
                 {
-                    if ([[NSDate date] minutesAfterDate:[[GL_USERDEFAULTS getStringValue:SamRecordSportsTime] toDateDefault]] >= 10) {
+                    NSString *lastRecordTime = [GL_USERDEFAULTS getStringValue:SamRecordSportsTime];
+                    if ([[NSDate date] minutesAfterDate:[lastRecordTime toDateDefault]] >= 10 || !lastRecordTime.length) {
                         NSDictionary *postDic = @{
                                                   FUNCNAME : @"saveBloodMotion",
                                                   @"InField":@{

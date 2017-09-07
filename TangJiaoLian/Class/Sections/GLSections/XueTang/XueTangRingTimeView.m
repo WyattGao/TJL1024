@@ -30,7 +30,7 @@
                 
                 for (NSInteger i = 1;i <= 24;i++) {
                     GLButton *timeBtn = [self viewWithTag:30 + i];
-                    [timeBtn setBackgroundColor:TCOL_RINGTIMENOR forState:UIControlStateNormal];
+                    [timeBtn setImage:[UIImage imageWithColor:TCOL_RINGTIMENOR size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
                     [timeBtn setUserInteractionEnabled:false];
                 }
                 break;
@@ -146,21 +146,27 @@
 //为小时按钮生成呼吸效果
 - (void)animateFirstRoundWithHourBtn:(GLButton *)hourBtn
 {
-    hourBtn.alpha = 0.3f;
-    [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        hourBtn.alpha = 1.0f;
-    } completion:^(BOOL finished) {
-        [self animateSecondRoundWithHourBtn:hourBtn];
-    }];
+    WS(ws);
+    GL_DISPATCH_MAIN_QUEUE(^{
+        hourBtn.alpha = 0.3f;
+        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            hourBtn.alpha = 1.0f;
+        } completion:^(BOOL finished) {
+            [ws animateSecondRoundWithHourBtn:hourBtn];
+        }];
+    });
 }
 
 - (void)animateSecondRoundWithHourBtn:(GLButton *)hourBtn
 {
-    [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        hourBtn.alpha = 0.3f;
-    } completion:^(BOOL finished) {
-        [self animateFirstRoundWithHourBtn:hourBtn];
-    }];
+    WS(ws);
+    GL_DISPATCH_MAIN_QUEUE(^{
+        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+            hourBtn.alpha = 0.3f;
+        } completion:^(BOOL finished) {
+            [ws animateFirstRoundWithHourBtn:hourBtn];
+        }];
+    });
 }
 
 /**

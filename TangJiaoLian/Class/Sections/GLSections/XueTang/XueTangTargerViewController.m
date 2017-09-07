@@ -54,6 +54,10 @@
 {
     if (!_hintLbl) {
         _hintLbl = [UILabel new];
+        _hintLbl.text          = @"请录入监测范围，动态血糖超出范围时标记为异常血糖";
+        _hintLbl.font          = GL_FONT(14);
+        _hintLbl.textColor     = RGB(255, 51, 0);
+        _hintLbl.textAlignment = NSTextAlignmentCenter;
     }
     return _hintLbl;
 }

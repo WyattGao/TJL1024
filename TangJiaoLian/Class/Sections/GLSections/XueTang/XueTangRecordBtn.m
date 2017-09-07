@@ -61,7 +61,8 @@
        case GLRecordBtnTimings:
         {
             self.successHintView.hidden = false;
-            self.hintLbl.text = @"10分钟内只需记录一次";
+            self.hintIV.hidden          = true;
+            self.hintLbl.text           = @"10分钟内只需记录一次";
             
             [self.successHintView addSubview:self.hintLbl];
             
@@ -122,6 +123,7 @@
         _hintLbl.textColor     = TCOL_HOMETEXTCOLOR;
         _hintLbl.textAlignment = NSTextAlignmentCenter;
         _hintLbl.text          = @"记录成功";
+        _hintLbl.numberOfLines = 0;
     }
     return _hintLbl;
 }
