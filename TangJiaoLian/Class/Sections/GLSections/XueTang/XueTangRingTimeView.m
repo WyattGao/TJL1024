@@ -296,7 +296,7 @@
     NSDate *binDingTimeDate1 = [[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDate:@"yyyy-MM-dd HH:mm:ss"];
     NSDate *binDingTimeDate2 = [[binDingTimeDate1 toString:@"yyyy-MM-dd HH:00:00"] toDate:@"yyyy-MM-dd HH:mm:ss"];
     
-    float dist = 104;//半径
+    float dist = SCREEN_HEIGHT >= GL_IPHONE_6_PLUS_SCREEN_HEIGHT ? GL_IP6_H_RATIO(104) : 104;//半径
     for (int i= 1; i<= 24;i++) {
         float angle = degreesToRadians((360 / 24) * i);
         float y = cos(angle) * dist;

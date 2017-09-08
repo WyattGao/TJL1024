@@ -552,6 +552,7 @@
         cell.selectionStyle  = UITableViewCellSelectionStyleNone;
     }
     
+    [cell.contentView removeAllChildView];
     switch (indexPath.row) {
         case 0:
         {
@@ -575,20 +576,31 @@
             };
             _pieView.layer.showTitles = ShowTitlesNever;
             
+            CGFloat screenDiffValue = 40;
+            
+            if (SCREEN_WIDTH <= GL_IPHONE_5_SCREEN_WIDTH) {
+                screenDiffValue = 55;
+            } else if(SCREEN_WIDTH == GL_IPHONE_6_SCREEN_WIDTH) {
+                screenDiffValue = 40;
+            } else if(SCREEN_WIDTH == GL_IPHONE_6_PLUS_SCREEN_WIDTH){
+                screenDiffValue = 30;
+            }
+
+            
             UIView *view = [UIView new];
             view.backgroundColor = RGB(255, 255, 255);
-            view.cornerRadius    = (_pieView.width - 40)/2;
+            view.cornerRadius    = (_pieView.width - screenDiffValue)/2;
             [_pieView addSubview:view];
             
             [view mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.size.mas_equalTo(CGSizeMake(_pieView.width - 40, _pieView.width - 40));
+                make.size.mas_equalTo(CGSizeMake(_pieView.width - screenDiffValue, _pieView.width - screenDiffValue));
                 make.centerY.equalTo(_pieView);
                 make.centerX.equalTo(_pieView).offset(-2);
             }];
             
             UILabel *numLbl  = [UILabel new];
             numLbl.text      = [@(count) stringValue];
-            numLbl.font      = GL_FONT_B(30);
+            numLbl.font      = GL_FONT_B(36);
             numLbl.textColor = TCOL_NORMALETEXT;
             [view addSubview:numLbl];
             
@@ -599,12 +611,12 @@
             [view addSubview:tipLbl];
             
             [numLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(view).offset(15);
+                make.centerY.equalTo(view).offset(-10);
                 make.centerX.equalTo(view);
             }];
             
             [tipLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-                make.top.equalTo(numLbl.mas_bottom).offset(5);
+                make.top.equalTo(numLbl.mas_bottom).offset(-5);
                 make.centerX.equalTo(numLbl);
             }];
             

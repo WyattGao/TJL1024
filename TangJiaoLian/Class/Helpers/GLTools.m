@@ -248,12 +248,13 @@ void GL_DisLog(NSString *log){
         
         notification.timeZone = [NSTimeZone defaultTimeZone];
         notification.alertBody = str;
-        if (!sound) {
+        if ([GL_USERDEFAULTS getIntegerValue:SamIsAudio] == 2) {
             notification.soundName = UILocalNotificationDefaultSoundName;
         } else {
             notification.soundName = @"6464.wav";
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"longPush" object:nil];
+        }
+        if ([GL_USERDEFAULTS getIntegerValue:SamIsShake]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"warningPush" object:nil];
         }
         
         [[UIApplication sharedApplication] scheduleLocalNotification:notification];

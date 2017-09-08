@@ -69,12 +69,18 @@
                     GL_ALERT_E(@"暂无佩戴记录");
                 } else {
                     dataArr = [[dataArr reverseObjectEnumerator] allObjects];
+//                    if (ISBINDING) { //插入当前时间
+//                        WearRecordEntity *entity = [WearRecordEntity new];
+//                        entity.starttime = [GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime];
+//                        entity.endtime = [GLTools nowDateString];
+//                        [_mainTV.tbDataSouce addObject:entity];
+//                    }
                     [dataArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-                            WearRecordEntity *enttiy = [[WearRecordEntity alloc]initWithDictionary:obj];
+                            WearRecordEntity *entity = [[WearRecordEntity alloc]initWithDictionary:obj];
                         if (![[obj getStringValue:@"endtime"] length]) {
-                            enttiy.endtime = [GLTools nowDateString];
+                            entity.endtime = [GLTools nowDateString];
                         }
-                            [_mainTV.tbDataSouce addObject:enttiy];
+                            [_mainTV.tbDataSouce addObject:entity];
                     }];
                     
                 }

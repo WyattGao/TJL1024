@@ -72,7 +72,7 @@
     }];
     
     [self.ringView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(ws).offset(50);
+        make.top.equalTo(ws).offset(SCREEN_HEIGHT == GL_IPHONE_6_PLUS_SCREEN_HEIGHT ? GL_IP6_H_RATIO(50) : 50);
         make.centerX.equalTo(ws);
         make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 240));
     }];
@@ -112,7 +112,7 @@
     if (!_connectSwitch) {
         _connectSwitch             = [UISwitch new];
         _connectSwitch.onTintColor = TCOL_MAIN;
-        [_connectSwitch addTarget:self action:@selector(connectSwitchClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_connectSwitch addTarget:self action:@selector(connectSwitchClick:) forControlEvents:UIControlEventValueChanged];
         if (ISBINDING) {
             [_connectSwitch setOn:true];
         }

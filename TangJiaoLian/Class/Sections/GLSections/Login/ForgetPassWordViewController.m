@@ -65,7 +65,7 @@
 
 - (UIView *)getFootView
 {
-    UIView *footView        = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 96.5 + 40)];
+    UIView *footView        = [[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 96.5 + 10)];
     _mainTV.tableFooterView = footView;
     _changePassWordBtn      = [GLButton new];
     [footView addSubview:_changePassWordBtn];
@@ -90,48 +90,48 @@
         [_changePassWordBtn setTitle:@"修改密码" forState:UIControlStateNormal];
     } else {
         [_changePassWordBtn setTitle:@"注册" forState:UIControlStateNormal];
-        _chooseBtn             = [GLButton new];
-        UILabel  *lbl          = [UILabel new];
-        UIButton *agreementBtn = [UIButton new];/**< 阅读协议 */
+//        _chooseBtn             = [GLButton new];
+//        UILabel  *lbl          = [UILabel new];
+//        UIButton *agreementBtn = [UIButton new];/**< 阅读协议 */
         
-        [footView addSubview:_chooseBtn];
-        [footView addSubview:lbl];
-        [footView addSubview:agreementBtn];
+//        [footView addSubview:_chooseBtn];
+//        [footView addSubview:lbl];
+//        [footView addSubview:agreementBtn];
         
-        [_chooseBtn setGraphicLayoutState:PICCENTER];
-        [_chooseBtn setImage:GL_IMAGE(@"复选框-未选中") forState:UIControlStateNormal];
-        [_chooseBtn setImage:GL_IMAGE(@"复选框-选中") forState:UIControlStateSelected];
-        [_chooseBtn addTarget:self action:@selector(termsOfServiceClick:) forControlEvents:UIControlEventTouchUpInside];
+//        [_chooseBtn setGraphicLayoutState:PICCENTER];
+//        [_chooseBtn setImage:GL_IMAGE(@"复选框-未选中") forState:UIControlStateNormal];
+//        [_chooseBtn setImage:GL_IMAGE(@"复选框-选中") forState:UIControlStateSelected];
+//        [_chooseBtn addTarget:self action:@selector(termsOfServiceClick:) forControlEvents:UIControlEventTouchUpInside];
         
-        [lbl setText:@"我已阅读并同意"];
-        [lbl setFont:GL_FONT(12)];
-        [lbl setTextColor:RGB(0, 0, 0)];
+//        [lbl setText:@"我已阅读并同意"];
+//        [lbl setFont:GL_FONT(12)];
+//        [lbl setTextColor:RGB(0, 0, 0)];
+//        
+//        [agreementBtn setTitle:@"用户协议" forState:UIControlStateNormal];
+//        [agreementBtn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
+//        [agreementBtn.titleLabel setFont:GL_FONT(12)];
+//        [agreementBtn addTarget:self action:@selector(readUserAgreement:) forControlEvents:UIControlEventTouchUpInside];
+//        
+//        [agreementBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.centerY.equalTo(lbl);
+//            make.left.equalTo(lbl.mas_right);
+//        }];
         
-        [agreementBtn setTitle:@"用户协议" forState:UIControlStateNormal];
-        [agreementBtn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
-        [agreementBtn.titleLabel setFont:GL_FONT(12)];
-        [agreementBtn addTarget:self action:@selector(readUserAgreement:) forControlEvents:UIControlEventTouchUpInside];
+//        [_chooseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.size.mas_equalTo(CGSizeMake(31, 31));
+//            make.top.equalTo(footView).offset(9.5);
+//            make.left.equalTo(footView).offset(5);
+//        }];
+//        
+//        [_chooseBtn.iv mas_remakeConstraints:^(MASConstraintMaker *make) {
+//            make.size.mas_equalTo(CGSizeMake(12, 12));
+//            make.center.equalTo(_chooseBtn);
+//        }];
         
-        [agreementBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.centerY.equalTo(lbl);
-            make.left.equalTo(lbl.mas_right);
-        }];
-        
-        [_chooseBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(CGSizeMake(31, 31));
-            make.top.equalTo(footView).offset(9.5);
-            make.left.equalTo(footView).offset(5);
-        }];
-        
-        [_chooseBtn.iv mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(CGSizeMake(12, 12));
-            make.center.equalTo(_chooseBtn);
-        }];
-        
-        [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.left.equalTo(_chooseBtn.mas_right).offset(-5);
-            make.centerY.equalTo(_chooseBtn);
-        }];
+//        [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
+//            make.left.equalTo(_chooseBtn.mas_right).offset(-5);
+//            make.centerY.equalTo(_chooseBtn);
+//        }];
     }
     
     return footView;
@@ -210,7 +210,7 @@
     _finishCount = finishCount;
     
     //找回密码填写4项，注册填写5项
-    NSInteger finishNum = _type == ForgetPassWord ? 4 : 5 ;
+    NSInteger finishNum = _type == ForgetPassWord ? 4 : 4 ;
     if (_finishCount == finishNum) {
         _changePassWordBtn.selected = true;
         _changePassWordBtn.userInteractionEnabled = true;
@@ -234,10 +234,10 @@
     UITextField *checkPassWord  = [self.view viewWithTag:803];
     
     if (_type == Register) {
-        if (!_chooseBtn.selected) {
-            GL_ALERT_E(@"须阅读并同意协议");
-            return;
-        }
+//        if (!_chooseBtn.selected) {
+//            GL_ALERT_E(@"须阅读并同意协议");
+//            return;
+//        }
     }
     
     if (!codeTF.text.length) {
@@ -500,7 +500,7 @@
         if (_type == ForgetPassWord) {
             _changePassWordBtn.y = 5;
         } else {
-            _changePassWordBtn.y = 37;
+            _changePassWordBtn.y = 25;
         }
     }];
 }
@@ -508,7 +508,7 @@
 - (void)keyboardWillHideHandler:(CGSize)keyBoardSize
 {
     [UIView animateWithDuration:0.3f animations:^{
-        _changePassWordBtn.y = 95.5;
+        _changePassWordBtn.y = 96.5 + 10 - 40;
     }];
 }
 

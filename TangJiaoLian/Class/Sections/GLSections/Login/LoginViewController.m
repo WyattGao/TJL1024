@@ -59,36 +59,38 @@
 }
 
 - (void)initNav {
-    [self initTemporaryNavWithTitle:@"欢迎加入糖教练" LeftButtonIV:nil RightButtonTtile:nil];
+//    [self initTemporaryNavWithTitle:@"欢迎加入糖教练" LeftButtonIV:nil RightButtonTtile:nil];
 }
 
 - (void)initUI
 {
-    _phoneTF               = [GLTextField new];
-    _passTF                = [GLTextField new];
-    _loginBtn              = [GLButton new];
-    _regBtn                = [GLButton new];
-    UIImageView *logoIV    = [UIImageView new];   /**< 随糖Logo */
-    UIImageView *phoneIV   = [UIImageView new];   /**< 登陆框左侧图标 */
-    UIView      *phoneLine = [UIView new];        /**< 手机号输入框下方横线 */
-    UIImageView *passIV    = [UIImageView new];   /**< 密码框左侧图标 */
-    UIView      *passLine  = [UIView new];        /**< 密码输入框下方横线 */
-    GLButton    *forgetBtn = [GLButton new];      /**< 忘记密码 */
+    _phoneTF                 = [GLTextField new];
+    _passTF                  = [GLTextField new];
+    _loginBtn                = [GLButton new];
+    _regBtn                  = [GLButton new];
+    UIImageView *logoIV      = [UIImageView new];/**< 糖教练Logo */
+    UILabel *phoneLeftLbl     = [UILabel new];/**< 登陆框左侧文字 */
+    UIView      *phoneLine   = [UIView new];/**< 手机号输入框下方横线 */
+    UILabel *passLbl      = [UILabel new];/**< 密码框左侧图标 */
+    UIView      *passLine    = [UIView new];/**< 密码输入框下方横线 */
+    GLButton    *forgetBtn   = [GLButton new];/**< 忘记密码 */
+    UIImageView *backGroudIV = [[UIImageView alloc]initWithImage:GL_IMAGE(@"背景图")];
 
+    [self.view addSubview:backGroudIV];
     [self.view addSubview:_passTF];
     [self.view addSubview:_phoneTF];
     [self.view addSubview:_loginBtn];
     [self.view addSubview:logoIV];
     [self.view addSubview:phoneLine];
     [self.view addSubview:passLine];
-    [self.view addSubview:passIV];
-    [self.view addSubview:phoneIV];
+    [self.view addSubview:passLbl];
+    [self.view addSubview:phoneLeftLbl];
     [self.view addSubview:forgetBtn];
     [self.view addSubview:_regBtn];
     
     self.view.backgroundColor   = RGB(255, 255, 255);
     
-    [logoIV setImage:GL_IMAGE(@"dl_Logo")];
+    [logoIV setImage:GL_IMAGE(@"登陆logo")];
     
     UILongPressGestureRecognizer *logoGest = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(logoIVClick:)];
     logoGest.minimumPressDuration = 2.0f;
@@ -97,42 +99,53 @@
     
     _phoneTF.keyboardType        = UIKeyboardTypeNumberPad;
     _phoneTF.returnKeyType       = UIReturnKeyNext;
-    _phoneTF.placeholder         = @"手机号";
+    _phoneTF.placeholder         = @"请输入手机号码";
     _phoneTF.delegate            = self;
-    _phoneTF.placeholderColor    = RGB(102, 102, 102);
+    _phoneTF.placeholderColor    = RGB(255, 255, 255);
     _phoneTF.clearButtonMode     = UITextFieldViewModeWhileEditing;
     _phoneTF.text                = [GL_USERDEFAULTS getStringValue:@"PHONE"];
     _phoneTF.textLength          = 11;
+    _phoneTF.textAlignment       = NSTextAlignmentLeft;
+    _phoneTF.textColor           = RGB(255, 255, 255);
 
     _passTF.keyboardType         = UIKeyboardTypeASCIICapable;
     _passTF.secureTextEntry      = YES;
     _passTF.returnKeyType        = UIReturnKeyDone;
-    _passTF.placeholder          = @"密码";
+    _passTF.placeholder          = @"请输入密码";
     _passTF.delegate             = self;
-    _passTF.placeholderColor     = RGB(102, 102, 102);
+    _passTF.placeholderColor     = RGB(255, 255, 255);
     _passTF.clearButtonMode      = UITextFieldViewModeWhileEditing;
+    _passTF.textAlignment        = NSTextAlignmentLeft;
+    _passTF.textColor            = RGB(255, 255, 255);
 
-    phoneLine.backgroundColor    = RGB(0, 0, 0);
-    passLine.backgroundColor     = RGB(0, 0, 0);
-    
-    phoneIV.image                = GL_IMAGE(@"用户");
-    passIV.image                 = GL_IMAGE(@"密码");
+    phoneLine.backgroundColor    = RGB(255, 255, 255);
+    passLine.backgroundColor     = RGB(255, 255, 255);
 
-    _loginBtn.cornerRadius       = 10;
+    phoneLeftLbl.text            = @"+86";
+    phoneLeftLbl.font            = GL_FONT(16);
+    phoneLeftLbl.textColor       = RGB(255, 255, 255);
     
+    passLbl.text                 = @"密码";
+    passLbl.font                 = GL_FONT(16);
+    passLbl.textColor            = RGB(255, 255, 255);
+
     [_loginBtn setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     [_loginBtn setTitle:@"立即登录" forState:UIControlStateNormal];
     [_loginBtn setFont:GL_FONT(15)];
     [_loginBtn setGraphicLayoutState:TEXTCENTER];
-    [_loginBtn setBackgroundColor:TCOL_MAIN forState:UIControlStateNormal];
     [_loginBtn addTarget:self action:@selector(loginBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_loginBtn setBackgroundColor:RGBA(255, 255, 255, 0.4f) forState:UIControlStateNormal];
+    [_loginBtn setCornerRadius:5];
     
     [_regBtn setTitle:@"快速注册" forState:UIControlStateNormal];
-    [_regBtn setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
+    [_regBtn setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     [_regBtn setFont:GL_FONT(15)];
     [_regBtn addTarget:self action:@selector(regBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [_regBtn setBackgroundColor:RGBA(255, 255, 255, 0.7f) forState:UIControlStateNormal];
+    [_regBtn setCornerRadius:5];
+
     
-    [forgetBtn setTitleColor:RGB(0, 0, 0) forState:UIControlStateNormal];
+    [forgetBtn setTitleColor:RGB(255, 255, 255) forState:UIControlStateNormal];
     [forgetBtn setTitle:@"忘记密码？" forState:UIControlStateNormal];
     [forgetBtn addTarget:self action:@selector(forgetBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [forgetBtn setFont:GL_FONT(12)];
@@ -140,31 +153,35 @@
     
     WS(ws);
     
+    [backGroudIV mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(ws.view).insets(UIEdgeInsetsMake(0, 0, 0, 0));
+    }];
+    
     [logoIV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.mas_equalTo(GL_IP6_H_RATIO(93.1));
+        make.top.mas_equalTo(GL_IP6_H_RATIO(125));
         make.centerX.equalTo(ws.view);
     }];
     
-    [phoneIV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(logoIV.mas_bottom).offset(GL_IP6_H_RATIO(85.1));
-        make.left.equalTo(ws.view).offset(50);
-        make.size.mas_equalTo(CGSizeMake(16, 16));
+    [phoneLeftLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(logoIV.mas_bottom).offset(GL_IP6_H_RATIO(98));
+        make.left.equalTo(ws.view).offset(GL_IP6_W_RATIO(50));
+        make.width.mas_equalTo(30);
     }];
     
-    [passIV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(phoneIV.mas_bottom).offset(23.5);
-        make.left.equalTo(phoneIV);
+    [passLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(phoneLeftLbl.mas_bottom).offset(GL_IP6_H_RATIO(28));
+        make.left.equalTo(phoneLeftLbl);
     }];
     
     [_phoneTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(phoneIV);
+        make.centerY.equalTo(phoneLeftLbl);
         make.height.mas_equalTo(40);
-        make.left.equalTo(phoneIV.mas_right).offset(15);
+        make.left.equalTo(phoneLeftLbl.mas_right).offset(GL_IP6_W_RATIO(28));
         make.right.equalTo(phoneLine.mas_right);
     }];
     
     [_passTF mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerY.equalTo(passIV);
+        make.centerY.equalTo(passLbl);
         make.left.equalTo(_phoneTF);
         make.right.equalTo(passLine);
         make.height.mas_equalTo(40);
@@ -173,34 +190,34 @@
     [phoneLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(_phoneTF.mas_bottom);
         make.centerX.equalTo(ws.view);
-        make.width.mas_equalTo(SCREEN_WIDTH - GL_IP6_W_RATIO(80));
+        make.width.mas_equalTo(SCREEN_WIDTH - GL_IP6_W_RATIO(100));
         make.height.mas_equalTo(0.5);
     }];
     
     [passLine mas_makeConstraints:^(MASConstraintMaker *make) {
         make.bottom.equalTo(_passTF.mas_bottom);
         make.centerX.equalTo(ws.view);
-        make.width.mas_equalTo(SCREEN_WIDTH - GL_IP6_W_RATIO(80));
+        make.width.equalTo(phoneLine);
         make.height.mas_equalTo(0.5);
     }];
     
     [_loginBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(ws.view);
-        make.top.equalTo(forgetBtn.mas_bottom).offset(GL_IP6_H_RATIO(33 - 8.5));
-        make.size.mas_equalTo(CGSizeMake(295, 40));
+        make.top.equalTo(forgetBtn.mas_bottom).offset(GL_IP6_H_RATIO(46));
+        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH - 40, 40));
     }];
     
     [_regBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(ws.view);
-        make.top.equalTo(_loginBtn.mas_bottom);
-        make.size.mas_equalTo(CGSizeMake(295, 40));
+        make.top.equalTo(_loginBtn.mas_bottom).offset(GL_IP6_H_RATIO(30));
+        make.size.equalTo(ws.loginBtn);
     }];
     
     [forgetBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(forgetBtn.lbl).offset(20);
         make.height.equalTo(forgetBtn.lbl).offset(8.5 * 2);
         make.top.equalTo(passLine.mas_bottom);
-        make.right.equalTo(ws.view.mas_right).offset(-30);
+        make.right.equalTo(ws.view.mas_right).offset(GL_IP6_W_RATIO(-37));
     }];
 }
 

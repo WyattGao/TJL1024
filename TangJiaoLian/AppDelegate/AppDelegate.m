@@ -15,6 +15,8 @@
 
 @property (nonatomic,strong) GLTabBarViewController *tabBarVC;
 
+@property (nonatomic,strong) NSTimer *shakeTimer;
+
 @end
 
 @implementation AppDelegate
@@ -26,6 +28,11 @@
     //设置RootViewController
     [self setAppOption];
     [self createRootViewController];
+    
+    //设置血糖预警震动控制器
+    self.shakeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(shake) userInfo:nil repeats:true];
+    //接收血糖预警的通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(warningPush) name:@"warningPush" object:nil];
     
     return YES;
 }
@@ -121,6 +128,36 @@
     [[EMClient sharedClient] bindDeviceToken:deviceToken];
 }
 
+- (void)warningPush
+{
+    WS(ws);
+    //    if([UIApplication sharedApplication].applicationState != UIApplicationStateActive){
+    [self.shakeTimer setFireDate:[NSDate date]];
+    [self.shakeTimer fire];
+    
+    //延时运行
+    double delayInSeconds = 10.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [ws.shakeTimer setFireDate:[NSDate distantFuture]];
+        AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate);
+    });
+}
+
+//震动方法
+- (void)shake
+{
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+}
+
+//停止震动
+- (void)disShake
+{
+    [self.shakeTimer setFireDate:[NSDate distantFuture]];
+    AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate);
+}
+
+
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -145,6 +182,15 @@
 //    [[MMPDeepSleepPreventer getMMPDeepSleepPreventer] stopPreventSleep];
 
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    //停止播放音乐
+    if ([GL_USERDEFAULTS getIntegerValue:SamIsAudio]==2) {
+        AudioServicesRemoveSystemSoundCompletion(kSystemSoundID_Vibrate);
+    }
+    //停止震动
+    if ([GL_USERDEFAULTS getIntegerValue:SamIsShake]==2) {
+        [self.shakeTimer setFireDate:[NSDate distantFuture]];
+    }
 }
 
 

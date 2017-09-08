@@ -54,7 +54,10 @@
 #define SamRecordInsulinTime @"SamRecordInsulinTime"
 //运动的记录时间
 #define SamRecordSportsTime @"SamRecordSportsTime"
-
+//是否震动
+#define SamIsShake @"SamIsShake"
+//是否声音通知
+#define SamIsAudio @"SamIsAudio"
 
 /**
  * @brief 获取请求状态

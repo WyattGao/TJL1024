@@ -11,11 +11,9 @@
 #import "XueTangLiShiZhiView.h"
 #import "XueTangDataAnalysisAndMonitoringTargetView.h"
 #import "XueTangConnectingDeviceView.h"
-#import "XueTangLineView.h"
 #import "XueTangPolarizationView.h"
 #import "XueTangRecordView.h"
 #import "XueTangConnectingDeviceView.h"
-#import "XueTangWearRecordBtnView.h"
 #import "XueTangRingTimeView.h"
 #import "XueTangDeviceListTableView.h"
 
@@ -27,10 +25,6 @@
 @property (nonatomic,strong) XueTangLiShiZhiView *liShiZhiView;
 ///记录按钮
 @property (nonatomic,strong) XueTangRecordView *recordView;
-///折线图
-@property (nonatomic,strong) XueTangLineView *lineView;
-///佩戴记录按钮
-@property (nonatomic,strong) XueTangWearRecordBtnView *wearRecordBtnView;
 ///设备列表View
 @property (nonatomic,strong) XueTangDeviceListTableView *deviceTV;
 

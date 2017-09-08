@@ -82,13 +82,29 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
     
-    //初始化CGM
-    [self createCGM];
-    
-    //时间监听
-    [self TimeToMonitor];
+    if (!ISLOGIN) {
+        LoginViewController *loginVC = [LoginViewController new];
+        WS(ws);
+        [self.navigationController presentViewController:loginVC animated:false completion:^{
+            [super viewDidLoad];
+            
+            //初始化CGM
+            [ws createCGM];
+            
+            //时间监听
+            [ws TimeToMonitor];
+        }];
+    } else {
+        [super viewDidLoad];
+        
+        //初始化CGM
+        [self createCGM];
+        
+        //时间监听
+        [self TimeToMonitor];
+
+    }
 }
 
 - (void)createUI
@@ -145,6 +161,14 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         [GL_USERDEFAULTS setValue:@"2.9" forKey:SamTargetLow];
         [GL_USERDEFAULTS setValue:@"11.1" forKey:SamTargetHeight];
         [GL_USERDEFAULTS setBool:true forKey:SamTargetState];
+    }
+    
+    if (![GL_USERDEFAULTS getIntegerValue:SamIsShake]) {
+        //2是开启
+        [GL_USERDEFAULTS setValue:@"2" forKey:SamIsShake];
+    }
+    if (![GL_USERDEFAULTS getIntegerValue:SamIsAudio]) {
+        [GL_USERDEFAULTS setValue:@"2" forKey:SamIsAudio];
     }
 }
 

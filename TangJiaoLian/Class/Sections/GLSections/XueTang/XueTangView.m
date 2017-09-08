@@ -54,23 +54,17 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 7;
+    return 5;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.row) {
         case 0:
-            return 50.0f + 240.0f;
+            return 50.0f + (SCREEN_HEIGHT == GL_IPHONE_6_PLUS_SCREEN_HEIGHT ? GL_IP6_H_RATIO(240.0f) : 240.0f );
             break;
         case 1:
-            return 243.0f;
-            break;
-        case 2:
-            return 90.0f;
-            break;
-        case 3:
-            return 80.0f;
+            return GL_IP6_H_RATIO(243.0f);
             break;
         default:
             break;
@@ -91,8 +85,6 @@
                    [cell addSubviewByCellFrame:self.shiShiView];
                    break;
             case 1:[cell addSubviewByCellFrame:self.recordView];       break;
-            case 2:[cell addSubviewByCellFrame:self.wearRecordBtnView];break;
-            case 3:[cell addSubviewByCellFrame:self.lineView];         break;
             default:break;
         }
     }
@@ -107,14 +99,6 @@
         _liShiZhiView = [XueTangLiShiZhiView new];
     }
     return _liShiZhiView;
-}
-
-- (XueTangLineView *)lineView
-{
-    if (!_lineView) {
-        _lineView = [XueTangLineView new];
-    }
-    return _lineView;
 }
 
 - (XueTangShiShiXueTangView *)shiShiView
@@ -132,14 +116,6 @@
         _recordView = [XueTangRecordView new];
     }
     return _recordView;
-}
-
-- (XueTangWearRecordBtnView *)wearRecordBtnView
-{
-    if (!_wearRecordBtnView) {
-        _wearRecordBtnView = [XueTangWearRecordBtnView new];
-    }
-    return _wearRecordBtnView;
 }
 
 - (XueTangDeviceListTableView *)deviceTV

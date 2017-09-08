@@ -30,6 +30,8 @@
     [self setNavTitle:@"关于"];
     [self setLeftBtnImgNamed:nil];
     
+    self.view.backgroundColor = TCOL_BGGRAY;
+    
     [self addSubView:self.logoIV];
     [self addSubView:self.versionLbl];
     

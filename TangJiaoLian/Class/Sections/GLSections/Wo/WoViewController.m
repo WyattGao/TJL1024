@@ -15,6 +15,8 @@
 #import "AboutViewController.h"
 
 #import "WoChangePassWordWihPhoneFinishViewController.h"
+#import "MessageCenterViewController.h"
+#import "SettingsViewController.h"
 
 @interface WoViewController ()
 
@@ -27,6 +29,8 @@
 @property (nonatomic,strong) HelpAndFeedBackViewController *helpAndFeedBackVC;
 
 @property (nonatomic,strong) AboutViewController *aboutVC;
+
+@property (nonatomic,strong) SettingsViewController *settingsVC;
 
 @end
 
@@ -87,13 +91,13 @@
                 }
             }
             switch (indexPath.row) {
-                case 0://我的收藏
-                    
-                    break;
-                case 1://消息中心
+                case 0://消息中心
                 {
-                    [ws pushWithController:[WoChangePassWordWihPhoneFinishViewController new]];
+                    [ws pushWithController:[MessageCenterViewController new]];
                 }
+                    break;
+                case 1:
+                    [ws pushWithController:ws.settingsVC];
                     break;
                 case 2://账号安全
                     [ws pushWithController:ws.accountSecurityVC];
@@ -160,6 +164,14 @@
         _aboutVC = [AboutViewController new];
     }
     return _aboutVC;
+}
+
+- (SettingsViewController *)settingsVC
+{
+    if (!_settingsVC) {
+        _settingsVC = [SettingsViewController new];
+    }
+    return _settingsVC;
 }
 
 - (void)didReceiveMemoryWarning {

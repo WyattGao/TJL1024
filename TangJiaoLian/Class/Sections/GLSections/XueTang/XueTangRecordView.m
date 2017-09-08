@@ -56,17 +56,17 @@
     
     [targetBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(ws).offset(GL_IP6_W_RATIO(-10));
-        make.top.equalTo(ws).offset(30);
+        make.top.equalTo(referenceBtn);
         make.size.equalTo(referenceBtn);
     }];
     
     [self.targetLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(targetBtn);
-        make.top.equalTo(targetBtn).offset(11);
+        make.centerY.equalTo(referenceBtn.iv);
     }];
     
     [targetHintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(ws.targetLbl.mas_bottom).offset(2);
+        make.centerY.equalTo(referenceBtn.lbl);
         make.centerX.equalTo(ws.targetLbl);
     }];
     

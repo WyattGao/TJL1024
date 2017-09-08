@@ -76,7 +76,7 @@
     
 //    _waringArr   = [NSMutableArray array];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNowWaringData) name:@"longPush" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadNowWaringData) name:@"warningPush" object:nil];
 }
 
 - (void)createUI

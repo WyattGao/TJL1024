@@ -7,8 +7,11 @@
 //
 
 #import "MessageCenterViewController.h"
+#import "MessageCenterEmptyHintView.h"
 
 @interface MessageCenterViewController ()
+
+@property (nonatomic,strong) MessageCenterEmptyHintView *messageCenterView;
 
 @end
 
@@ -21,6 +24,22 @@
 - (void)createUI
 {
     [self setNavTitle:@"消息中心"];
+    
+    [self addSubView:self.messageCenterView];
+    
+    WS(ws);
+    
+    [self.messageCenterView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(ws.view).insets(UIEdgeInsetsMake(64, 0, 0, 0));
+    }];
+}
+
+- (MessageCenterEmptyHintView *)messageCenterView
+{
+    if (!_messageCenterView) {
+        _messageCenterView = [MessageCenterEmptyHintView new];
+    }
+    return _messageCenterView;
 }
 
 - (void)didReceiveMemoryWarning {

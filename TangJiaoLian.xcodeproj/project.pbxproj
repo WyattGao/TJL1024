@@ -14,6 +14,7 @@
 		2600D0B31F42E0380038E096 /* TRSDialScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2600D0B01F42E0380038E096 /* TRSDialScrollView.m */; };
 		2600D0B41F42E0380038E096 /* TRSDialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2600D0B21F42E0380038E096 /* TRSDialView.m */; };
 		2600D0B71F4434D60038E096 /* LogDateHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2600D0B61F4434D60038E096 /* LogDateHeaderView.m */; };
+		260A22B81F62F9BC00203F8C /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 260A22B71F62F9BC00203F8C /* SettingsViewController.m */; };
 		26181B1E1E8D1C7E00883EE9 /* UIImage+GL.m in Sources */ = {isa = PBXBuildFile; fileRef = 26181B1D1E8D1C7E00883EE9 /* UIImage+GL.m */; };
 		26181B251E8D241600883EE9 /* FuWuSearchBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26181B241E8D241600883EE9 /* FuWuSearchBarView.m */; };
 		26181B281E8D257000883EE9 /* FuWuTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 26181B271E8D257000883EE9 /* FuWuTableView.m */; };
@@ -529,6 +530,8 @@
 		2600D0B21F42E0380038E096 /* TRSDialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TRSDialView.m; sourceTree = "<group>"; };
 		2600D0B51F4434D60038E096 /* LogDateHeaderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogDateHeaderView.h; sourceTree = "<group>"; };
 		2600D0B61F4434D60038E096 /* LogDateHeaderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogDateHeaderView.m; sourceTree = "<group>"; };
+		260A22B61F62F9BC00203F8C /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		260A22B71F62F9BC00203F8C /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		26181B1C1E8D1C7E00883EE9 /* UIImage+GL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+GL.h"; sourceTree = "<group>"; };
 		26181B1D1E8D1C7E00883EE9 /* UIImage+GL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+GL.m"; sourceTree = "<group>"; };
 		26181B231E8D241600883EE9 /* FuWuSearchBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FuWuSearchBarView.h; sourceTree = "<group>"; };
@@ -2497,6 +2500,8 @@
 		269A664C1F555D06002E7163 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				260A22B61F62F9BC00203F8C /* SettingsViewController.h */,
+				260A22B71F62F9BC00203F8C /* SettingsViewController.m */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -3674,6 +3679,7 @@
 				264886B71E901121007A98D7 /* PSTGridLayoutSection.m in Sources */,
 				26394ACF1F53BBC1009BB8AC /* ChevronDownShapeRenderer.swift in Sources */,
 				26D0B4291E88F454009F1774 /* STDataAnalysisViewController.m in Sources */,
+				260A22B81F62F9BC00203F8C /* SettingsViewController.m in Sources */,
 				26394A7C1F53BBC1009BB8AC /* BarLineScatterCandleBubbleChartData.swift in Sources */,
 				26D0B46A1E8BBB1D009F1774 /* UUBarChart.m in Sources */,
 				26394AD91F53BBC1009BB8AC /* XAxisRendererHorizontalBarChart.swift in Sources */,
