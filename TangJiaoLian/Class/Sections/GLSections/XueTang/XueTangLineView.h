@@ -26,4 +26,10 @@
  */
 - (void)refreshLineView;
 
+/**
+ 佩戴记录刷新折现图
+ */
+- (void)wearRecordrefreshLineView;
+
+
 @end

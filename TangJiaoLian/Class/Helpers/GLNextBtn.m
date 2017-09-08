@@ -14,7 +14,7 @@
 {
     self = [super init];
     if (self) {
-        self.frame           = CGRectMake(0, 0, SCREEN_WIDTH - 30, 40);
+        self.frame           = CGRectMake(40/2, 0, SCREEN_WIDTH - 40, 40);
         self.backgroundColor = TCOL_MAIN;
         self.font            = GL_FONT(16);
         self.cornerRadius    = 5;
@@ -38,6 +38,16 @@
         }
     }
     return  self;
+}
+
+- (void)setSelected:(BOOL)selected
+{
+    [super setSelected:selected];
+    if (selected) {
+        self.userInteractionEnabled = true;
+    } else {
+        self.userInteractionEnabled = false;
+    }
 }
 
 - (void)glNextBtnClick:(GLNextBtn *)sender

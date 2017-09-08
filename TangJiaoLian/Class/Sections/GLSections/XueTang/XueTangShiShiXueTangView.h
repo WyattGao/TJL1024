@@ -31,4 +31,6 @@ typedef void(^TendencyBtnClick)();
 
 - (void)reloadViewbyBinDingState;
 
+- (void)reloadConectStateLblTime;
+
 @end

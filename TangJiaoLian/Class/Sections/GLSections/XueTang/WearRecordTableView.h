@@ -10,8 +10,16 @@
 #import "WearRecordCell.h"
 
 
+typedef NS_ENUM(NSInteger,RecordCellButtonClickType) {
+    RecordCellDataAnalysisClick = 0,
+    RecordCelldetailedRecordClick
+};
+
+typedef void(^CellButtonClick)(RecordCellButtonClickType clickType,NSInteger row);
+
+
 @interface WearRecordTableView : GLTableView
 
-
+@property (nonatomic,copy) CellButtonClick cellButtonClick;
 
 @end

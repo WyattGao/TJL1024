@@ -15,4 +15,8 @@
 ///佩戴结束时间
 @property (nonatomic,strong) NSString *endTimeStr;
 
+@property (nonatomic,strong) NSMutableDictionary *referenceDic; /**< 参比血糖字典 */
+
+@property (nonatomic,strong) NSMutableArray *bloodValueArr; /**< 每日血糖数组 */
+
 @end

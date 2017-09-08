@@ -24,24 +24,20 @@
     
     WS(ws);
 
-    for (NSInteger i = 0;i < 3;i++) {
+    for (NSInteger i = 0;i < 4;i++) {
         UILabel *lbl = [UILabel new];
         [self addSubview:lbl];
         
         lbl.font          = GL_FONT(16);
         lbl.textAlignment = NSTextAlignmentCenter;
         lbl.textColor     = RGB(153, 153, 153);
-        lbl.text          = @[@"发射器编号",@"开始时间",@"结束时间  "][i];
+        lbl.text          = @[@"开始时间",@"结束时间",@"数据分析",@"详细记录"][i];
         
         
         [lbl mas_makeConstraints:^(MASConstraintMaker *make) {
             make.centerY.equalTo(ws);
-            if (i == 2) {
-                make.right.equalTo(ws.mas_right).offset(-GL_IP6_W_RATIO(37.9));
-            } else {
-                make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH/3, 50));
-                make.left.equalTo(ws).offset(SCREEN_WIDTH/3 * i);
-            }
+            make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH/4, 50));
+            make.left.equalTo(ws).offset(SCREEN_WIDTH/4 * i);
         }];
     }
     

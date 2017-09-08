@@ -26,6 +26,26 @@
     self.sectionHeaderHeight = 50;
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *mark = [@(indexPath.row) stringValue];
+    WearRecordCell *cell = [tableView dequeueReusableCellWithIdentifier:mark];
+    if (!cell) {
+        cell = [[WearRecordCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:mark];
+    }
+    cell.entity = [self.tbDataSouce objectAtIndex:indexPath.row];
+    WS(ws);
+    //数据分析点击事件
+    cell.dataAnalysisBtn.buttonClick = ^(GLButton *sender) {
+        ws.cellButtonClick(RecordCellDataAnalysisClick, indexPath.row);
+    };
+    //详细记录点击事件
+    cell.detailedRecordBtn.buttonClick = ^(GLButton *sender) {
+        ws.cellButtonClick(RecordCelldetailedRecordClick, indexPath.row);
+    };
+    return cell;
+}
+
 - (WearRecordHeaderView *)headerView
 {
     if (!_headerView) {

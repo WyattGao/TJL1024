@@ -10,14 +10,14 @@
 
 @interface WearRecordCell ()
 
-///CGM设备名称
-@property (nonatomic,strong) UILabel *cgmNameLbl;
 ///开始时间
 @property (nonatomic,strong) UILabel *startLbl;
 ///结束时间
 @property (nonatomic,strong) UILabel *endLbl;
 ///右箭头
 @property (nonatomic,strong) UIImageView *rightIV;
+
+
 
 @end
 
@@ -26,9 +26,8 @@
 - (void)setEntity:(id)entity
 {
     WearRecordEntity *recordEntity = (WearRecordEntity *)entity;
-    _cgmNameLbl.text               = recordEntity.emittercode;
-    _startLbl.text                 = recordEntity.starttime;
-    _endLbl.text                   = recordEntity.endtime;
+    _startLbl.text                 = [[recordEntity.starttime toDateDefault] toString:@"yyyy-MM-dd\nHH:mm:ss"];
+    _endLbl.text                   = [[recordEntity.endtime toDateDefault]   toString:@"yyyy-MM-dd\nHH:mm:ss"];
 }
 
 - (void)createUI
@@ -39,53 +38,48 @@
         self.contentView.backgroundColor = TCOL_HISTORYCELL;
     }
     
-    [self.contentView addSubview:self.cgmNameLbl];
     [self.contentView addSubview:self.startLbl];
     [self.contentView addSubview:self.endLbl];
+    [self.contentView addSubview:self.dataAnalysisBtn];
+    [self.contentView addSubview:self.detailedRecordBtn];
     [self.contentView addSubview:self.rightIV];
     
     WS(ws);
     
-    [self.cgmNameLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(SCREEN_WIDTH/3);
-        make.centerY.equalTo(ws.contentView);
-        make.left.equalTo(ws.contentView);
-    }];
     
     [self.startLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerY.equalTo(ws.contentView);
-        make.width.mas_equalTo(79.2);
-        make.centerX.equalTo(ws.contentView);
+        make.width.mas_equalTo(SCREEN_WIDTH/4);
+        make.left.equalTo(ws.contentView).offset(0);
     }];
     
     [self.endLbl mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(ws.contentView.mas_right).offset(-GL_IP6_W_RATIO(33.5));
+        make.left.equalTo(ws.contentView).offset(SCREEN_WIDTH/4);
         make.centerY.equalTo(ws.contentView);
-        make.width.mas_equalTo(79.2);
+        make.width.mas_equalTo(ws.startLbl);
     }];
     
     [self.rightIV mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(ws.contentView).offset(-9.9);
         make.centerY.equalTo(ws.contentView);
     }];
-}
-
-- (UILabel *)cgmNameLbl
-{
-    if (!_cgmNameLbl) {
-        _cgmNameLbl               = [UILabel new];
-        _cgmNameLbl.font          = GL_FONT(14);
-        _cgmNameLbl.textColor     = TCOL_SUBHEADTEXT;
-        _cgmNameLbl.textAlignment = NSTextAlignmentCenter;
-    }
-    return _cgmNameLbl;
+    
+    [self.dataAnalysisBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(ws.contentView);
+        make.left.equalTo(ws.contentView).offset(GL_IP6_W_RATIO(216));
+    }];
+    
+    [self.detailedRecordBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(ws.contentView);
+        make.left.equalTo(ws.contentView).offset(GL_IP6_W_RATIO(303));
+    }];
 }
 
 - (UILabel *)startLbl
 {
     if (!_startLbl) {
         _startLbl               = [UILabel new];
-        _startLbl.font          = GL_FONT(14);
+        _startLbl.font          = GL_FONT(12);
         _startLbl.textColor     = TCOL_SUBHEADTEXT;
         _startLbl.textAlignment = NSTextAlignmentCenter;
         _startLbl.numberOfLines = 2;
@@ -97,7 +91,7 @@
 {
     if (!_endLbl) {
         _endLbl               = [UILabel new];
-        _endLbl.font          = GL_FONT(14);
+        _endLbl.font          = GL_FONT(12);
         _endLbl.textColor     = TCOL_SUBHEADTEXT;
         _endLbl.textAlignment = NSTextAlignmentCenter;
         _endLbl.numberOfLines = 2;
@@ -111,6 +105,28 @@
         _rightIV = [[UIImageView alloc]initWithImage:GL_IMAGE(@"右箭头")];
     }
     return _rightIV;
+}
+
+- (GLButton *)dataAnalysisBtn
+{
+    if (!_dataAnalysisBtn) {
+        _dataAnalysisBtn = [GLButton new];
+        [_dataAnalysisBtn setImage:GL_IMAGE(@"数据分析") forState:UIControlStateNormal];
+        _dataAnalysisBtn.graphicLayoutState = PICCENTER;
+        _dataAnalysisBtn.tag = 50 + [self.reuseIdentifier integerValue];
+    }
+    return _dataAnalysisBtn;
+}
+
+- (GLButton *)detailedRecordBtn
+{
+    if (!_detailedRecordBtn) {
+        _detailedRecordBtn = [GLButton new];
+        [_detailedRecordBtn setImage:GL_IMAGE(@"详细记录") forState:UIControlStateNormal];
+        _detailedRecordBtn.graphicLayoutState = PICCENTER;
+        _detailedRecordBtn.tag = 500 + [self.reuseIdentifier integerValue];
+    }
+    return _detailedRecordBtn;
 }
 
 @end

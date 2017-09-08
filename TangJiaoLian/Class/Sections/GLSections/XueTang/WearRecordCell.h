@@ -11,4 +11,9 @@
 
 @interface WearRecordCell : GLTableViewCell
 
+@property (nonatomic,strong) GLButton *dataAnalysisBtn;/**< 数据分析 */
+
+@property (nonatomic,strong) GLButton *detailedRecordBtn;/**< 详细记录 */
+
+
 @end

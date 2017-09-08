@@ -87,11 +87,7 @@
         [_tendencyBtn setCornerRadius:13];
         [_tendencyBtn setBackgroundColor:TCOL_MAIN];
         [_tendencyBtn addTarget:self action:@selector(tendencyBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-        if (ISBINDING) {
-            [self.tendencyBtn setTitle:@"详细记录" forState:UIControlStateNormal];
-        } else {
-            [self.tendencyBtn setTitle:@"趋势图" forState:UIControlStateNormal];
-        }
+        [self.tendencyBtn setTitle:@"佩戴记录" forState:UIControlStateNormal];
     }
     return _tendencyBtn;
 }
@@ -127,14 +123,27 @@
 - (void)reloadViewbyBinDingState
 {
     if (ISBINDING) {
-        self.connectStateLbl.text = @"监测：开";
-        [self.tendencyBtn setTitle:@"详细记录" forState:UIControlStateNormal];
+        [self reloadConectStateLblTime];
+        [self.tendencyBtn setTitle:@"佩戴记录" forState:UIControlStateNormal];
         [_connectSwitch setOn:true];
     } else {
         _connectStateLbl.text = @"监测：关";
-        [self.tendencyBtn setTitle:@"趋势图" forState:UIControlStateNormal];
+        [self.tendencyBtn setTitle:@"佩戴记录" forState:UIControlStateNormal];
         [_connectSwitch setOn:false];
     }
+}
+
+- (void)reloadConectStateLblTime
+{
+    GL_DISPATCH_MAIN_QUEUE(^{
+        NSInteger hour = [[NSDate date] hoursAfterDate:[[GL_USERDEFAULTS getStringValue:SamStartBinDingDeviceTime] toDateDefault]];
+        NSInteger days = 0;
+        if (hour > 24) {
+            days = hour / 24;
+            hour = hour % 24;
+        }
+        self.connectStateLbl.text = [NSString stringWithFormat:@"监测：%ld天%ld小时",days,hour];
+    });
 }
 
 - (XueTangRingTimeView *)ringView

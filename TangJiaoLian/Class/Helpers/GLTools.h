@@ -54,7 +54,7 @@ void GL_DisLog(NSString *log);
  @param time 时间点
  @return 返回的血糖数值
  */
-+ (CGFloat)getLastBloodValueForTime:(NSString *)time;
++ (CGFloat)getLastBloodValueForTime:(NSString *)time WithBloodArr:(NSArray *)bloodArr;
 
 /**
  检查最新的血糖数据是否需要预警

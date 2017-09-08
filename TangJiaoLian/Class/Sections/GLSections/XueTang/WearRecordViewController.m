@@ -11,11 +11,13 @@
 #import "WearRecordEntity.h"
 #import "XueTangView.h"
 #import "WearRecordDetailViewController.h"
+#import "STDataAnalysisViewController.h"
 
 @interface WearRecordViewController ()
 
 @property (nonatomic,strong) WearRecordTableView *mainTV;
 @property (nonatomic,strong) WearRecordDetailViewController *detailVC;
+@property (nonatomic,strong) STDataAnalysisViewController *dataAnalysisVC;
 
 @end
 
@@ -66,7 +68,7 @@
                 if (dataArr.count == 0) {
                     GL_ALERT_E(@"暂无佩戴记录");
                 } else {
-                    dataArr          = [[dataArr reverseObjectEnumerator] allObjects];
+                    dataArr = [[dataArr reverseObjectEnumerator] allObjects];
                     [dataArr enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                             WearRecordEntity *enttiy = [[WearRecordEntity alloc]initWithDictionary:obj];
                         if (![[obj getStringValue:@"endtime"] length]) {
@@ -94,16 +96,25 @@
     if (!_mainTV) {
         _mainTV = [WearRecordTableView new];
         WS(ws);
+        _mainTV.cellButtonClick = ^(RecordCellButtonClickType clickType, NSInteger row) {
+            WearRecordEntity *entity = [ws.mainTV.tbDataSouce objectAtIndex:row];
+            if (clickType == RecordCelldetailedRecordClick) {
+                //佩戴设备记录模型
+                ws.detailVC              = [WearRecordDetailViewController new];
+                ws.detailVC.entity       = entity;
+                [ws pushWithController:ws.detailVC];
+            } else {
+                STDataAnalysisViewController *dataVC = [STDataAnalysisViewController new];
+                dataVC.startTimeStr = entity.starttime;
+                dataVC.endTimeStr   = entity.endtime;
+                [ws pushWithController:dataVC];
+            }
+        };
+        
         [_mainTV tableViewDidSelect:^(NSIndexPath *indexPath) {
-            //佩戴设备记录模型
-            WearRecordEntity *entity = [_mainTV.tbDataSouce objectAtIndex:indexPath.row];
-            _detailVC = [WearRecordDetailViewController new];
-            _detailVC.entity = entity;
-            [self pushWithController:ws.detailVC];
         }];
     }
     return _mainTV;
 }
-
 
 @end

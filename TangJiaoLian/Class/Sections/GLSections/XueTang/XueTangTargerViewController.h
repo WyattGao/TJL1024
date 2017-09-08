@@ -20,8 +20,10 @@ typedef void(^RefreshTarget)();
 
 @property (nonatomic,strong) UILabel *errorLbl;
 
-@property (nonatomic,strong) GLTextField *highTargetTF; /**< 高预警值输入框 */
+@property (nonatomic,strong) GLButton *highTargetBtn; /**< 高预警值输入框 */
 
-@property (nonatomic,strong) GLTextField *lowTargetTF; /**< 低预警值输入框 */
+@property (nonatomic,strong) GLButton *lowTargetBtn; /**< 低预警值输入框 */
+
+@property (nonatomic,strong) GLNextBtn *finishBtn;/**< 完成 */
 
 @end

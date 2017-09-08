@@ -170,6 +170,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     [self getDeviceAllData];
                     lastDate = [[NSDate date] timeIntervalSince1970];
                 }
+                
+                //刷新日期
+                [ws.xueTangView.shiShiView reloadConectStateLblTime];
             }
         });
         dispatch_resume(_refreshTimetTimer);
@@ -197,9 +200,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     [GL_USERDEFAULTS setObject:nil forKey:SamBangDingDeviceName];
     //还原极化完成状态
     [GL_USERDEFAULTS setObject:false forKey:SamPolarizationFinish];
-    //初始化监控（预警）目标
-    [GL_USERDEFAULTS setValue:@"2.9" forKey:SamTargetLow];
-    [GL_USERDEFAULTS setValue:@"11.1" forKey:SamTargetHeight];
+//    //初始化监控（预警）目标
+//    [GL_USERDEFAULTS setValue:@"2.9" forKey:SamTargetLow];
+//    [GL_USERDEFAULTS setValue:@"11.1" forKey:SamTargetHeight];
     
     [GL_USERDEFAULTS synchronize];
     
@@ -211,7 +214,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     //清除预警数据
     [GLCache writeCacheArr:@[] name:SamTargetWarningArr];
     
-    [self.xueTangView.lineView refreshLineView];
+//    [self.xueTangView.lineView refreshLineView];
     [self.xueTangView.recordView realodTargetData];
     NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
     [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
@@ -700,7 +703,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     
     dispatch_async(dispatch_get_main_queue(), ^{
         //刷新折线图
-        [ws.xueTangView.lineView refreshLineView];
+//        [ws.xueTangView.lineView refreshLineView];
         [ws.xueTangView.ringView.timeDataView setRealTimeLblTextByBloodValue:bloodValue];
         [ws.xueTangView.liShiZhiView reloadDataWithBloodArr:[[allBloodValueArr reverseObjectEnumerator] allObjects]];
         
@@ -961,7 +964,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 NSMutableArray *referenceArr = [NSMutableArray arrayWithArray:[GLCache readCacheArrWithName:SamReferenceArr]];
                 [referenceArr addObject:dic];
                 [GLCache writeCacheArr:referenceArr name:SamReferenceArr];
-                [ws.xueTangView.lineView refreshLineView];
+//                [ws.xueTangView.lineView refreshLineView];
             } else {
                 GL_ALERT_E(GETRETMSG);
             }
@@ -993,8 +996,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         if (GETTAG) {
             if (GETRETVAL) {
                 NSLog(@"获取血糖%@",response);
-                _xueTangView.lineView.lineColor.chartLine_PointArr = @[response[@"Result"][@"OutTable"]];
-                [_xueTangView.lineView refreshLineView];
+//                _xueTangView.lineView.lineColor.chartLine_PointArr = @[response[@"Result"][@"OutTable"]];
+//                [_xueTangView.lineView refreshLineView];
             }
             
         }
@@ -1026,8 +1029,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     if (GETRETVAL) {
                         NSLog(@"获取参比%@",response);
                         [GLCache writeCacheArr:response[@"Result"][@"OutTable"] name:SamReferenceArr];
-                        _xueTangView.lineView.lineColor.chartLine_bigPointArr = response[@"Result"][@"OutTable"];
-                        [_xueTangView.lineView refreshLineView];
+//                        _xueTangView.lineView.lineColor.chartLine_bigPointArr = response[@"Result"][@"OutTable"];
+//                        [_xueTangView.lineView refreshLineView];
                     }
                 }
             } failure:^(GLRequest *request, NSError *error) {
@@ -1035,121 +1038,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             }];
         }
             break;
-        case GLRecordFoodType:  //饮食
-        {
-            NSDictionary *postDic = @{
-                                      @"FuncName":@"getBloodDiet",
-                                      @"InField":@{
-                                              @"ACCOUNT":USER_ACCOUNT,	//帐号
-                                              @"YEAR":@"",	//年份
-                                              @"MONTH":@"",		//月份
-                                              //REPLACEADD
-                                              @"BEGINDATE":(CGM_Start_Time),	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":(CGM_End_Time),	//结束日期
-                                              @"DEVICE":@"1"
-                                              },
-                                      @"OutField":@[
-                                              ]
-                                      };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
-                if (GETTAG) {
-                    if (GETRETVAL) {
-                        NSLog(@"获取饮食%@",response);
-                        _xueTangView.lineView.lineColor.chartLine_oneFloorArr = response[@"Result"][@"OutTable"];
-                        [_xueTangView.lineView refreshLineView];
-                    }
-                }
-            } failure:^(GLRequest *request, NSError *error) {
-                
-            }];
-        }
-            break;
-        case GLRecordRrugs:     //用药
-        {
-            NSDictionary *postDic = @{
-                                      @"FuncName":@"getBloodMedication",
-                                      @"InField":@{
-                                              @"ACCOUNT":USER_ACCOUNT,		//帐号
-                                              @"YEAR":@"",	//年份
-                                              @"MONTH":@"",		//月份
-                                              @"TYPE":@"1",		//1普通用药,2胰岛素
-                                              @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":CGM_End_Time,	//结束日期
-                                              @"DEVICE":@"1"
-                                              },
-                                      @"OutField":@[
-                                              ]
-                                      };
-            
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
-                if (GETTAG) {
-                    if (GETRETVAL) {
-                        NSLog(@"获取用药%@",response);
-                        _xueTangView.lineView.lineColor.chartLine_threeFloorArr = response[@"Result"][@"OutTable"];
-                        [_xueTangView.lineView refreshLineView];
-                    }
-                }
-            } failure:^(GLRequest *request, NSError *error) {
-                
-            }];
-        }
-            break;
-        case GLRecordInsulin:   //胰岛素
-        {
-            NSDictionary *postDic = @{
-                                      @"FuncName":@"getBloodMedication",
-                                      @"InField":@{
-                                              @"ACCOUNT":USER_ACCOUNT,		//帐号
-                                              @"YEAR":@"",	//年份
-                                              @"MONTH":@"",		//月份
-                                              @"TYPE":@"2",		//1普通用药,2胰岛素
-                                              @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":CGM_End_Time,	//结束日期
-                                              @"DEVICE":@"1"
-                                              },
-                                      @"OutField":@[
-                                              ]
-                                      };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
-                if ( GETTAG) {
-                    if (GETRETVAL) {
-                        NSLog(@"获取胰岛素%@",response);
-                        _xueTangView.lineView.lineColor.chartLine_fourFloorArr = response[@"Result"][@"OutTable"];
-                        [_xueTangView.lineView refreshLineView];
-                    }
-                }
-            } failure:^(GLRequest *request, NSError *error) {
-                
-            }];
-        }
-            break;
-        case GLRecordSport: //运动
-        {
-            NSDictionary *postDic = @{
-                                      @"FuncName":@"getBloodMotion",
-                                      @"InField":@{
-                                              @"ACCOUNT":USER_ACCOUNT,		//帐号
-                                              @"YEAR":@"",	//年份
-                                              @"MONTH":@"",		//月份
-                                              @"BEGINDATE":CGM_Start_Time,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":CGM_End_Time,	//结束日期
-                                              @"DEVICE":@"1"
-                                              },
-                                      @"OutField":@[
-                                              ]
-                                      };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
-                if (GETTAG) {
-                    if (GETRETVAL) {
-                        NSLog(@"获取运动%@",response);
-                        _xueTangView.lineView.lineColor.chartLine_twoFloorArr = response[@"Result"][@"OutTable"];
-                        [_xueTangView.lineView refreshLineView];
-                    }
-                }
-            } failure:^(GLRequest *request, NSError *error) {
-                
-            }];
-        }
             break;
         default:
             break;
@@ -1299,8 +1187,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             }
         };
         
+        //佩戴记录点击事件
         _xueTangView.shiShiView.tendencyBtnClick = ^{
-            [ws pushWithController:ws.runChartVC];
+            [ws pushWithController:ws.wearRecordVC];
         };
 
 #pragma mark - 记录按钮点击
@@ -1544,8 +1433,8 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         _targetVC.refreshTarget = ^(){
             //刷新监控目标值
             [ws.xueTangView.recordView  realodTargetData];
-            //刷新折现图的监控目标区域
-            [ws.xueTangView.lineView refreshLineView];
+//            //刷新折现图的监控目标区域
+//            [ws.xueTangView.lineView refreshLineView];
         };
     }
     

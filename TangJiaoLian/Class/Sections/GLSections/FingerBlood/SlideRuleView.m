@@ -67,19 +67,19 @@ SlideRuleView *slideRuleView;
 //提交按钮点击事件
 - (void)confirmButtonClick:(GLButton *)sender
 {
-    if (self.type == GLSlideRuleViewFingerBloodType) {
+    if (self.getSlectReferenceValueDic) {
         NSMutableDictionary *valueDic = [NSMutableDictionary dictionary];
         [valueDic setValue:[NSString stringWithFormat:@"%.1lf",self.dialScrollView.currentValue/10.0f] forKey:@"value"];
         [valueDic setValue:[self.timeBtn.lbl.text stringByAppendingString:@":00"] forKey:@"collectedtime"];
         
-        if (self.getSlectReferenceValueDic) {
-            self.getSlectReferenceValueDic(valueDic);
-        }
-    } else {
-        if (self.selectValue) {
-            self.selectValue(_dialScrollView.currentValue);
-        }
+        self.getSlectReferenceValueDic(valueDic);
     }
+    
+    if (self.selectValue) {
+        self.selectValue(_dialScrollView.currentValue);
+    }
+    
+    [self dismiss];
 }
 
 //删除按钮点击事件
@@ -245,6 +245,15 @@ SlideRuleView *slideRuleView;
 
             break;
         }
+        case GLSlideRuleViewTargetType:
+        {
+            [self.mainView addSubview:self.titleLbl]; //添加标题
+            [self.titleLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.top.equalTo(ws.mainView).offset(26);
+                make.centerX.equalTo(ws.mainView);
+            }];
+        }
+            break;
         default:
             break;
     }
@@ -436,6 +445,12 @@ SlideRuleView *slideRuleView;
         _selectDateView.replaceRemoveWithHidden = true;
     }
     return _selectDateView;
+}
+
+- (void)setTitle:(NSString *)title
+{
+    _title = title;
+    self.titleLbl.text = title;
 }
 
 

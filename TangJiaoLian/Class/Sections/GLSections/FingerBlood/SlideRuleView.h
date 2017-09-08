@@ -15,7 +15,8 @@ typedef void(^DeleteValue)();
 
 typedef NS_ENUM(NSInteger,GLSlideRuleViewType) {
     GLSlideRuleViewFingerBloodType = 0, /**< 指尖血 */
-    GLSlideRuleViewReferenceBloodType   /**< 参比血糖 */
+    GLSlideRuleViewReferenceBloodType = 1,  /**< 参比血糖 */
+    GLSlideRuleViewTargetType
 };
 
 @interface SlideRuleView : UIView
@@ -54,6 +55,8 @@ typedef NS_ENUM(NSInteger,GLSlideRuleViewType) {
 @property (nonatomic,strong) GLButton *timeBtn; /**< 时间选择按钮 */
 
 @property (nonatomic,copy) GetSlectReferenceValueDic getSlectReferenceValueDic;
+
+@property (nonatomic,copy) NSString *title;
 
 //显示滑尺
 - (void)showWithCurrentValue:(CGFloat)currentValue;

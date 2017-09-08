@@ -9,17 +9,66 @@
 #import "XueTangTargerViewController.h"
 #import "XueTangLiShiZhiCellTableViewCell.h"
 #import "GLRecordInputPopUpView.h"
+#import "SlideRuleView.h"
 
-@interface XueTangTargerViewController ()<UITableViewDelegate,UITableViewDataSource>
+@interface XueTangTargerViewController ()
 
 @property (nonatomic,strong) UIButton       *targetBtn;/**< 监测目标按钮 */
 @property (nonatomic,strong) UILabel        *targetLbl;/**< 监测目标值 */
 @property (nonatomic,strong) NSMutableArray *waringArr;/**< 存放预警值 */
 @property (nonatomic,strong) UITableView    *mainTV;
+@property (nonatomic,strong) SlideRuleView  *slideRuleView; /**< 滑尺 */
 
 @end
 
 @implementation XueTangTargerViewController
+
+//目标值按钮点击事件
+- (void)targetBtnClick:(GLButton *)sender
+{
+    WS(ws);
+    if (sender == self.lowTargetBtn) {
+        self.slideRuleView.title = @"最低值";
+        [self.slideRuleView getValue:^(CGFloat value) {
+            ws.lowTargetBtn.text = [NSString stringWithFormat:@"%.1lf",value/10.0f];
+            [ws checkTheValueByTargetBtn];
+        }];
+    } else {
+        self.slideRuleView.title = @"最高值";
+        [self.slideRuleView getValue:^(CGFloat value) {
+            ws.highTargetBtn.text = [NSString stringWithFormat:@"%.1lf",value/10.0f];
+            [ws checkTheValueByTargetBtn];
+        }];
+    }
+    [self.slideRuleView showWithCurrentValue:[sender.text floatValue] * 10];
+}
+
+//完成按钮点击事件
+- (void)finishBtnClick:(GLButton *)sender
+{
+    [GL_USERDEFAULTS setObject:self.lowTargetBtn.text  forKey:SamTargetLow];
+    [GL_USERDEFAULTS setObject:self.highTargetBtn.text forKey:SamTargetHeight];
+    [GL_USERDEFAULTS setBool:true  forKey:SamTargetState];
+    [GL_USERDEFAULTS setBool:false forKey:SAMISLOWWARNING];
+    [GL_USERDEFAULTS setBool:false forKey:SAMISHIGHWARNING];
+    [SVProgressHUD showSuccessWithStatus:@"监测目标成功"];
+    if (_refreshTarget) {
+        _refreshTarget();
+    }
+    [self popViewController];
+}
+
+//检查高低目标按钮的值是否正确
+- (void)checkTheValueByTargetBtn
+{
+    if ([self.highTargetBtn.text floatValue] <= [self.lowTargetBtn.text floatValue]) {
+        self.errorLbl.hidden    = false;
+        self.finishBtn.selected = false;
+    } else {
+        self.errorLbl.hidden    = true;
+        self.finishBtn.selected = true;
+    }
+}
 
 
 - (void)viewDidLoad {
@@ -32,15 +81,78 @@
 
 - (void)createUI
 {
-    [self setNavTitle:@"检测目标"];
+    [self setNavTitle:@"监测目标"];
     [self setLeftBtnImgNamed:nil];
-    [self.view setBackgroundColor:TCOL_BG];
-    [self addSubView:self.hintLbl];
-    [self addSubView:self.highTargetTF];
-    [self addSubView:self.lowTargetTF];
     
-//    [self.view addSubview:self.mainTV];
-//    [self.view addSubview:self.targetBtn];
+    [self.view setBackgroundColor:TCOL_BG];
+    
+    [self addSubView:self.hintLbl];
+    [self addSubView:self.highTargetBtn];
+    [self addSubView:self.lowTargetBtn];
+    [self addSubView:self.finishBtn];
+    [self addSubView:self.errorLbl];
+    
+    WS(ws);
+    
+    [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.view).offset(27 + 64);
+        make.centerX.equalTo(ws.view);
+        make.width.mas_equalTo(SCREEN_WIDTH  - 24 * 2);
+    }];
+    
+    [self.lowTargetBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.view).offset(94 + 64);
+        make.centerX.equalTo(ws.view);
+        make.size.mas_equalTo(CGSizeMake(150, 40));
+    }];
+    
+    [self.highTargetBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.lowTargetBtn.mas_bottom).offset(20);
+        make.centerX.equalTo(ws.lowTargetBtn);
+        make.size.equalTo(ws.lowTargetBtn);
+    }];
+    
+    [self.finishBtn mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.errorLbl.mas_bottom).offset(11);
+        make.centerX.equalTo(ws.view);
+        make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH - 40, 40));
+    }];
+    
+    [self.errorLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(ws.highTargetBtn.mas_bottom).offset(69);
+        make.centerX.equalTo(ws.finishBtn);
+    }];
+    
+    for (NSInteger i = 0;i < 4;i++) {
+        UILabel *tfLbl  = [UILabel new];
+        tfLbl.font      = GL_FONT(18);
+        tfLbl.textColor = RGB(102, 102, 102);
+        tfLbl.text      = @[@"最低值：",@"最高值：",@" mmol/L",@" mmol/L"][i];
+        [self.view addSubview:tfLbl];
+        
+        [tfLbl mas_makeConstraints:^(MASConstraintMaker *make) {
+            switch (i) {
+                case 0:
+                    make.centerY.equalTo(ws.lowTargetBtn);
+                    make.right.equalTo(ws.lowTargetBtn.mas_left);
+                    break;
+                case 1:
+                    make.centerY.equalTo(ws.highTargetBtn);
+                    make.right.equalTo(ws.highTargetBtn.mas_left);
+                    break;
+                case 2:
+                    make.centerY.equalTo(ws.lowTargetBtn);
+                    make.left.equalTo(ws.lowTargetBtn.mas_right);
+                    break;
+                case 3:
+                    make.centerY.equalTo(ws.highTargetBtn);
+                    make.left.equalTo(ws.highTargetBtn.mas_right);
+                    break;
+                default:
+                    break;
+            }
+        }];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -58,25 +170,70 @@
         _hintLbl.font          = GL_FONT(14);
         _hintLbl.textColor     = RGB(255, 51, 0);
         _hintLbl.textAlignment = NSTextAlignmentCenter;
+        _hintLbl.numberOfLines = 0;
     }
     return _hintLbl;
 }
 
-- (GLTextField *)highTargetTF
+- (UILabel *)errorLbl
 {
-    if (!_highTargetTF) {
-        _highTargetTF = [GLTextField new];
-//        _highTargetTF.leftView 
+    if (!_errorLbl) {
+        _errorLbl               = [UILabel new];
+        _errorLbl.font          = GL_FONT(14);
+        _errorLbl.textColor     = RGB(255, 51, 0);
+        _errorLbl.textAlignment = NSTextAlignmentCenter;
+        _errorLbl.text          = @"请输入正确的血糖范围";
+        _errorLbl.hidden        = true;
     }
-    return _highTargetTF;
+    return _errorLbl;
 }
 
-- (GLTextField *)lowTargetTF
+- (GLButton *)highTargetBtn
 {
-    if (!_lowTargetTF) {
-        _lowTargetTF = [GLTextField new];
+    if (!_highTargetBtn) {
+        _highTargetBtn                    = [GLButton new];
+        _highTargetBtn.borderWidth        = 1;
+        _highTargetBtn.borderColor        = RGB(204, 204, 204);
+        _highTargetBtn.cornerRadius       = 5;
+        _highTargetBtn.textAlignment      = NSTextAlignmentCenter;
+        _highTargetBtn.text               = [GL_USERDEFAULTS getStringValue:SamTargetHeight];
+        _highTargetBtn.graphicLayoutState = TEXTCENTER;
+        [_highTargetBtn addTarget:self action:@selector(targetBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _lowTargetTF;
+    return _highTargetBtn;
+}
+
+- (GLButton *)lowTargetBtn
+{
+    if (!_lowTargetBtn) {
+        _lowTargetBtn                    = [GLButton new];
+        _lowTargetBtn.borderWidth        = 1;
+        _lowTargetBtn.borderColor        = RGB(204, 204, 204);
+        _lowTargetBtn.cornerRadius       = 5;
+        _lowTargetBtn.textAlignment      = NSTextAlignmentCenter;
+        _lowTargetBtn.text               = [GL_USERDEFAULTS getStringValue:SamTargetLow];
+        _lowTargetBtn.graphicLayoutState = TEXTCENTER;
+        [_lowTargetBtn addTarget:self action:@selector(targetBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _lowTargetBtn;
+}
+
+- (GLNextBtn *)finishBtn
+{
+    if (!_finishBtn) {
+        _finishBtn = [[GLNextBtn alloc]initWithType:GLFinishBtnNomalType];
+        _finishBtn.selected = true;
+        [_finishBtn addTarget:self action:@selector(finishBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _finishBtn;
+}
+
+- (SlideRuleView *)slideRuleView
+{
+    if (!_slideRuleView) {
+        _slideRuleView = [SlideRuleView slideRuleViewWithType:GLSlideRuleViewTargetType];
+    }
+    return _slideRuleView;
 }
 
 //

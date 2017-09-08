@@ -10,6 +10,19 @@
 
 @implementation XueTangLineViewEntity
 
-
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.bloodGlucoseArr = @[];
+        self.referenceArr    = @[];
+        self.dietArr         = @[];
+        self.medicatedArr    = @[];
+        self.insulinArr      = @[];
+        self.sportsArr       = @[];
+        self.xAxisTimeArr    = @[];
+    }
+    return self;
+}
 
 @end
