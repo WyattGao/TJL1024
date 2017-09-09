@@ -175,7 +175,7 @@ void GL_DisLog(NSString *log){
                 */
             }
             
-            [GLTools noti:tipStr sound:false];
+            [GLTools noti:tipStr isWarning:true];
         }
     }
 }
@@ -228,12 +228,12 @@ void GL_DisLog(NSString *log){
         if(GL_APPLICATION.applicationState == UIApplicationStateActive){
             GL_ALERT(nil, stateStr, 20170330, @"确定",nil);
         }
-        [GLTools noti:stateStr sound:NO];
+        [GLTools noti:stateStr isWarning:true];
         [GL_USERDEFAULTS setBool:true forKey:SAMISWEARWARNING];
     }
 }
 
-+ (void)noti:(NSString*)str sound:(BOOL)sound{
++ (void)noti:(NSString*)str isWarning:(BOOL)isWarning{
     
     UIApplication *app = [UIApplication sharedApplication];
     app.applicationIconBadgeNumber = 1;   //先将角标数量设为1 否则不能触发清零操作
@@ -253,7 +253,7 @@ void GL_DisLog(NSString *log){
         } else {
             notification.soundName = @"6464.wav";
         }
-        if ([GL_USERDEFAULTS getIntegerValue:SamIsShake]) {
+        if ([GL_USERDEFAULTS getIntegerValue:SamIsShake] && isWarning) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"warningPush" object:nil];
         }
         

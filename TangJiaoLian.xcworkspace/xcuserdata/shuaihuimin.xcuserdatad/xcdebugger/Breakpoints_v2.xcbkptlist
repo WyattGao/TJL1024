@@ -4,76 +4,18 @@
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.ExceptionBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            scope = "0"
-            stopOnStyle = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangViewController.m"
-            timestampString = "526485207.44234"
+            filePath = "TangJiaoLian/Class/Vendors/XQDLineChart/XQDPointView.m"
+            timestampString = "526633838.775513"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1336"
-            endingLineNumber = "1336"
-            landmarkName = "-xueTangView"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__36-[XueTangViewController xueTangView]_block_invoke.980"
-                  moduleName = "TangJiaoLian"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/shuaihuimin/%E9%AB%98%E4%B8%B4%E5%8E%9F%E7%9A%84%E9%A1%B9%E7%9B%AE/TJL829/TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangViewController.m"
-                  timestampString = "526485208.637604"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1336"
-                  endingLineNumber = "1336"
-                  offsetFromSymbolStart = "1304">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__36-[XueTangViewController xueTangView]_block_invoke_2.997"
-                  moduleName = "TangJiaoLian"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/shuaihuimin/%E9%AB%98%E4%B8%B4%E5%8E%9F%E7%9A%84%E9%A1%B9%E7%9B%AE/TJL829/TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangViewController.m"
-                  timestampString = "526485208.643212"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "1337"
-                  endingLineNumber = "1337"
-                  offsetFromSymbolStart = "88">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangViewController.m"
-            timestampString = "526485207.44234"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1337"
-            endingLineNumber = "1337"
-            landmarkName = "-xueTangView"
+            startingLineNumber = "327"
+            endingLineNumber = "327"
+            landmarkName = "-drawSegment"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -83,13 +25,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangViewController.m"
-            timestampString = "526485207.44234"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/WearRecord/WearRecordDetailViewController.m"
+            timestampString = "526633868.968055"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "492"
-            endingLineNumber = "492"
-            landmarkName = "-getsStopMonitor"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "-getRecotdDataWithType:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangRingTimeView.m"
+            timestampString = "526643480.835045"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
+            landmarkName = "-refreshTwinklingBtn"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

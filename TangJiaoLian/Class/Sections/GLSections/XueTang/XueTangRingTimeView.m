@@ -38,6 +38,7 @@
                 [self.hintLbl setHidden:false];
                 break;
             case GLRingTimePolarizationStatus: //极化中
+                [self changeHintLblSatuts:GLRingTimeHintLabelPolarizationStatus WithHour:0 WithAbnormalCount:0];
                 [self.hintLbl setHidden:false];
                 [self.polarizationTimeLbl setHidden:false];
                 [self startTimeKeeping];
@@ -123,10 +124,12 @@
 {
     //    if (ISBINDING) {
     if (![self.nowHour isEqualToString:[[NSDate date] toString:@"H"]]) {
-        self.nowHour = [[NSDate date] toString:@"H"];
-        GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
         
-        [self animateFirstRoundWithHourBtn:hourBtn];
+        [self animateFirstRoundWithHourBtn];
+        
+        self.nowHour = [[NSDate date] toString:@"H"];
+        
+        GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
         
         [self.tmpTimeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.size.equalTo(hourBtn);
@@ -144,30 +147,34 @@
 }
 
 //为小时按钮生成呼吸效果
-- (void)animateFirstRoundWithHourBtn:(GLButton *)hourBtn
+- (void)animateFirstRoundWithHourBtn
 {
+    GLButton *hourBtn = [[[NSDate date] toString:@"H"] isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [[[NSDate date] toString:@"H"] integerValue])];
+
     WS(ws);
     GL_DISPATCH_MAIN_QUEUE(^{
         hourBtn.alpha = 0.3f;
-        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionAutoreverse|UIViewAnimationOptionRepeat animations:^{
             hourBtn.alpha = 1.0f;
         } completion:^(BOOL finished) {
-            [ws animateSecondRoundWithHourBtn:hourBtn];
+//            [ws animateSecondRoundWithHourBtn];
         }];
     });
 }
 
-- (void)animateSecondRoundWithHourBtn:(GLButton *)hourBtn
-{
-    WS(ws);
-    GL_DISPATCH_MAIN_QUEUE(^{
-        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-            hourBtn.alpha = 0.3f;
-        } completion:^(BOOL finished) {
-            [ws animateFirstRoundWithHourBtn:hourBtn];
-        }];
-    });
-}
+//- (void)animateSecondRoundWithHourBtn
+//{
+//    GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
+//
+//    WS(ws);
+//    GL_DISPATCH_MAIN_QUEUE(^{
+//        [UIView animateWithDuration:2.0f delay:0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+//            hourBtn.alpha = 0.3f;
+//        } completion:^(BOOL finished) {
+//            [ws animateFirstRoundWithHourBtn];
+//        }];
+//    });
+//}
 
 /**
  连接设备按钮点击事件

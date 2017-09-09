@@ -111,6 +111,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 {
     if (ISBINDING) {
         [self setNavTitle:@"动态血糖（正在连接）"];
+        [SVProgressHUD showWithStatus:@"正在连接设备"];
     } else {
         [self setNavTitle:@"动态血糖（未连接）"];
     }
@@ -188,6 +189,10 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         dispatch_source_set_event_handler(_refreshTimetTimer, ^{
 
             [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
+            if (ISBINDING) {
+                //刷新日期
+                [ws.xueTangView.shiShiView reloadConectStateLblTime];
+            }
             if (ws.isStartGettingDatav) { //是否开始主动获取数据
                 if (([[NSDate date] timeIntervalSince1970] - lastDate) >= 210 || lastDate == 0) { //每3分半获取一次
                     //主动获取数据
@@ -195,8 +200,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                     lastDate = [[NSDate date] timeIntervalSince1970];
                 }
                 
-                //刷新日期
-                [ws.xueTangView.shiShiView reloadConectStateLblTime];
             }
         });
         dispatch_resume(_refreshTimetTimer);
@@ -216,6 +219,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     
     [self.xueTangView.shiShiView.connectStateLbl setText:@"监测：关"];
     [self.xueTangView.shiShiView.connectSwitch setOn:false];
+    [self setNavTitle:@"动态血糖（未连接）"];
     
     //清除绑定时间
     [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
@@ -390,7 +394,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 [SMDBlueToothManager sharedManger].isFirstConnectedDevice = YES;
                 //连接成功
                 NSLog(@"动态血糖设备连接成功");
-                [GLTools noti:@"动态血糖设备连接成功" sound:false];
+                [GLTools noti:@"动态血糖设备连接成功" isWarning:false];
                 
                 //如果是首次连接的设备，先检查电压
                 if (![GL_USERDEFAULTS objectForKey:@"SamStartBinDingDeviceTime"]) {
@@ -431,7 +435,10 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     if ([GL_USERDEFAULTS objectForKey:SamStartBinDingDeviceTime]) {
         [self setNavTitle:@"动态血糖（已连接）"];
 
-        [SVProgressHUD showWithStatus:@"正在同步数据"];
+//        [SVProgressHUD showWithStatus:@"正在同步数据"];
+//        GL_ALERT_S(@"连接成功");
+        GL_ALERT_S(@"血糖数据已同步");
+
         
         GL_DisLog(@"存在设备绑定时间，设备为重连");
         
@@ -583,7 +590,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
             GL_DisLog(@"设备连接中，设备电量低于20%，提示更换电池");
             
             // 已经链接了设备后获取的电压，正常提示即可
-            [GLTools noti:@"动态血糖设备电量即将耗尽，请及时更换电池" sound:NO];
+            [GLTools noti:@"动态血糖设备电量即将耗尽，请及时更换电池" isWarning:true];
         }
     } else if(![GL_USERDEFAULTS objectForKey:SamStartBinDingDeviceTime]){
         //电量充足又是首次连接该设备
@@ -977,7 +984,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     NSMutableDictionary *inFieldDic = [NSMutableDictionary dictionaryWithDictionary:dic];
     [inFieldDic setValue:USER_ACCOUNT forKey:@"ACCOUNT"];
     [inFieldDic setValue:@"1" forKey:@"DEVICE"];
-    WS(ws);
+    
     NSDictionary *postDic = @{
                               @"FuncName":@"saveSamReferGlucose",
                               @"InField":inFieldDic
@@ -988,7 +995,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
                 NSMutableArray *referenceArr = [NSMutableArray arrayWithArray:[GLCache readCacheArrWithName:SamReferenceArr]];
                 [referenceArr addObject:dic];
                 [GLCache writeCacheArr:referenceArr name:SamReferenceArr];
-//                [ws.xueTangView.lineView refreshLineView];
+                GL_ALERT_S(@"参比血糖记录成功")
             } else {
                 GL_ALERT_E(GETRETMSG);
             }
@@ -1107,7 +1114,9 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         
         _xueTangView.shiShiView.connectSwitchClick = ^(BOOL isOn){
             if (!isOn) {
-                [ws stopBLE];
+                if (ISBINDING) {
+                    [ws stopBLE];
+                } 
             } else {
                 //搜索设备
                 ws.xueTangView.shiShiView.ringView.connectBtnClick();

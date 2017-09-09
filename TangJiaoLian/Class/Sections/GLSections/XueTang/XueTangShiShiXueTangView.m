@@ -32,9 +32,6 @@
     if (_connectSwitchClick) {
         _connectSwitchClick(sender.isOn);
     }
-    if (sender.on) {
-        sender.on = false;
-    }
 }
 
 - (void)tendencyBtnClick:(GLButton *)sender
@@ -76,6 +73,8 @@
         make.centerX.equalTo(ws);
         make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 240));
     }];
+    
+    [self reloadViewbyBinDingState];
 }
 
 - (UIButton *)tendencyBtn
@@ -114,7 +113,11 @@
         _connectSwitch.onTintColor = TCOL_MAIN;
         [_connectSwitch addTarget:self action:@selector(connectSwitchClick:) forControlEvents:UIControlEventValueChanged];
         if (ISBINDING) {
+            [_connectSwitch setUserInteractionEnabled:true];
             [_connectSwitch setOn:true];
+        } else {
+            [_connectSwitch setUserInteractionEnabled:false];
+            [_connectSwitch setOn:false];
         }
     }
     return _connectSwitch;

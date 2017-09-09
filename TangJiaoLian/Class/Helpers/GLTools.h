@@ -84,9 +84,9 @@ void GL_DisLog(NSString *log);
  发送本地推送
 
  @param str 推送内容
- @param sound 是否有通知音
+ @param isWarning 是否是警告通知
  */
-+ (void)noti:(NSString*)str sound:(BOOL)sound;
++ (void)noti:(NSString*)str isWarning:(BOOL)isWarning;
 
 
 /**

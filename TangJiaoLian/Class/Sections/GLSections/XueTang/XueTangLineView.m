@@ -57,6 +57,14 @@ typedef NS_ENUM(NSInteger,LineType) {
     self.lineColor.chartLine_bigPointArr    = self.entity.referenceArr;
     
     self.lineColor.chartLine_Xarr           = self.entity.xAxisTimeArr;
+    
+    self.lineColor.chartLine_oneFloorArr    = self.entity.dietArr;
+    
+    self.lineColor.chartLine_twoFloorArr    = self.entity.sportsArr;
+    
+    self.lineColor.chartLine_threeFloorArr  = self.entity.medicatedArr;
+    
+    self.lineColor.chartLine_fourFloorArr   = self.entity.insulinArr;
     //    self.lineColor.chartLine_Xarr           = [TimeManage XAllTimeAndStarTime:CGM_Start_Time andEndTime:[[[self.lineColor.chartLine_PointArr lastObject] lastObject] getStringValue:@"collectedtime"]];
     
     self.lineColor.chartLine_pointAndPointX = 20 * [GLTools refreshChatLineScaling];

@@ -61,10 +61,10 @@
 {
     switch (indexPath.row) {
         case 0:
-            return 50.0f + (SCREEN_HEIGHT == GL_IPHONE_6_PLUS_SCREEN_HEIGHT ? GL_IP6_H_RATIO(240.0f) : 240.0f );
+            return 50.0f + (GL_IS_IPHONE6PLUS_OR_7 ? GL_IP6_H_RATIO(240.0f) : 240.0f );
             break;
         case 1:
-            return GL_IP6_H_RATIO(243.0f);
+            return GL_IS_IPHONE6PLUS_OR_7 ? GL_IP6_H_RATIO(243.0f) : 243.0f;
             break;
         default:
             break;

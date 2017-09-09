@@ -350,7 +350,7 @@
         [self addSubview:btn];
         [btn setTag:100000 + j];
         [btn setImage:GL_IMAGE(@"饮食") forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         [btn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(CGSizeMake(10, 10));
@@ -384,7 +384,7 @@
         [self addSubview:btn];
         [btn setTag:200000 + j];
         [btn setImage:GL_IMAGE(@"运动") forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         [btn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(CGSizeMake(10, 10));
@@ -405,7 +405,7 @@
         [self addSubview:btn];
         [btn setTag:300000 + j];
         [btn setImage:GL_IMAGE(@"用药") forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         [btn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(CGSizeMake(10, 10));
@@ -426,7 +426,7 @@
         [self addSubview:btn];
         [btn setTag:400000 + j];
         [btn setImage:GL_IMAGE(@"胰岛素") forState:UIControlStateNormal];
-        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+//        [btn addTarget:self action:@selector(recordBtnClick:) forControlEvents:UIControlEventTouchUpInside];
         
         [btn.imageView mas_makeConstraints:^(MASConstraintMaker *make) {
             make.size.mas_equalTo(CGSizeMake(10, 10));
