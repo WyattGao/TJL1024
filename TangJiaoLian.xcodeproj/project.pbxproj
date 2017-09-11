@@ -311,6 +311,7 @@
 		265B15D61E8FB5FA00D73285 /* JinNangTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 265B15D51E8FB5FA00D73285 /* JinNangTableViewCell.m */; };
 		2688A5931F41919D00657707 /* Blocks.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2688A5921F41919D00657707 /* Blocks.gif */; };
 		2688A5961F41965B00657707 /* XueTangRecordBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 2688A5951F41965B00657707 /* XueTangRecordBtn.m */; };
+		268AEBEB1F6628BD00E29E0C /* BloodGlucoseDateSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 268AEBEA1F6628BD00E29E0C /* BloodGlucoseDateSelectionView.m */; };
 		269A664B1F555724002E7163 /* UIViewController+BackButtonHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 269A664A1F555724002E7163 /* UIViewController+BackButtonHandler.m */; };
 		269A664F1F5561BE002E7163 /* WoEnterPhoneNumberViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 269A664E1F5561BE002E7163 /* WoEnterPhoneNumberViewController.m */; };
 		269A66521F556601002E7163 /* WoEnterPhoneNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 269A66511F556601002E7163 /* WoEnterPhoneNumberView.m */; };
@@ -1003,6 +1004,8 @@
 		2688A5921F41919D00657707 /* Blocks.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Blocks.gif; sourceTree = "<group>"; };
 		2688A5941F41965B00657707 /* XueTangRecordBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XueTangRecordBtn.h; sourceTree = "<group>"; };
 		2688A5951F41965B00657707 /* XueTangRecordBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XueTangRecordBtn.m; sourceTree = "<group>"; };
+		268AEBE91F6628BD00E29E0C /* BloodGlucoseDateSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BloodGlucoseDateSelectionView.h; sourceTree = "<group>"; };
+		268AEBEA1F6628BD00E29E0C /* BloodGlucoseDateSelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BloodGlucoseDateSelectionView.m; sourceTree = "<group>"; };
 		269A66491F555724002E7163 /* UIViewController+BackButtonHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+BackButtonHandler.h"; sourceTree = "<group>"; };
 		269A664A1F555724002E7163 /* UIViewController+BackButtonHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+BackButtonHandler.m"; sourceTree = "<group>"; };
 		269A664D1F5561BE002E7163 /* WoEnterPhoneNumberViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WoEnterPhoneNumberViewController.h; sourceTree = "<group>"; };
@@ -2651,6 +2654,8 @@
 				263EDEFF1E9CD582006AD402 /* GLReloadView.m */,
 				26291AA91ED6E3DA0063B484 /* GLNextBtn.h */,
 				26291AAA1ED6E3DA0063B484 /* GLNextBtn.m */,
+				268AEBE91F6628BD00E29E0C /* BloodGlucoseDateSelectionView.h */,
+				268AEBEA1F6628BD00E29E0C /* BloodGlucoseDateSelectionView.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -3747,6 +3752,7 @@
 				264886E51E901121007A98D7 /* EaseConversationCell.m in Sources */,
 				26394AAE1F53BBC1009BB8AC /* PieHighlighter.swift in Sources */,
 				26394AD41F53BBC1009BB8AC /* SquareShapeRenderer.swift in Sources */,
+				268AEBEB1F6628BD00E29E0C /* BloodGlucoseDateSelectionView.m in Sources */,
 				26B68CD41E814CA800F9CF15 /* STDietRecordViewController.m in Sources */,
 				26B68CE01E81535500F9CF15 /* STSelPickerView.m in Sources */,
 				26D0B4591E89F72D009F1774 /* PieElement.m in Sources */,
@@ -4252,6 +4258,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = HWB772M5ZX;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/TangJiaoLian/PrefixHeader.pch";
@@ -4269,6 +4276,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.tangjiaolian.TangJiaoLian;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TangJiaoLian/TangJiaoLian-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -4283,6 +4291,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = HWB772M5ZX;
 				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/TangJiaoLian/PrefixHeader.pch";
@@ -4300,6 +4309,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cn.tangjiaolian.TangJiaoLian;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "TangJiaoLian/TangJiaoLian-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};

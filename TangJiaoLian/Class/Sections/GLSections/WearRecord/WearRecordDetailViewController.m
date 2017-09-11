@@ -10,11 +10,13 @@
 #import "WearRecordDetailTableView.h"
 #import "STDataAnalysisViewController.h"
 #import "XueTangRecordView.h"
+#import "BloodGlucoseDateSelectionView.h"
 
 @interface WearRecordDetailViewController ()
 
 @property (nonatomic,strong) WearRecordDetailTableView *mainTV;
 @property (nonatomic,strong) NSMutableArray *bloodArr;
+@property (nonatomic,strong) BloodGlucoseDateSelectionView *bloodGlucoseDateSelectionView;
 
 @end
 
@@ -28,11 +30,18 @@
 {
     [self getSamGlucose];
     for (NSInteger i = 0;i < 5;i++) {
-        [self getRecotdDataWithType:i];;
+        [self getRecotdDataWithType:i];
     }
-    
 }
 
+- (void)navRightBtnClick:(UIButton *)sender
+{
+    if (!self.bloodGlucoseDateSelectionView.isShow) {
+        [self.bloodGlucoseDateSelectionView showInView:self.view];
+    } else {
+        [self.bloodGlucoseDateSelectionView dismiss];
+    }
+}
 
 /**
  获取佩戴期间血糖值
@@ -226,7 +235,9 @@
 {
     [self setLeftBtnImgNamed:nil];
     
-    [self setNavTitle:[NSString stringWithFormat:@"%@ ~ %@",[[_entity.starttime toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"MM-dd"],[[_entity.endtime toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"MM-dd"]]];
+//    [self setNavTitle:[NSString stringWithFormat:@"%@ ~ %@",[[_entity.starttime toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"MM-dd"],[[_entity.endtime toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"MM-dd"]]];
+    [self setNavTitle:@"详细记录"];
+    [self setRightBtnImgNamed:@"日历"];
     
     [self addSubView:self.mainTV];
     
@@ -250,8 +261,8 @@
                 case 0:
                 {
                     STDataAnalysisViewController *dataVC = [STDataAnalysisViewController new];
-                    dataVC.startTimeStr = _entity.starttime;
-                    dataVC.endTimeStr   = _entity.endtime;
+                    dataVC.startTimeStr                  = _entity.starttime;
+                    dataVC.endTimeStr                    = _entity.endtime;
                     [ws pushWithController:dataVC];
                 }
                     break;
@@ -265,6 +276,12 @@
     return _mainTV;
 }
 
-
+- (BloodGlucoseDateSelectionView *)bloodGlucoseDateSelectionView
+{
+    if (!_bloodGlucoseDateSelectionView) {
+        _bloodGlucoseDateSelectionView = [BloodGlucoseDateSelectionView bloodGlucoseDateSelectionViewWithDate:[self.entity.starttime toDateDefault]];
+    }
+    return _bloodGlucoseDateSelectionView;
+}
 
 @end

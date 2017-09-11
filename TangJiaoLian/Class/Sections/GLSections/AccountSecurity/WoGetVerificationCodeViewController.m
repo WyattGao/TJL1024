@@ -68,6 +68,7 @@
                                       @"PHONE":ws.phoneNumberStr
                                       }
                               };
+    
     [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
         if (GETTAG) {
             if (GETRETVAL) {

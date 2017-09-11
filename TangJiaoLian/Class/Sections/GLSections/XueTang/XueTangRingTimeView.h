@@ -49,6 +49,8 @@ typedef void(^DataAnalysisBtnClick)();
 
 @property (nonatomic,copy  ) NSString                  *nowHour;/**< 记录当前时间 */
 
+@property (nonatomic,strong) GLButton                  *nowHourBtn;/**< 当前正在闪动的按钮 */
+
 @property (nonatomic,assign) GLRingTimeStatus          status;/**< 环信时间表连接状态 */
 
 @property (nonatomic,strong) UILabel                   *polarizationTimeLbl;/**< 极化时间 */
