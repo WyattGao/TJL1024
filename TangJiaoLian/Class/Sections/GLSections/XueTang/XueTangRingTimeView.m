@@ -124,16 +124,19 @@
 {
     //    if (ISBINDING) {
     if (![self.nowHour isEqualToString:[[NSDate date] toString:@"H"]]) {
-        //先移除之前按钮的动画
-        [self.nowHourBtn.layer removeAllAnimations];
-        //找到当前时间对应的按钮
-        self.nowHourBtn = [[[NSDate date] toString:@"H"] isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [[[NSDate date] toString:@"H"] integerValue])];
-        
-        [self animateFirstRoundWithHourBtn];
+        WS(ws);
+
+        GL_DISPATCH_MAIN_QUEUE(^{
+            //先移除之前按钮的动画
+            [ws.nowHourBtn.layer removeAllAnimations];
+            //找到当前时间对应的按钮
+            ws.nowHourBtn = [[[NSDate date] toString:@"H"] isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [[[NSDate date] toString:@"H"] integerValue])];
+            
+            [ws animateFirstRoundWithHourBtn];
+        });
         
         self.nowHour = [[NSDate date] toString:@"H"];
         
-        WS(ws);
         
         [self.tmpTimeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
             make.size.equalTo(ws.nowHourBtn);
