@@ -102,7 +102,8 @@
 - (UIImageView *)rightIV
 {
     if (!_rightIV) {
-        _rightIV = [[UIImageView alloc]initWithImage:GL_IMAGE(@"右箭头")];
+        _rightIV        = [[UIImageView alloc]initWithImage:GL_IMAGE(@"右箭头")];
+        _rightIV.hidden = true;
     }
     return _rightIV;
 }

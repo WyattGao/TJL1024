@@ -123,7 +123,7 @@
 - (void)refreshTwinklingBtn
 {
     //    if (ISBINDING) {
-    if (![self.nowHour isEqualToString:[[NSDate date] toString:@"H"]]) {
+    if (![self.nowHourBtn.text isEqualToString:[[NSDate date] toString:@"H"]] || !self.nowHourBtn.layer.animationKeys.count) { //判断时间是否变更和动画是否停止
         WS(ws);
 
         GL_DISPATCH_MAIN_QUEUE(^{
@@ -133,22 +133,20 @@
             ws.nowHourBtn = [[[NSDate date] toString:@"H"] isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [[[NSDate date] toString:@"H"] integerValue])];
             
             [ws animateFirstRoundWithHourBtn];
+            
+            [self.tmpTimeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
+                make.size.equalTo(ws.nowHourBtn);
+                make.center.equalTo(ws.nowHourBtn);
+            }];
+            
+            if (ISBINDING) {
+                [ws.nowHourBtn setImage:[UIImage imageWithColor:TCOL_MAIN size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
+                [ws.nowHourBtn setUserInteractionEnabled:true];
+                //刷新按钮状态
+                [self refreshAllTimebuttonWarningState];
+            }
         });
         
-        self.nowHour = [[NSDate date] toString:@"H"];
-        
-        
-        [self.tmpTimeBtn mas_remakeConstraints:^(MASConstraintMaker *make) {
-            make.size.equalTo(ws.nowHourBtn);
-            make.center.equalTo(ws.nowHourBtn);
-        }];
-        
-        if (ISBINDING) {
-            [ws.nowHourBtn setImage:[UIImage imageWithColor:TCOL_MAIN size:CGSizeMake(16, 16)] forState:UIControlStateNormal];
-            [ws.nowHourBtn setUserInteractionEnabled:true];
-            //刷新按钮状态
-            [self refreshAllTimebuttonWarningState];
-        }
     }
     //    }
 }
@@ -194,10 +192,8 @@
 //闪烁按钮点击事件
 - (void)tmpTimeBtnClick:(GLButton *)sender
 {
-    //获取当前正在闪烁的按钮
-    GLButton *hourBtn = [self.nowHour isEqualToString:@"0"] ? [self viewWithTag:54] : [self viewWithTag:(30 + [self.nowHour integerValue])];
     if (ISBINDING) { //绑定状态下可以触发点击事件
-        [self timeBtnClick:hourBtn];
+        [self timeBtnClick:self.nowHourBtn];
     }
 }
 
@@ -408,14 +404,6 @@
     return _connectionBtn;
 }
 
-- (NSString *)nowHour
-{
-    if (!_nowHour) {
-        _nowHour = [NSString new];
-    }
-    return _nowHour;
-}
-
 - (UILabel *)polarizationTimeLbl
 {
     if (!_polarizationTimeLbl) {
@@ -466,6 +454,14 @@
         [_helpBtn setImage:GL_IMAGE(@"帮助-使用说明") forState:UIControlStateNormal];
     }
     return _helpBtn;
+}
+
+- (GLButton *)nowHourBtn
+{
+    if (!_nowHourBtn) {
+        _nowHourBtn = [GLButton new];
+    }
+    return _nowHourBtn;
 }
 
 - (NSMutableDictionary *)warningDic

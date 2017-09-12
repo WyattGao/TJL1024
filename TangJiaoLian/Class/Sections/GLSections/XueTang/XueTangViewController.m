@@ -185,7 +185,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     dispatch_once(&onceToken, ^{
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
         _refreshTimetTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,queue);
-        dispatch_source_set_timer(_refreshTimetTimer,dispatch_walltime(NULL, 0),10.0 * NSEC_PER_SEC, 0);
+        dispatch_source_set_timer(_refreshTimetTimer,dispatch_walltime(NULL, 0),10.0 * NSEC_PER_SEC, 0); //每10秒计时器
         dispatch_source_set_event_handler(_refreshTimetTimer, ^{
 
             [ws.xueTangView.shiShiView.ringView refreshTwinklingBtn];
@@ -1223,6 +1223,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         //佩戴记录点击事件
         _xueTangView.shiShiView.tendencyBtnClick = ^{
             [ws pushWithController:ws.wearRecordVC];
+            [ws.wearRecordVC createData];
         };
 
 #pragma mark - 记录按钮点击

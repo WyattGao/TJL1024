@@ -26,7 +26,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self getData];
 }
 
 - (void)viewDidLoad
@@ -36,6 +35,7 @@
 
 - (void)createUI
 {
+    [SVProgressHUD show];
     [self setNavTitle:@"佩戴记录"];
     [self setLeftBtnImgNamed:nil];
     
@@ -49,9 +49,13 @@
         make.bottom.equalTo(ws.view);
         make.width.mas_equalTo(SCREEN_WIDTH);
     }];
+    
+    self.reloadView.reload = ^{
+        [ws createData];
+    };
 }
 
-- (void)getData
+- (void)createData
 {
     NSDictionary *postDic = @{
                            @"FuncName":@"getSamWear",
@@ -62,6 +66,7 @@
                            };
     [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
         [_mainTV.tbDataSouce removeAllObjects];
+        [SVProgressHUD dismiss];
         if (GETTAG) {
             if (GETRETVAL) {
                 NSArray *dataArr = response[@"Result"][@"OutTable"];
@@ -87,12 +92,16 @@
                 [_mainTV reloadData];
             }else{
                 GL_ALERT_E(GETRETMSG);
+                [self.reloadView setHidden:false];
             }
         }else
         {
             GL_ALERT_E(GETMESSAGE);
+            [self.reloadView setHidden:false];
         }
     } failure:^(GLRequest *request, NSError *error) {
+        [SVProgressHUD dismiss];
+        [self.reloadView setHidden:false];
         GL_AFFAil;
     }];
 }
@@ -122,5 +131,6 @@
     }
     return _mainTV;
 }
+
 
 @end

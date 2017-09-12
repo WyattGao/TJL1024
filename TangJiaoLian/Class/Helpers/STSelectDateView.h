@@ -22,7 +22,7 @@
 @end
 
 typedef NS_ENUM(NSInteger) {
-    Default        = 0,
+    Default        = 0,/**< 默认年月日 */
     ISAge          = 1,
     OnlyYeaer      = 2,/**< 年数 */
     DateTime       = 3,
@@ -58,5 +58,7 @@ typedef NS_ENUM(NSInteger) {
 @property (nonatomic,strong) UIButton *backGroundBtn;
 
 @property (nonatomic) BOOL replaceRemoveWithHidden;
+
+@property (nonatomic,strong) UIDatePicker *datePicker;
 
 @end

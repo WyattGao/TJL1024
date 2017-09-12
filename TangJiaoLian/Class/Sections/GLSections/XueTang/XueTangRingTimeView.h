@@ -47,8 +47,6 @@ typedef void(^DataAnalysisBtnClick)();
 
 @property (nonatomic,copy  ) ConnectBtnClick           connectBtnClick;/**< 连接按钮回调 */
 
-@property (nonatomic,copy  ) NSString                  *nowHour;/**< 记录当前时间 */
-
 @property (nonatomic,strong) GLButton                  *nowHourBtn;/**< 当前正在闪动的按钮 */
 
 @property (nonatomic,assign) GLRingTimeStatus          status;/**< 环信时间表连接状态 */

@@ -319,4 +319,9 @@
     }
 }
 
+- (UIDatePicker *)datePicker
+{
+    return [self viewWithTag:2000];
+}
+
 @end

@@ -62,16 +62,43 @@
 - (BOOL) isTypicallyWeekend;
 
 // Adjusting dates
+
+/**
+ 获得指定天数后的日期
+
+ @param dDays 天数
+ @return 指定天数后的日期对象
+ */
 - (NSDate *) dateByAddingDays: (NSInteger) dDays;
 - (NSDate *) dateBySubtractingDays: (NSInteger) dDays;
 - (NSDate *) dateByAddingHours: (NSInteger) dHours;
 - (NSDate *) dateBySubtractingHours: (NSInteger) dHours;
 - (NSDate *) dateByAddingMinutes: (NSInteger) dMinutes;
 - (NSDate *) dateBySubtractingMinutes: (NSInteger) dMinutes;
+
+/**
+ 获取日期对应当天的0点开始日期
+
+ @return 当日的0点开始日期
+ */
 - (NSDate *) dateAtStartOfDay;
 
 // Retrieving intervals
+
+/**
+ 日期过去了几分钟
+
+ @param aDate 对比日期
+ @return 分钟间隔
+ */
 - (NSInteger) minutesAfterDate: (NSDate *) aDate;
+
+/**
+ 日期早于几分钟
+
+ @param aDate 对比日期
+ @return 分钟间隔
+ */
 - (NSInteger) minutesBeforeDate: (NSDate *) aDate;
 - (NSInteger) hoursAfterDate: (NSDate *) aDate;
 - (NSInteger) hoursBeforeDate: (NSDate *) aDate;

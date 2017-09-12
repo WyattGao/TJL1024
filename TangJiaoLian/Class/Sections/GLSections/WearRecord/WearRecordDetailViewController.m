@@ -279,7 +279,10 @@
 - (BloodGlucoseDateSelectionView *)bloodGlucoseDateSelectionView
 {
     if (!_bloodGlucoseDateSelectionView) {
-        _bloodGlucoseDateSelectionView = [BloodGlucoseDateSelectionView bloodGlucoseDateSelectionViewWithDate:[self.entity.starttime toDateDefault]];
+        _bloodGlucoseDateSelectionView = [BloodGlucoseDateSelectionView bloodGlucoseDateSelectionViewWithStartDate:[self.entity.starttime toDateDefault] EndDate:[self.entity.endtime toDateDefault]];
+        _bloodGlucoseDateSelectionView.timeSelected = ^(NSDate *startDate, NSDate *endDate) {
+            
+        };
     }
     return _bloodGlucoseDateSelectionView;
 }

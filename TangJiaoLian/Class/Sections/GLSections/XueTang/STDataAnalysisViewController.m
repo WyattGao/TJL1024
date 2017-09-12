@@ -316,13 +316,19 @@
             [btn setBackgroundColor:TCOL_MAIN forState:UIControlStateSelected];
             [btn setCornerRadius:40/2];
             [btn setBorderWidth:1];
-            [btn setBorderColor:RGB(204, 204, 204)];
+            [btn setBorderColor:RGB(204, 204, 204) forState:UIControlStateNormal];
+            [btn setBorderColor:RGB(9, 170, 129) forState:UIControlStateSelected];
             [btn setTitle:btnTitle forState:UIControlStateNormal];
             [btn setTitleColor:RGB(153, 153, 153) forState:UIControlStateNormal];
             [btn setTitleColor:RGB(255, 255, 255) forState:UIControlStateSelected];
             [btn.titleLabel setFont:GL_FONT(24)];
             [btn addTarget:self action:@selector(dayBtnClick:) forControlEvents:UIControlEventTouchUpInside];
             [btn setTag:30 + i];
+            
+            if (!i) {
+                btn.selected = true;
+                [btn setBorderWidth:3];
+            }
             
             [lbl setFont:GL_FONT(10)];
             [lbl setTextColor:TCOL_NORMALETEXT];
@@ -856,7 +862,7 @@
     [UIView animateWithDuration:0.3f animations:^{
         sender.selected     = true;
         sender.borderWidth  = 3;
-        sender.borderColor  = RGB(9, 170, 129);
+
         selectLbl           = [self.view viewWithTag:300 + sender.tag - 30];
         selectLbl.textColor = TCOL_MAIN;
     }];
