@@ -13,7 +13,10 @@
 #import "BloodGlucoseDateSelectionView.h"
 
 @interface WearRecordDetailViewController ()
-
+{
+    NSString *_startDate;
+    NSString *_endDate;
+}
 @property (nonatomic,strong) WearRecordDetailTableView *mainTV;
 @property (nonatomic,strong) NSMutableArray *bloodArr;
 @property (nonatomic,strong) BloodGlucoseDateSelectionView *bloodGlucoseDateSelectionView;
@@ -23,6 +26,8 @@
 @implementation WearRecordDetailViewController
 
 - (void)viewDidLoad {
+    _startDate =  [NSString stringWithString:self.entity.starttime];
+    _endDate = [NSString stringWithString:self.entity.endtime];
     [super viewDidLoad];
 }
 
@@ -54,8 +59,8 @@
                               INFIELD  : @{
                                       @"ACCOUNT" : USER_ACCOUNT,
                                       @"DEVICE"  : @"1",
-                                      @"BEGINTIME" : _entity.starttime,
-                                      @"ENDTIME" : _entity.endtime
+                                      @"BEGINTIME" : _startDate,
+                                      @"ENDTIME" : _endDate
                                       }
                               };
     [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
@@ -91,8 +96,8 @@
                                       @"InField":@{
                                               @"ACCOUNT":USER_ACCOUNT,	//账号
                                               @"DEVICE":@"1",	//设备号
-                                              @"BEGINTIME":_entity.starttime,	//开始时间
-                                              @"ENDTIME":_entity.endtime,		//结束时间
+                                              @"BEGINTIME":_startDate,	//开始时间
+                                              @"ENDTIME":_endDate,		//结束时间
                                               @"VERSION":GL_VERSION
                                               }
                                       };
@@ -118,8 +123,8 @@
                                               @"YEAR":@"",	//年份
                                               @"MONTH":@"",		//月份
                                               //REPLACEADD
-                                              @"BEGINDATE":_entity.starttime,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":_entity.endtime,	//结束日期
+                                              @"BEGINDATE":_startDate,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":_endDate,	//结束日期
                                               @"DEVICE":@"1"
                                               },
                                       @"OutField":@[
@@ -147,8 +152,8 @@
                                               @"YEAR":@"",	//年份
                                               @"MONTH":@"",		//月份
                                               @"TYPE":@"1",		//1普通用药,2胰岛素
-                                              @"BEGINDATE":_entity.starttime,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":_entity.endtime,	//结束日期
+                                              @"BEGINDATE":_startDate,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":_endDate,	//结束日期
                                               @"DEVICE":@"1"
                                               },
                                       @"OutField":@[
@@ -177,8 +182,8 @@
                                               @"YEAR":@"",	//年份
                                               @"MONTH":@"",		//月份
                                               @"TYPE":@"2",		//1普通用药,2胰岛素
-                                              @"BEGINDATE":_entity.starttime,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":_entity.endtime,	//结束日期
+                                              @"BEGINDATE":_startDate,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":_endDate,	//结束日期
                                               @"DEVICE":@"1"
                                               },
                                       @"OutField":@[
@@ -205,8 +210,8 @@
                                               @"ACCOUNT":USER_ACCOUNT,		//帐号
                                               @"YEAR":@"",	//年份
                                               @"MONTH":@"",		//月份
-                                              @"BEGINDATE":_entity.starttime,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
-                                              @"ENDDATE":_entity.endtime,	//结束日期
+                                              @"BEGINDATE":_startDate,	//开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                              @"ENDDATE":_endDate,	//结束日期
                                               @"DEVICE":@"1"
                                               },
                                       @"OutField":@[
@@ -280,8 +285,11 @@
 {
     if (!_bloodGlucoseDateSelectionView) {
         _bloodGlucoseDateSelectionView = [BloodGlucoseDateSelectionView bloodGlucoseDateSelectionViewWithStartDate:[self.entity.starttime toDateDefault] EndDate:[self.entity.endtime toDateDefault]];
+        WS(ws);
         _bloodGlucoseDateSelectionView.timeSelected = ^(NSDate *startDate, NSDate *endDate) {
-            
+            _startDate = [startDate toStringyyyyMMddHHmmss];
+            _endDate   = [endDate toStringyyyyMMddHHmmss];
+            [ws createData];
         };
     }
     return _bloodGlucoseDateSelectionView;

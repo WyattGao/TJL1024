@@ -26,13 +26,24 @@ BloodGlucoseDateSelectionView *bloodGlucoseDateSelectionView;
 
 @implementation BloodGlucoseDateSelectionView
 
-//- (void)changeDateWith:
-
-- (void)getSelecteDataWithDate:(NSDate *)date
+- (void)realodLeftRightButtonState
 {
-    self.dateBtn.text = [date toString:@"yyyy-MM-dd"];
+    NSDate *changeDate     = [self.dateBtn.text toDate:@"yyyy-MM-dd"];
+    self.leftBtn.selected  = [changeDate minutesAfterDate:[self.startDate dateAtStartOfDay]] == 0;
+    self.rightBtn.selected = [changeDate minutesBeforeDate:[self.endDate dateAtStartOfDay]] == 0;
 }
 
+#pragma mark -  SelecteDateDelegate
+- (void)getSelecteDataWithDate:(NSDate *)date
+{
+    NSDate *startDate = date;
+    NSDate *endDate   = [date dateByAddingDays:1];
+    self.dateBtn.text = [date toString:@"yyyy-MM-dd"];
+    [self realodLeftRightButtonState];
+    self.timeSelected(startDate, endDate);
+}
+
+#pragma mark - buttonClick
 - (void)dateBtnClick:(GLButton *)sender
 {
     [self.selectDeteView show];
@@ -89,8 +100,8 @@ BloodGlucoseDateSelectionView *bloodGlucoseDateSelectionView;
     //修改的日期必须大于等于最小日期并且小于等于最大日期
     if ([changeDate minutesAfterDate:[self.startDate dateAtStartOfDay]]>= 0&&[changeDate minutesBeforeDate:[self.endDate dateAtStartOfDay]]>= 0) {
         self.dateBtn.text      = [changeDate toString:@"yyyy-MM-dd"];
-        self.leftBtn.selected  = [changeDate minutesAfterDate:self.startDate] == 0;
-        self.rightBtn.selected = [changeDate minutesBeforeDate:self.endDate] == 0;
+        
+        [self realodLeftRightButtonState];
         
         NSDate *startDate = changeDate;
         NSDate *endDate   = [changeDate dateByAddingDays:1];

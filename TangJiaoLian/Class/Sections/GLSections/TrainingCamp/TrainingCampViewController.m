@@ -19,6 +19,24 @@
     // Do any additional setup after loading the view.
 }
 
+- (void)createUI
+{
+    [self setNavTitle:@"训练营"];
+   
+    UILabel *label  = [UILabel new];
+    label.text      = @"暂未开放...";
+    label.font      = GL_FONT_B(23);
+    label.textColor = TCOL_NORMALETEXT;
+    [self addSubView:label];
+    
+    WS(ws);
+    
+    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(ws.view);
+        make.centerY.equalTo(ws.view).offset(0);
+    }];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
