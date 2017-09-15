@@ -116,7 +116,6 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         [self setNavTitle:@"动态血糖（未连接）"];
     }
     
-    
     [self addSubView:self.xueTangView];
     
     WS(ws);
@@ -171,6 +170,62 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     if (![GL_USERDEFAULTS getIntegerValue:SamIsAudio]) {
         [GL_USERDEFAULTS setValue:@"2" forKey:SamIsAudio];
     }
+    
+    
+    //查询用户保存的预警值
+    [self selectDynamicBloodRang];
+}
+
+
+/**
+ 初始化CGM本地数据
+ */
+- (void)initCGMData
+{
+    [SVProgressHUD dismiss];
+    
+    //显示连接按钮
+    [self.xueTangView.ringView setStatus:GLRingTimeUnunitedStatus];
+    [self.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
+    
+    [self.xueTangView.shiShiView.connectStateLbl setText:@"监测：关"];
+    [self.xueTangView.shiShiView.connectSwitch setOn:false];
+    [self setNavTitle:@"动态血糖（未连接）"];
+    
+    //清除绑定时间
+    [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
+    [GL_USERDEFAULTS setObject:nil forKey:SamEndBinDingDeviceTime];
+    //清除绑定设备名称
+    [GL_USERDEFAULTS setObject:nil forKey:SamBangDingDeviceName];
+    //还原极化完成状态
+    [GL_USERDEFAULTS setObject:false forKey:SamPolarizationFinish];
+    
+    [GL_USERDEFAULTS synchronize];
+    
+    //清除血糖数据
+    [GLCache writeCacheArr:@[] name:SamReferenceArr];
+    [GLCache writeCacheArr:@[] name:SamBloodValueArr];
+    [GLCache writeCacheArr:@[] name:SamCurrentValueArr];
+    
+    //清除预警数据
+    [GLCache writeCacheArr:@[] name:SamTargetWarningArr];
+    
+    //    [self.xueTangView.lineView refreshLineView];
+    [self.xueTangView.recordView realodTargetData];
+    NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
+    [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
+    //    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
+    
+    //刷新头部View的连接状态
+    [self.xueTangView.shiShiView reloadViewbyBinDingState];
+    
+    //修改记录按钮显示
+    [self.xueTangView.recordView changeDisplayStatus];
+    //初始化饮食用药胰岛素运动记录的时间
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordInsulinTime];
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordMedicinalTime];
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordDietTime];
+    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordSportsTime];
 }
 
 
@@ -206,59 +261,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
     });
 }
 
-/**
- 初始化CGM本地数据
- */
-- (void)initCGMData
-{
-    [SVProgressHUD dismiss];
-    
-    //显示连接按钮
-    [self.xueTangView.ringView setStatus:GLRingTimeUnunitedStatus];
-    [self.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
-    
-    [self.xueTangView.shiShiView.connectStateLbl setText:@"监测：关"];
-    [self.xueTangView.shiShiView.connectSwitch setOn:false];
-    [self setNavTitle:@"动态血糖（未连接）"];
-    
-    //清除绑定时间
-    [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
-    [GL_USERDEFAULTS setObject:nil forKey:SamEndBinDingDeviceTime];
-    //清除绑定设备名称
-    [GL_USERDEFAULTS setObject:nil forKey:SamBangDingDeviceName];
-    //还原极化完成状态
-    [GL_USERDEFAULTS setObject:false forKey:SamPolarizationFinish];
-//    //初始化监控（预警）目标
-//    [GL_USERDEFAULTS setValue:@"2.9" forKey:SamTargetLow];
-//    [GL_USERDEFAULTS setValue:@"11.1" forKey:SamTargetHeight];
-    
-    [GL_USERDEFAULTS synchronize];
-    
-    //清除血糖数据
-    [GLCache writeCacheArr:@[] name:SamReferenceArr];
-    [GLCache writeCacheArr:@[] name:SamBloodValueArr];
-    [GLCache writeCacheArr:@[] name:SamCurrentValueArr];
-    
-    //清除预警数据
-    [GLCache writeCacheArr:@[] name:SamTargetWarningArr];
-    
-//    [self.xueTangView.lineView refreshLineView];
-    [self.xueTangView.recordView realodTargetData];
-    NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
-    [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
-    //    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
-    
-    //刷新头部View的连接状态
-    [self.xueTangView.shiShiView reloadViewbyBinDingState];
-    
-    //修改记录按钮显示
-    [self.xueTangView.recordView changeDisplayStatus];
-    //初始化饮食用药胰岛素运动记录的时间
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordInsulinTime];
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordMedicinalTime];
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordDietTime];
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordSportsTime];
-}
+
 
 #pragma mark - 处理连接设备的各种回调
 //搜索到的血糖仪设备通知回调
@@ -786,19 +789,23 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 //开启蓝牙
 - (void)openBluetooth
 {
-    [JHSysAlertUtil presentAlertViewWithTitle:@"未开启蓝牙" message:@"监测到您的蓝牙已关闭" cancelTitle:@"去设置" defaultTitle:@"确定" distinct:true cancel:^{
-        NSString * defaultWork       = [self getDefaultWork];
-        NSString * bluetoothMethod   = [self getBluetoothMethod];
-        NSURL*url                    = [NSURL URLWithString:@"Prefs:root=Bluetooth"];
-        Class LSApplicationWorkspace = NSClassFromString(@"LSApplicationWorkspace");
-        [[LSApplicationWorkspace
-          performSelector:NSSelectorFromString(defaultWork)]
-         performSelector:NSSelectorFromString(bluetoothMethod)
-         withObject:url
-         withObject:nil];
-    } confirm:^{
-        
+    [JHSysAlertUtil presentAlertViewWithTitle:@"未开启蓝牙" message:@"请您先打开蓝牙开关" confirmTitle:@"确定" handler:^{
     }];
+    
+    //iOS11失效
+//    [JHSysAlertUtil presentAlertViewWithTitle:@"未开启蓝牙" message:@"监测到您的蓝牙已关闭" cancelTitle:@"去设置" defaultTitle:@"确定" distinct:true cancel:^{
+//        NSString * defaultWork       = [self getDefaultWork];
+//        NSString * bluetoothMethod   = [self getBluetoothMethod];
+//        NSURL*url                    = [NSURL URLWithString:@"Prefs:root=Bluetooth"];
+//        Class LSApplicationWorkspace = NSClassFromString(@"LSApplicationWorkspace");
+//        [[LSApplicationWorkspace
+//          performSelector:NSSelectorFromString(defaultWork)]
+//         performSelector:NSSelectorFromString(bluetoothMethod)
+//         withObject:url
+//         withObject:nil];
+//    } confirm:^{
+//
+//    }];
 }
 
 #pragma mark - 蓝牙状态监听
@@ -1004,6 +1011,38 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
         }
     } failure:^(GLRequest *request, NSError *error) {
         GL_ALERT_E(@"网络不稳定，参比血糖记录失败，请稍后再试")
+    }];
+}
+
+/**
+ 查询用户设置的血糖预警值
+ */
+- (void)selectDynamicBloodRang
+{
+    NSDictionary *postDic = @{
+                              FUNCNAME : @"selectDynamicBloodRang",
+                              INFIELD  : @{
+                                      @"ACCOUNT" : USER_ACCOUNT
+                                      }
+                              };
+    WS(ws);
+    [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
+        if (GETTAG) {
+            if (GETRETVAL) {
+                NSDictionary *dic = [[response objectForKey:@"Result"] objectForKey:OUTTABLE];
+                if ([dic count]) {
+                    [GL_USERDEFAULTS setValue:[NSString stringWithFormat:@"%.1f", [dic getFloatValue:@"low"]] forKey:SamTargetLow];
+                    [GL_USERDEFAULTS setValue:[NSString stringWithFormat:@"%.1f", [dic getFloatValue:@"height"]] forKey:SamTargetHeight];
+                    [ws.xueTangView.recordView  realodTargetData];
+                }
+            } else {
+                
+            }
+        } else {
+            
+        }
+    } failure:^(GLRequest *request, NSError *error) {
+        
     }];
 }
 

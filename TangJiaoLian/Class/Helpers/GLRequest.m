@@ -83,13 +83,17 @@
         if (data == nil) {
             data= @{};
         }
-                
-        [SVProgressHUD dismiss];
+        
+        if (show) {
+            [SVProgressHUD dismiss];
+        }
         success(self,data);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
 
         NSLog(@"[GLRequest]: %@",error.localizedDescription);
-        [SVProgressHUD dismiss];
+        if (show) {
+            [SVProgressHUD dismiss];
+        }
         failure(self,error);
     }];
 }

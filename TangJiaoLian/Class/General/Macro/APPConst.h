@@ -32,6 +32,15 @@
 #define SamTargetLow @"SamTargetLow"
 //目标最高血糖
 #define SamTargetHeight @"SamTargetHeight"
+//指尖血范围餐前高
+#define SamFingerRangeBeforeHigh @"SamFingerRangeBeforeHigh"
+//指尖血范围餐前低
+#define SamFingerRangeBeforeLow @"SamFingerRangeBeforeLow"
+//指尖血糖范围餐后高
+#define SamFingerRangeAfterHigh @"SamFingerRangeAfterHigh"
+//指尖血糖范围餐后低
+#define SamFingerRangeAfterLow @"SamFingerRangeAfterLow"
+
 //预警过的血糖
 #define SamTargetWarningArr @"SamTargetWarningArr"
 //用户ACCOUNT

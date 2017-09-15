@@ -33,7 +33,7 @@
 #define TCOL_LINE CHEX(0xCCCCCC)
 
 //历史血糖值cell背景色
-#define TCOL_HISTORYCELL RGBA(0,204,153,0.1)
+#define TCOL_HISTORYCELL RGBA(245,245,245,1)
 
 //设备列表版景色
 #define TCOL_DEVICECELLBG RGB(243, 243, 243)

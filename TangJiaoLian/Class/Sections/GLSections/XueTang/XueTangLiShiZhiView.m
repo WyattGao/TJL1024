@@ -23,7 +23,8 @@
 {
     self.sectionView         = self.headerView;
     self.sectionHeaderHeight = 31.5;
-    
+    self.bounces             = false;
+        
     [self setUpCellHeight:30 CellIdentifier:nil CellClassName:NSStringFromClass([XueTangLiShiZhiCellTableViewCell class])];
 }
 

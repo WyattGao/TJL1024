@@ -18,6 +18,8 @@
 - (void)createUI
 {
     self.separatorStyle = UITableViewCellStyleDefault;
+    self.sectionView    = nil;
+    self.bounces        = false;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -28,8 +30,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     switch (indexPath.row) {
-        case 0:return 214.0f;break;
-        case 1:return 382.0f;break;
+        case 0:return GL_IP6_H_RATIO(338) + 10;break; //+20 图例占10个像素 留白10个像素
+        case 1:return SCREEN_HEIGHT - 64 - GL_IP6_H_RATIO(338) - 10;break;
         default:break;
     }
     return 0;
@@ -41,8 +43,8 @@
     if (!cell) {
         cell = [[GLTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"mark"];
         switch (indexPath.row) {
-            case 0:[cell addSubviewByCellFrame:self.lishiZhiView];break;
-            case 1:[cell addSubviewByCellFrame:self.lineView];break;
+            case 0:[cell addSubviewByCellFrame:self.lineView];break;
+            case 1:[cell addSubviewByCellFrame:self.lishiZhiView];break;
             default:
                 break;
         }

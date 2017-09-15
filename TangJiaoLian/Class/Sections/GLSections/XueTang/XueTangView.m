@@ -49,7 +49,8 @@
 
 - (void)createUI
 {
-    self.turnShiOpTop = true;
+    self.turnShiOpTop        = true;
+    self.sectionHeaderHeight = 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

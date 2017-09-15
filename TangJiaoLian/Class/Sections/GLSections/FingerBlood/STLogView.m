@@ -197,6 +197,22 @@
                 } else if ([dayLab.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
                     [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
                 }
+                
+                if ([GLTools BloodSugarBeforeOrAfterMeal:[dayArr[(j+7)%8] getIntegerValue:@"TYPE"]] == 1) {
+                    //餐前
+                    if ([dayLab.lbl.text doubleValue] < [GL_USERDEFAULTS getDoubleValue:SamFingerRangeBeforeLow]) {
+                        [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
+                    } else if ([dayLab.lbl.text doubleValue] > [GL_USERDEFAULTS getDoubleValue:SamFingerRangeBeforeHigh]){
+                        [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+                    }
+                } else {
+                    //餐后
+                    if ([dayLab.lbl.text doubleValue] < [GL_USERDEFAULTS getDoubleValue:SamFingerRangeAfterLow]) {
+                        [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
+                    } else if ([dayLab.lbl.text doubleValue] > [GL_USERDEFAULTS getDoubleValue:SamFingerRangeAfterHigh]){
+                        [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+                    }
+                }
             }
 
             [BloodSugarScrollview addSubview:dayLab];

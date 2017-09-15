@@ -18,13 +18,13 @@
 
 - (void)createUI
 {
-    self.backgroundColor = TCOL_BG;
+    self.backgroundColor = TCOL_MAIN;
     
     for (NSInteger i = 0;i < 3;i++) {
         UILabel *lbl      = [UILabel new];
         lbl.text          = @[@"时间",@"血糖值",@"电流值"][i];
         lbl.font          = GL_FONT(14);
-        lbl.textColor     = TCOL_NORMALETEXT;
+        lbl.textColor     = TCOL_WHITETEXT;
         lbl.textAlignment = NSTextAlignmentCenter;
         
         [self addSubview:lbl];

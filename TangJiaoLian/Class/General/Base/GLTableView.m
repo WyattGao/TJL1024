@@ -23,6 +23,10 @@
 {
     self = [super init];
     if (self) {
+        if (@available(iOS 11.0, *)) { //iOS11不自动调整状态栏,并且需要手动设置sectionView默认为nil
+            self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+            self.sectionView                    = nil;
+        }
         self.dataSource     = self;
         self.delegate       = self;
         self.separatorStyle = UITableViewCellSeparatorStyleNone;

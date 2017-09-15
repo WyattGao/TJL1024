@@ -48,8 +48,19 @@ void GL_DisLog(NSString *log);
  */
 + (CGFloat)getReferenceForTtime:(NSString*)time;
 
+
+
 /**
- 返回某个时间点之前的最后一条血糖值
+ 返回血糖数据中在某个时间点之后的第一条数据
+
+ @param time 时间点
+ @param bloodArr 要传入的血糖数组
+ @return 返回的血糖值
+ */
++ (CGFloat)getAfterBloodValueForTime:(NSString *)time WithBloodArr:(NSArray *)bloodArr;
+
+/**
+ 返回某个时间点之前的上一条血糖值
  
  @param time 时间点
  @return 返回的血糖数值
@@ -96,4 +107,15 @@ void GL_DisLog(NSString *log);
  @return 糖尿病名称字符串
  */
 + (NSString *)getDiabetesNameWithType:(NSInteger)type;
+
+
+/**
+ 获取血糖录入时间是餐前还是餐后
+
+ @param type 血糖录入时间类型  0：早餐前，1：早餐后, 2：午餐前，3：午餐后，4：晚餐前，5：晚餐后，6：睡前，7：凌晨
+
+ @return 餐前或者餐后 1：餐前 2：餐后
+ */
++ (NSInteger)BloodSugarBeforeOrAfterMeal:(NSInteger)type;
+
 @end

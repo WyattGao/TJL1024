@@ -75,10 +75,17 @@
                     ws.mainTV.lineView.entity.bloodGlucoseArr = _bloodArr;
                     [ws.mainTV.lineView refreshLineView];
                 }
+            } else {
+                GL_ALERT_E(GETRETMSG);
+                [ws popViewController];
             }
+        } else {
+            GL_ALERT_E(GETMESSAGE);
+            [ws popViewController];
         }
     } failure:^(GLRequest *request, NSError *error) {
-        
+        GL_AFFAil;
+        [ws popViewController];
     }];
 }
 
@@ -101,7 +108,7 @@
                                               @"VERSION":GL_VERSION
                                               }
                                       };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取参比%@",response);
@@ -130,7 +137,7 @@
                                       @"OutField":@[
                                               ]
                                       };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取饮食%@",response);
@@ -160,7 +167,7 @@
                                               ]
                                       };
             
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取用药%@",response);
@@ -189,7 +196,7 @@
                                       @"OutField":@[
                                               ]
                                       };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
                 if ( GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取胰岛素%@",response);
@@ -217,7 +224,7 @@
                                       @"OutField":@[
                                               ]
                                       };
-            [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+            [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
                 if (GETTAG) {
                     if (GETRETVAL) {
                         NSLog(@"获取运动%@",response);

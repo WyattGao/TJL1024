@@ -16,19 +16,19 @@
 
 @interface STDataAnalysisViewController ()<UITableViewDelegate,UITableViewDataSource,UUChartDataSource>
 
-@property (nonatomic,strong) UITableView    *mainTV;
-@property (nonatomic,strong) UIView         *tvHeader;/**< MainTV的头 */
-@property (nonatomic,strong) UIScrollView   *tvHeaderSV;/**< 最上方日期滚动条 */
-@property (nonatomic,strong) UILabel        *thisMothLbl;/**< 当月月份标签 */
-@property (nonatomic,assign) NSInteger      thisMoth;
-@property (nonatomic,assign) NSInteger      thisYear;
-@property (nonatomic,strong) UILabel        *BloodWarningLbl;/**< 血糖警告值Lbl */
-@property (nonatomic,strong) NSMutableArray *dataSource;
-@property (nonatomic,strong) NSMutableArray *processingArr;
-@property (nonatomic,copy  ) NSString       *selBtnStr;
-@property (nonatomic,assign) NSInteger      dayNumForThisMoth;
-@property (nonatomic,strong) Example2PieView *pieView; /**< 饼图 */
-@property (nonatomic,strong) UIView *pieLegendView;  /**< 饼图图例 */
+@property (nonatomic,strong) UITableView         *mainTV;
+@property (nonatomic,strong) UIView              *tvHeader;      /**< MainTV的头 */
+@property (nonatomic,strong) UIScrollView        *tvHeaderSV;    /**< 最上方日期滚动条 */
+@property (nonatomic,strong) UILabel             *thisMothLbl;   /**< 当月月份标签 */
+@property (nonatomic,assign) NSInteger           thisMoth;
+@property (nonatomic,assign) NSInteger           thisYear;
+@property (nonatomic,strong) UILabel             *BloodWarningLbl;/**< 血糖警告值Lbl */
+@property (nonatomic,strong) NSMutableArray      *dataSource;
+@property (nonatomic,strong) NSMutableArray      *processingArr;
+@property (nonatomic,copy  ) NSString            *selBtnStr;
+@property (nonatomic,assign) NSInteger           dayNumForThisMoth;
+@property (nonatomic,strong) Example2PieView     *pieView;        /**< 饼图 */
+@property (nonatomic,strong) UIView              *pieLegendView;  /**< 饼图图例 */
 @property (nonatomic,strong) NSMutableDictionary *dataDic;
 
 @end
@@ -189,7 +189,6 @@
                         NSString *tmpValue = [dic getStringValue:@"value"];
                         [ws.referenceDic setValue:@{@"collectedtime":[dic getStringValue:@"createdtime"],@"value":tmpValue} forKey:tmpDay];
                     }
-                    
                     [ws.mainTV reloadData];
                 }
             }
@@ -712,7 +711,7 @@
                     make.left.equalTo(cell.contentView).offset(SCREEN_WIDTH/2 * i);
                 }];
             }
-            
+
             UIView *vLine = [UIView new];
             [cell.contentView addSubview:vLine];
             vLine.backgroundColor = TCOL_LINE;
@@ -795,6 +794,7 @@
             }
             //取当天的最后一条参比血糖值字典
             NSString *beforeValue   = [@([GLTools getLastBloodValueForTime:[dayLastReferceDic getStringValue:@"collectedtime"] WithBloodArr:self.bloodValueArr]) stringValue];
+            
             return @[@[[dayLastReferceDic getStringValue:@"value"]],@[beforeValue]];
         }
             break;

@@ -118,11 +118,30 @@ void GL_DisLog(NSString *log){
     }
     
     NSInteger currentTime = [[time toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970];
-    for (NSInteger i = bloodArr.count ; i>0; i--) {
-        NSString *bloodTime = bloodArr[i-1][@"collectedtime"];
+    for (NSInteger i = (bloodArr.count - 1) ; i>=0; i--) {
+        DLog(@"i == %ld",i);
+        NSString *bloodTime = bloodArr[i][@"collectedtime"];
         NSInteger upTimeSP   = [[bloodTime toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970];
         if (currentTime  > upTimeSP) {
-            return [bloodArr[i-1][@"value"] floatValue];
+            return [bloodArr[i][@"value"] floatValue];
+        }
+    }
+    
+    return 0;
+}
+
++ (CGFloat)getAfterBloodValueForTime:(NSString *)time WithBloodArr:(NSArray *)bloodArr
+{
+    if (![bloodArr count]) {
+        return 0;
+    }
+    
+    NSInteger currentTime = [[time toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970];
+    for (NSInteger i = 0 ; i< bloodArr.count; i++) {
+        NSString *bloodTime = bloodArr[i][@"collectedtime"];
+        NSInteger upTimeSP   = [[bloodTime toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970];
+        if (currentTime  < upTimeSP) {
+            return [bloodArr[i][@"value"] floatValue];
         }
     }
     
@@ -269,6 +288,16 @@ void GL_DisLog(NSString *log){
         case 3:return @"妊娠糖尿病";break;
         case 4:return @"特殊糖尿病";break;
         default:return @"";break;
+    }
+}
+
+//0早餐前，1早餐后, 2午餐前，3午餐后，4晚餐前，5晚餐后，6睡前，7凌晨
++ (NSInteger)BloodSugarBeforeOrAfterMeal:(NSInteger)type
+{
+    if (type == 0 || type == 2 || type == 4 || type == 6 || type == 7) {
+        return 1;
+    } else {
+        return 2;
     }
 }
 

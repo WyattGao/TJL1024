@@ -7,8 +7,13 @@
 //
 
 #import "TrainingCampViewController.h"
+#import <WebKit/WebKit.h>
 
-@interface TrainingCampViewController ()
+@interface TrainingCampViewController ()<WKNavigationDelegate>
+
+@property (nonatomic,strong)  WKWebView *webView;
+
+@property (nonatomic,strong)  UILabel *hintLbl;
 
 @end
 
@@ -19,22 +24,51 @@
     // Do any additional setup after loading the view.
 }
 
+//WkWebViewDelegate
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error
+{
+    _hintLbl.hidden = false;
+}
+
 - (void)createUI
 {
     [self setNavTitle:@"训练营"];
    
-    UILabel *label  = [UILabel new];
-    label.text      = @"暂未开放...";
-    label.font      = GL_FONT_B(23);
-    label.textColor = TCOL_NORMALETEXT;
-    [self addSubView:label];
+    [self addSubView:self.webView];
+    [self addSubView:self.hintLbl];
     
     WS(ws);
     
-    [label mas_makeConstraints:^(MASConstraintMaker *make) {
+    [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(ws.view).with.insets(UIEdgeInsetsMake(64, 0, 0, 0));
+    }];
+    
+    [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(ws.view);
         make.centerY.equalTo(ws.view).offset(0);
     }];
+}
+
+- (WKWebView *)webView
+{
+    if (!_webView) {
+        _webView                    = [WKWebView new];
+        [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(@"http://xly.tangjiaolian.cn")]];
+        _webView.navigationDelegate = self;
+    }
+    return _webView;
+}
+
+- (UILabel *)hintLbl
+{
+    if (!_hintLbl) {
+        _hintLbl           = [UILabel new];
+        _hintLbl.text      = @"暂未开放...";
+        _hintLbl.font      = GL_FONT_B(23);
+        _hintLbl.textColor = TCOL_NORMALETEXT;
+        _hintLbl.hidden    = true;
+    }
+    return _hintLbl;
 }
 
 - (void)didReceiveMemoryWarning {

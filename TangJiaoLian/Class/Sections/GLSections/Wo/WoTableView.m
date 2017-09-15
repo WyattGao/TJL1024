@@ -18,10 +18,12 @@
 
 @implementation WoTableView
 
-
-
 - (void)createUI
 {
+    if (@available(iOS 11.0, *)) { //iOS11不自动调整状态栏
+        self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
+    
     self.backgroundColor     = TCOL_BGGRAY;
     self.sectionView         = self.infoHeaderView;
     self.sectionHeaderHeight = GL_IP6_H_RATIO(237);
@@ -29,8 +31,8 @@
     
     for (NSInteger i = 0;i < 5;i++) {
         WoTableViewEntity *entity = [WoTableViewEntity new];
-        entity.imgStr   = self.imgArr[i];
-        entity.titleStr = self.titleArr[i];
+        entity.imgStr             = self.imgArr[i];
+        entity.titleStr           = self.titleArr[i];
         [self.tbDataSouce addObject:entity];
     }
     [self setUpCellHeight:50 CellIdentifier:nil CellClassName:NSStringFromClass([WoTableViewCell class])];

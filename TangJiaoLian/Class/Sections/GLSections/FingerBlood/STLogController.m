@@ -17,7 +17,7 @@
 #define IntTOSting(__int__) [NSString stringWithFormat:@"%d",__int__]
 
 
-@interface STLogController()<UIPickerViewDelegate,UIPickerViewDataSource,STDietRecordVCDelegate>
+@interface STLogController()<UIPickerViewDelegate,UIPickerViewDataSource>
 {
     int days;
     
@@ -54,7 +54,6 @@
     
     if(![[_recordLoadDete toString:@"dd"] isEqualToString:[[NSDate date] toString:@"dd"]]){
         [self.headerView createData];
-        [self getData];
     }
     
     _recordLoadDete = [NSDate date];
@@ -85,12 +84,13 @@
     [self makeTabble];
     
     //获取所有数据
-    [self getData];
+    [self getBloodRange];
+//    [self loadBloodSugar];
     
     WS(ws);
     
     self.reloadView.reload = ^{
-        [ws getData];
+        [ws loadBloodSugar];
     };
 }
 
@@ -127,7 +127,7 @@
     monthLab.text = [NSString stringWithFormat:@"%d月",month];
     
     //重新请求数据
-    [self getData];
+    [self loadBloodSugar];
     
     UIButton *tmpBtn;
     for (NSInteger i = 0;i < TYPECOUNT;i++) {
@@ -210,7 +210,7 @@
     TypeScrollview.scrollEnabled = NO;
     TypeScrollview.contentSize   = CGSizeMake(TYPECOUNT*SCREEN_WIDTH, TypeScrollview.height);
     TypeScrollview.mj_header = [MJRefreshGifHeader headerWithRefreshingBlock:^{
-        [self getData];
+        [self loadBloodSugar];
     }];
     [self addSubView:TypeScrollview];
 }
@@ -248,14 +248,12 @@
     return _headerView;
 }
 
-#pragma mark - - HTTP 血糖数据
+#pragma mark - 获取血糖数据
 - (void)loadBloodSugar{
     NSDictionary *dic = @{
                           @"FuncName":@"getBloodValueByMonthNew",
                           @"InField":@{
                               @"ACCOUNT":USER_ACCOUNT,	//帐号
-//                              @"YEAR" : @"2017",
-//                              @"MONTH" : @"8",
                               @"BEGINDATE":self.headerView.leftDateBtn.lbl.text, //起始日期
                               @"ENDDATE":self.headerView.rightDateBtn.lbl.text,  //结束日期
                               @"DEVICE":@"1"
@@ -269,8 +267,8 @@
                 BloodArr = [[response[@"Result"][@"OutTable"] reverseObjectEnumerator] allObjects];
                 [BloodSugarScrollview removeFromSuperview];
                 BloodSugarScrollview = [STLogView makeBloodSugarScrollview:TypeScrollview andSelectYear:year andMonth:month andData:BloodArr];
-                [self bloodArrHaveData];
-                [self.reloadView setHidden:true];
+                [ws bloodArrHaveData];
+                [ws.reloadView setHidden:true];
             } else {
                 GL_ALERT_E(GETRETMSG);
                 if (!BloodArr.count) {
@@ -280,44 +278,64 @@
         } else {
             GL_ALERT_E(GETMESSAGE);
             if (!BloodArr.count) {
-                [self.reloadView setHidden:false];
+                [ws.reloadView setHidden:false];
             }        }
     } failure:^(GLRequest *request, NSError *error) {
         GL_AFFAil;
         if (!BloodArr.count) {
-            [self.reloadView setHidden:false];
+            [ws.reloadView setHidden:false];
         }
     }];
 }
 
-- (void)getData{
-    //血糖
-    [self loadBloodSugar];
-}
-
-//血糖的异常值
-- (void)getBloodAbnormalList{
-    NSDictionary *dic = @{
-                          @"FuncName":@"getBloodAbnormalList",
-                          @"InField":@{
-                                  @"ACCOUNT":USER_ACCOUNT,	//帐号
-                                  @"YEAR":[@(year) stringValue],	//年份
-                                  @"MONTH":[@(month) stringValue],		//月份
-                                  @"DEVICE":@"1"
-                          },
-                          @"OutField":@[
-                              ]
-                          };
-    [GL_Requst postWithParameters:dic SvpShow:self.view success:^(GLRequest *request, id response) {
-        NSDictionary *myDic = response;
-        if ([myDic[@"Tag"] intValue]==1) {
-//            getBloodAbnormalListArr = myDic[@"Result"][@"OutTable"];
+#pragma mark - 获取血糖异常范围
+- (void)getBloodRange
+{
+    NSDictionary *postDic = @{
+                              FUNCNAME : @"selectBloodRang",
+                              INFIELD  : @{
+                                      @"ACCOUNT" : USER_ACCOUNT,
+                                      @"TYPE" : @"1" //1:普通患者 2:妊娠患者
+                                      }
+                              };
+    [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+        if (GETTAG) {
+            if (GETRETMSG) {
+                NSArray *rangArr = [[response objectForKey:@"Result"] objectForKey:@"OutTable"];
+                if ([rangArr isEqual:[NSArray class]]) {
+                    for (NSDictionary *dic in rangArr) {
+                        //gettimetype 1：餐前 2：餐后
+                        if ([dic getIntegerValue:@"gettimetype"] == 1) {
+                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowlow"]) forKey:SamFingerRangeBeforeLow];
+                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowhigh"]) forKey:SamFingerRangeBeforeHigh];
+                        } else {
+                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowlow"]) forKey:SamFingerRangeAfterLow];
+                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowhigh"]) forKey:SamFingerRangeAfterHigh];
+                        }
+                    }
+                }
+                [self loadBloodSugar];
+            } else {
+                [self getBloodRangeFailed];
+            }
+        } else {
+            [self getBloodRangeFailed];
         }
     } failure:^(GLRequest *request, NSError *error) {
-        
+        [self getBloodRangeFailed];
     }];
 }
 
+//获取血糖异常范围失败
+- (void)getBloodRangeFailed
+{
+    [GL_USERDEFAULTS setValue:@"6.0"  forKey:SamFingerRangeBeforeLow];
+    [GL_USERDEFAULTS setValue:@"7.0"  forKey:SamFingerRangeBeforeHigh];
+    [GL_USERDEFAULTS setValue:@"8.0"  forKey:SamFingerRangeAfterLow];
+    [GL_USERDEFAULTS setValue:@"10.0" forKey:SamFingerRangeAfterHigh];
+    
+    [self loadBloodSugar];
+}
 
 #pragma mark - 添加修改血糖
 - (void)bloodClick:(NSNotification*)not{
@@ -358,15 +376,7 @@
                 if (GETRETVAL) {
                     [btn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
                     //刷新数据，获取ID
-                    [self getData];
-                    if (btn.lbl.text.length!=0) {
-                        if ([btn.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
-                            [btn setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
-                        } else if ([btn.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
-                            [btn setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
-                        }
-                    }
-
+                    [self loadBloodSugar];
                 } else {
                     GL_ALERTCONTR(nil, GETRETMSG);
                     [btn setTitle:btnStr  forState:UIControlStateNormal];

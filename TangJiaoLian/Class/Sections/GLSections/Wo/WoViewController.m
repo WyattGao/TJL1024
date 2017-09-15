@@ -57,8 +57,8 @@
 
 - (void)createUI
 {
-    self.navHide = true;
-
+    self.navHide                                          = true;
+        
     [self addSubView:self.mainTV];
     
     WS(ws);

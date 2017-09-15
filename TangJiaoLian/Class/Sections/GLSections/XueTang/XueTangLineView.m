@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger,LineType) {
 - (void)createUI
 {
     [self addSubview:self.lineChat];
-    [self addSubview:self.cutlineView];
+//    [self addSubview:self.cutlineView];
     
     WS(ws);
     
@@ -42,11 +42,11 @@ typedef NS_ENUM(NSInteger,LineType) {
         make.centerX.equalTo(ws);
     }];
     
-    [self.cutlineView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(ws.lineChat.mas_bottom).offset(11);
-        make.right.equalTo(ws.mas_right).offset(-18);
-        make.size.mas_equalTo(CGSizeMake(170, 9));
-    }];
+//    [self.cutlineView mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.top.equalTo(ws.lineChat.mas_bottom).offset(11);
+//        make.right.equalTo(ws.mas_right).offset(-18);
+//        make.size.mas_equalTo(CGSizeMake(170, 9));
+//    }];
 }
 
 
@@ -111,7 +111,7 @@ typedef NS_ENUM(NSInteger,LineType) {
 - (XQDLineChart *)lineChat
 {
     if (!_lineChat) {
-        _lineChat = [[XQDLineChart alloc] initWithFrame:CGRectMake(0, 128.8, SCREEN_WIDTH, 342) andXQDColor:self.lineColor];
+        _lineChat = [[XQDLineChart alloc] initWithFrame:CGRectMake(0, 128.8, SCREEN_WIDTH, GL_IP6_H_RATIO(338)) andXQDColor:self.lineColor];
         [_lineChat initLineChart];
     }
     return _lineChat;

@@ -46,17 +46,48 @@
 //完成按钮点击事件
 - (void)finishBtnClick:(GLButton *)sender
 {
-    [GL_USERDEFAULTS setObject:self.lowTargetBtn.text  forKey:SamTargetLow];
-    [GL_USERDEFAULTS setObject:self.highTargetBtn.text forKey:SamTargetHeight];
-    [GL_USERDEFAULTS setBool:true  forKey:SamTargetState];
-    [GL_USERDEFAULTS setBool:false forKey:SAMISLOWWARNING];
-    [GL_USERDEFAULTS setBool:false forKey:SAMISHIGHWARNING];
-    [SVProgressHUD showSuccessWithStatus:@"监测目标成功"];
-    if (_refreshTarget) {
-        _refreshTarget();
-    }
-    [self popViewController];
+    [self saveDynamicBloodRang];
 }
+
+/**
+ 保存动态血糖预警范围
+ */
+- (void)saveDynamicBloodRang
+{
+    WS(ws);
+    NSDictionary *postDic = @{
+                              FUNCNAME : @"saveDynamicBloodRang",
+                              INFIELD  : @{
+                                      @"ACCOUNT" : USER_ACCOUNT,
+                                      @"low" : ws.lowTargetBtn.text,
+                                      @"height" : ws.highTargetBtn.text
+                                      }
+                              };
+    [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+        if (GETTAG) {
+            if (GETRETVAL) {
+                [GL_USERDEFAULTS setObject:ws.lowTargetBtn.text  forKey:SamTargetLow];
+                [GL_USERDEFAULTS setObject:ws.highTargetBtn.text forKey:SamTargetHeight];
+                [GL_USERDEFAULTS setBool:true  forKey:SamTargetState];
+                [GL_USERDEFAULTS setBool:false forKey:SAMISLOWWARNING];
+                [GL_USERDEFAULTS setBool:false forKey:SAMISHIGHWARNING];
+                [SVProgressHUD showSuccessWithStatus:@"监测目标保存成功"];
+                //刷新主页的监控目标值
+                if (ws.refreshTarget) {
+                    ws.refreshTarget();
+                }
+                [ws popViewController];
+            } else {
+                GL_ALERT_E(GETRETMSG);
+            }
+        } else {
+            GL_ALERT_E(GETMESSAGE);
+        }
+    } failure:^(GLRequest *request, NSError *error) {
+        GL_AFFAil;
+    }];
+}
+
 
 //检查高低目标按钮的值是否正确
 - (void)checkTheValueByTargetBtn

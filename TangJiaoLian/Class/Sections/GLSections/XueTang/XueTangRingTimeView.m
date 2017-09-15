@@ -57,7 +57,7 @@
     NSInteger nextHour = hour == 23 ? 0 : (hour + 1);
     
     NSString *selectHourStr = [[@(hour) stringValue] isEqualToString:[[NSDate date] toString:@"H"]] ? @"现在" : [NSString stringWithFormat:@"%ld点之间",nextHour];
-    
+    WS(ws);
     switch (status) {
         case GLRingTimeHintLabelPolarizationStatus:
             self.hintLbl.textColor = TCOL_MAIN;
@@ -65,17 +65,34 @@
             self.hintLbl.text      = @"设备极化中\n大概需要20分钟";
             break;
         case GLRingTimeHintLabelNormal:
+        {
             self.hintLbl.font      = GL_FONT(18);
             self.hintLbl.textColor = TCOL_MAIN;
             self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到%@\n您的血糖共出现\n0次异常",hour,selectHourStr];
+        }
             break;
         case GLRingTimeHintLabelAbNormal:
+        {
             self.hintLbl.font      = GL_FONT(18);
             self.hintLbl.textColor = TCOL_GLUCOSEHEIGHT;
             self.hintLbl.text      = [NSString stringWithFormat:@"%ld点到%@\n您的血糖共出现\n%ld次异常",hour,selectHourStr,abnormalCount];
+
+        }
             break;
         default:
             break;
+    }
+    
+    if (status != GLRingTimeHintLabelPolarizationStatus) {
+        //5秒后恢复展示实时血糖
+        GLButton *timeBtn = [self viewWithTag:30 + (hour == 0 ? 24 : hour)];
+        
+        double delayInSeconds = 5.0f;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [ws setStatus:GLRingTimeConnectingStatus];
+            timeBtn.selected = false;
+        });
     }
 }
 
@@ -211,17 +228,6 @@
     if (sender.selected) {
         //显示预警信息
         [self setStatus:GLRingTimeCheckedStatus];
-        
-//        NSArray *bloodValueArr = [GLCache readCacheArrWithName:SamBloodValueArr];
-//        NSInteger count = 0;
-//        for (NSDictionary *valueDic in bloodValueArr) {
-//            NSString *hour = [[[valueDic getStringValue:@"collectedtime"] toDate:@"yyyy-MM-dd HH:mm:ss"] toString:@"HH"];
-//            CGFloat value = [valueDic getFloatValue:@"value"];
-//            if ([hour isEqualToString:sender.text] && value > 0 && (value <= [GL_USERDEFAULTS getFloatValue:SamTargetLow] ||
-//                                                                    value >= [GL_USERDEFAULTS getFloatValue:SamTargetHeight])) {
-//                count ++;
-//            }
-//        }
         
         NSInteger count = [self.warningDic getIntegerValue:sender.text];
 
