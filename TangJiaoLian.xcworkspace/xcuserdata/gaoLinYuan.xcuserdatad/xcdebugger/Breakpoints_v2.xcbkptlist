@@ -9,13 +9,77 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/WearRecord/WearRecordDetailViewController.m"
-            timestampString = "527161188.071849"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangShiShiXueTangView.m"
+            timestampString = "527499967.815038"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "291"
-            endingLineNumber = "291"
-            landmarkName = "-bloodGlucoseDateSelectionView"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "-connectSwitchClick:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangRingTimeView.m"
+            timestampString = "527499967.815661"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
+            landmarkName = "-timeKeeping"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[XueTangRingTimeView timeKeeping]"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Desktop/Work/TangJiaoLian0804/TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangRingTimeView.m"
+                  timestampString = "527499968.569167"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__34-[XueTangRingTimeView timeKeeping]_block_invoke"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Desktop/Work/TangJiaoLian0804/TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangRingTimeView.m"
+                  timestampString = "527499968.571127"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "104"
+                  endingLineNumber = "104"
+                  offsetFromSymbolStart = "32">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/XueTang/XueTangRingTimeView.m"
+            timestampString = "527499967.816038"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "-timeKeeping"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

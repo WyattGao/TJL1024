@@ -184,48 +184,50 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 {
     [SVProgressHUD dismiss];
     
-    //显示连接按钮
-    [self.xueTangView.ringView setStatus:GLRingTimeUnunitedStatus];
-    [self.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
-    
-    [self.xueTangView.shiShiView.connectStateLbl setText:@"监测：关"];
-    [self.xueTangView.shiShiView.connectSwitch setOn:false];
-    [self setNavTitle:@"动态血糖（未连接）"];
-    
-    //清除绑定时间
-    [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
-    [GL_USERDEFAULTS setObject:nil forKey:SamEndBinDingDeviceTime];
-    //清除绑定设备名称
-    [GL_USERDEFAULTS setObject:nil forKey:SamBangDingDeviceName];
-    //还原极化完成状态
-    [GL_USERDEFAULTS setObject:false forKey:SamPolarizationFinish];
-    
-    [GL_USERDEFAULTS synchronize];
-    
-    //清除血糖数据
-    [GLCache writeCacheArr:@[] name:SamReferenceArr];
-    [GLCache writeCacheArr:@[] name:SamBloodValueArr];
-    [GLCache writeCacheArr:@[] name:SamCurrentValueArr];
-    
-    //清除预警数据
-    [GLCache writeCacheArr:@[] name:SamTargetWarningArr];
-    
-    //    [self.xueTangView.lineView refreshLineView];
-    [self.xueTangView.recordView realodTargetData];
-    NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
-    [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
-    //    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
-    
-    //刷新头部View的连接状态
-    [self.xueTangView.shiShiView reloadViewbyBinDingState];
-    
-    //修改记录按钮显示
-    [self.xueTangView.recordView changeDisplayStatus];
-    //初始化饮食用药胰岛素运动记录的时间
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordInsulinTime];
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordMedicinalTime];
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordDietTime];
-    [GL_USERDEFAULTS setValue:@"" forKey:SamRecordSportsTime];
+    GL_DISPATCH_MAIN_QUEUE(^{
+        //显示连接按钮
+        [self.xueTangView.ringView setStatus:GLRingTimeUnunitedStatus];
+        [self.xueTangView setContentOffset:CGPointMake(0, 0) animated:true];
+        
+        [self.xueTangView.shiShiView.connectStateLbl setText:@"监测：关"];
+        [self.xueTangView.shiShiView.connectSwitch setOn:false];
+        [self setNavTitle:@"动态血糖（未连接）"];
+        
+        //清除绑定时间
+        [GL_USERDEFAULTS setObject:nil forKey:SamStartBinDingDeviceTime];
+        [GL_USERDEFAULTS setObject:nil forKey:SamEndBinDingDeviceTime];
+        //清除绑定设备名称
+        [GL_USERDEFAULTS setObject:nil forKey:SamBangDingDeviceName];
+        //还原极化完成状态
+        [GL_USERDEFAULTS setObject:false forKey:SamPolarizationFinish];
+        
+        [GL_USERDEFAULTS synchronize];
+        
+        //清除血糖数据
+        [GLCache writeCacheArr:@[] name:SamReferenceArr];
+        [GLCache writeCacheArr:@[] name:SamBloodValueArr];
+        [GLCache writeCacheArr:@[] name:SamCurrentValueArr];
+        
+        //清除预警数据
+        [GLCache writeCacheArr:@[] name:SamTargetWarningArr];
+        
+        //    [self.xueTangView.lineView refreshLineView];
+        [self.xueTangView.recordView realodTargetData];
+        NSArray *bloodArr = [[[GLCache readCacheArrWithName:SamBloodValueArr] reverseObjectEnumerator] allObjects];
+        [self.xueTangView.liShiZhiView reloadDataWithBloodArr:bloodArr];
+        //    [self.xueTangView.shiShiView.zuiXinLbl setText:@"0.0"];
+        
+        //刷新头部View的连接状态
+        [self.xueTangView.shiShiView reloadViewbyBinDingState];
+        
+        //修改记录按钮显示
+        [self.xueTangView.recordView changeDisplayStatus];
+        //初始化饮食用药胰岛素运动记录的时间
+        [GL_USERDEFAULTS setValue:@"" forKey:SamRecordInsulinTime];
+        [GL_USERDEFAULTS setValue:@"" forKey:SamRecordMedicinalTime];
+        [GL_USERDEFAULTS setValue:@"" forKey:SamRecordDietTime];
+        [GL_USERDEFAULTS setValue:@"" forKey:SamRecordSportsTime];
+    });
 }
 
 
@@ -882,7 +884,7 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 /**
  上传佩戴开始和佩戴结束记录
  
- @param type GLStartRecord = 0 开始 GLEndRecord = 1 结束
+@param type GLStartRecord = 0 开始 GLEndRecord = 1 结束
  */
 - (void)recordWearingTime:(GLRecordWearingTimeType)type
 {
@@ -1134,10 +1136,12 @@ typedef NS_ENUM(NSInteger,GLRecordWearingTimeType){
 //停止监测
 - (void)stopBLE
 {
+    WS(ws);
     [JHSysAlertUtil presentAlertViewWithTitle:@"确定要停止监测吗" message:@"停止监测后将直接完成本次周期的监测" cancelTitle:@"确定" defaultTitle:@"取消" distinct:true cancel:^{
         [SVProgressHUD showWithStatus:@"正在停止监测"];
-        [self recordWearingTime:GLEndRecord];
+        [ws recordWearingTime:GLEndRecord];
     } confirm:^{
+        [ws.xueTangView.shiShiView.connectSwitch setOn:true];
     }];
 }
 

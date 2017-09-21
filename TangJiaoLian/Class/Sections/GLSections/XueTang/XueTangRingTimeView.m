@@ -42,6 +42,7 @@
                 [self.hintLbl setHidden:false];
                 [self.polarizationTimeLbl setHidden:false];
                 [self startTimeKeeping];
+                
                 break;
             case GLRingTimeConnectingStatus: //连接中
                 [self.timeDataView setHidden:false];
@@ -109,7 +110,7 @@
             //停止计时器
             GL_DISPATCH_MAIN_QUEUE(^{
                 [ws.timer setFireDate:[NSDate distantFuture]];
-                ws.hidden = true;
+                [ws setStatus:GLRingTimeConnectingStatus];
                 [GL_USERDEFAULTS setBool:true forKey:SamPolarizationFinish];
                 [GL_USERDEFAULTS synchronize];
                 if (ws.polarizationFinish) {

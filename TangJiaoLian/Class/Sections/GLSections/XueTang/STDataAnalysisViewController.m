@@ -17,9 +17,9 @@
 @interface STDataAnalysisViewController ()<UITableViewDelegate,UITableViewDataSource,UUChartDataSource>
 
 @property (nonatomic,strong) UITableView         *mainTV;
-@property (nonatomic,strong) UIView              *tvHeader;      /**< MainTV的头 */
-@property (nonatomic,strong) UIScrollView        *tvHeaderSV;    /**< 最上方日期滚动条 */
-@property (nonatomic,strong) UILabel             *thisMothLbl;   /**< 当月月份标签 */
+@property (nonatomic,strong) UIView              *tvHeader;/**< MainTV的头 */
+@property (nonatomic,strong) UIScrollView        *tvHeaderSV;/**< 最上方日期滚动条 */
+@property (nonatomic,strong) UILabel             *thisMothLbl;/**< 当月月份标签 */
 @property (nonatomic,assign) NSInteger           thisMoth;
 @property (nonatomic,assign) NSInteger           thisYear;
 @property (nonatomic,strong) UILabel             *BloodWarningLbl;/**< 血糖警告值Lbl */
@@ -27,10 +27,10 @@
 @property (nonatomic,strong) NSMutableArray      *processingArr;
 @property (nonatomic,copy  ) NSString            *selBtnStr;
 @property (nonatomic,assign) NSInteger           dayNumForThisMoth;
-@property (nonatomic,strong) Example2PieView     *pieView;        /**< 饼图 */
-@property (nonatomic,strong) UIView              *pieLegendView;  /**< 饼图图例 */
+@property (nonatomic,strong) Example2PieView     *pieView;/**< 饼图 */
+@property (nonatomic,strong) UIView              *pieLegendView;/**< 饼图图例 */
 @property (nonatomic,strong) NSMutableDictionary *dataDic;
-
+@property (nonatomic,strong) NSArray      *dietArr;/**< 监控期间所有饮食记录 */
 @end
 
 @implementation STDataAnalysisViewController
@@ -145,8 +145,8 @@
                                 [_tvHeaderSV setContentOffset:CGPointMake(0, 0) animated:YES];
                             });
                         }
-                        //获取参比血糖
-                        [self getSamReferGlucose];
+                        //获取饮食
+                        [self getBloodDiet];
                     }
                 }else
                 {
@@ -166,31 +166,29 @@
     }
 }
 
-- (void)getSamReferGlucose{
-    WS(ws);
+- (void)getBloodDiet{
     NSDictionary *postDic = @{
-                              @"FuncName":@"getSamReferGlucose",
+                              @"FuncName":@"getBloodDiet",
                               @"InField":@{
-                                      @"ACCOUNT":USER_ACCOUNT,	//账号
-                                      @"DEVICE":@"1",	//设备号
-                                      @"BEGINTIME":self.startTimeStr,	//开始时间
-                                      @"ENDTIME":self.endTimeStr,		//结束时间
-                                      @"VERSION":GL_VERSION
-                                      }
+                                      @"ACCOUNT":USER_ACCOUNT,    //帐号
+                                      @"YEAR":@"",    //年份
+                                      @"MONTH":@"",        //月份
+                                      //REPLACEADDs5
+                                      @"BEGINDATE":self.startTimeStr,    //开始日期，如果年和月份为空，则按开始日期和结束日期查询
+                                      @"ENDDATE":self.endTimeStr,    //结束日期
+                                      @"DEVICE":@"1"
+                                      },
+                              @"OutField":@[
+                                      ]
                               };
-    [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+    [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
         if (GETTAG) {
             if (GETRETVAL) {
-                NSLog(@"获取参比%@",response);
-                NSArray *arr = [[response objectForKey:@"Result"] objectForKey:@"OutTable"];
-                if (arr.count) {
-                    for (NSDictionary *dic in arr) {
-                        NSString *tmpDay   = [[[dic getStringValue:@"createdtime"] toDateDefault] toString:@"dd"];
-                        NSString *tmpValue = [dic getStringValue:@"value"];
-                        [ws.referenceDic setValue:@{@"collectedtime":[dic getStringValue:@"createdtime"],@"value":tmpValue} forKey:tmpDay];
-                    }
-                    [ws.mainTV reloadData];
-                }
+                NSLog(@"获取饮食%@",response);
+                self.dietArr = [NSArray arrayWithArray:response[@"Result"][@"OutTable"]];
+                UUChart *chart = [self.view viewWithTag:90];
+                [chart setUpChart];
+
             }
         }
     } failure:^(GLRequest *request, NSError *error) {
@@ -360,7 +358,6 @@
 - (void)changeTableviewData
 {
     __block CGFloat bCount      = 0;
-    __block CGFloat sCount      = 0;
     __block CGFloat lCount      = 0;
     count       = 0;
     __block CGFloat maxNum      = 0;/**<最高血糖*/
@@ -422,16 +419,13 @@
                     
                     validCount ++;
                 }
-                if (tmpValue >= 11.1) {
+                if (tmpValue >= [GL_USERDEFAULTS getFloatValue:SamTargetHeight]/* 11.1 */) {
                     bCount ++;
                 }
-                if (tmpValue >= 7.8&&tmpValue<11.1) {
-                    sCount ++;
-                }
-                if (tmpValue <= 2.9) {
+                if (tmpValue < /*2.9*/ [GL_USERDEFAULTS getFloatValue:SamTargetLow]) {
                     lCount ++;
                 }
-                if (tmpValue > 2.9 && tmpValue < 11.1) {
+                if (tmpValue >= [GL_USERDEFAULTS getFloatValue:SamTargetLow] && tmpValue <= [GL_USERDEFAULTS getFloatValue:SamTargetHeight]) {
                     normalCount++;
                 }
                 if (maxNum == 0) {
@@ -440,6 +434,7 @@
                 if (maxNum <= tmpValue) {
                     maxNum = tmpValue;
                 }
+                
                 //            if (miniNUm == 0) {
                 //                miniNUm = tmpValue;
                 //            }
@@ -467,7 +462,6 @@
     } else {
         /*
          [_processingArr addObject:@{@"高血糖占时间比(PT)(>=11.1mmoL/L)"     : [NSString stringWithFormat:@"%.0lf%%",bCount / count * 100]}];
-         [_processingArr addObject:@{@"高血糖占时间比(PT)(>=7.8mmoL/L))"      : [NSString stringWithFormat:@"%.0lf%%",sCount / count * 100]}];
          [_processingArr addObject:@{@"正常血糖时间百分比(3.9-7.8)" : [NSString stringWithFormat:@"%.0lf%%",normalCount / count * 100]}];
          [_processingArr addObject:@{@"低血糖占时间比(PT)(<=3.9mmoL/L)"      : [NSString stringWithFormat:@"%.0lf%%",lCount / count * 100]}];
          [_processingArr addObject:@{@"单日平均血糖值"              : [NSString stringWithFormat:@"%.2lf",aver]}];
@@ -482,9 +476,6 @@
         [_processingArr addObject:@{@"平均血糖(MGB)mmoL/L":[NSString stringWithFormat:@"%.2lf",aver]}];
         //高血糖占时间比 >=11.1
         [_processingArr addObject:@{@"高血糖占时间比(PT)(>=11.1mmoL/L)"     : [NSString stringWithFormat:@"%.0lf%%",bCount / count * 100]}];
-
-        //高血糖占时间比 >=7.8 && <11.1
-        [_processingArr addObject:@{@"高血糖占时间比(PT)(>=7.8mmoL/L))"      : [NSString stringWithFormat:@"%.0lf%%",sCount / count * 100]}];
 
         //低血糖占时间比 <=3.9
         [_processingArr addObject:@{@"低血糖占时间比(PT)(<=3.9mmoL/L)"      : [NSString stringWithFormat:@"%.0lf%%",lCount / count * 100]}];
@@ -562,11 +553,9 @@
         case 0:
         {
             _pieView = [[Example2PieView alloc]initWithFrame:CGRectMake(10,-20,162, 200)];
-            if (SCREEN_WIDTH >= GL_IPHONE_6_SCREEN_WIDTH) {
-                //                _pieView.width  = 200;
-                //                _pieView.height = 200;
+            if (GL_IS_IPHONE5) {
+                _pieView.x -= 10;
             }
-            
             _pieView.backgroundColor = [UIColor clearColor];
             for(int i = 0; i < 3; i++){
                 MyPieElement *elem = [MyPieElement pieElementWithValue:[@[[_dataDic getStringValue:@"高血糖数"],[_dataDic getStringValue:@"正常血糖数"],[_dataDic getStringValue:@"低血糖数"]][i] floatValue]color:@[TCOL_HIGHDATA,RGB(0.00, 207.00, 236.00),TCOL_LOWDATA][i]];
@@ -728,13 +717,14 @@
             for (NSInteger i = 0;i < 2;i++) {
                 UUChart *barChart = [[UUChart alloc]initWithFrame:CGRectMake(i * SCREEN_WIDTH/2, 30 + 18, SCREEN_WIDTH/2, 220 - 18) dataSource:self style:UUChartStyleBar];
                 barChart.tag = 90 + i;
+                
                 [barChart showInView:cell.contentView];
                 
                 UILabel *titleLbl      = [UILabel new];
                 [cell.contentView addSubview:titleLbl];
                 titleLbl.font          = GL_FONT(14);
                 titleLbl.textColor     = TCOL_SUBHEADTEXT;
-                titleLbl.text          = @[@"参比血糖误差",@"最低最高值(mmol/L)"][i];
+                titleLbl.text          = @[@"空腹/餐后血糖平均值",@"最低最高值(mmol/L)"][i];
                 titleLbl.textAlignment = NSTextAlignmentCenter;
                 
                 [titleLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -771,7 +761,7 @@
 {
     switch (chart.tag) {
         case 90: //参比血糖误差柱状图
-            return @[@"参比血糖",@"平台血糖"];
+            return @[@"空腹",@"餐后"];
             break;
         case 91: //最高最低值柱状图
             return @[@"最高值",@"最低值"];
@@ -787,15 +777,30 @@
     switch (chart.tag) {
         case 90:
         {
-            NSDictionary *dayLastReferceDic = [self.referenceDic objectForKey:_selBtnStr];
-
-            if (!dayLastReferceDic) {
-                return @[@[@"无"],@[@"0"]];
+            if(!self.dietArr.count){
+                return @[@[@"无"],@[@"无"]];
             }
-            //取当天的最后一条参比血糖值字典
-            NSString *beforeValue   = [@([GLTools getLastBloodValueForTime:[dayLastReferceDic getStringValue:@"collectedtime"] WithBloodArr:self.bloodValueArr]) stringValue];
             
-            return @[@[[dayLastReferceDic getStringValue:@"value"]],@[beforeValue]];
+            NSMutableArray *allDiettimeArr = [NSMutableArray array];
+            for (NSDictionary *dic in self.dietArr) {
+                if ([[[[dic getStringValue:@"DIETTIME"] toDateDefault] toString:@"dd"] isEqualToString:_selBtnStr]) {
+                    [allDiettimeArr addObject:[dic getStringValue:@"DIETTIME"]];
+                }
+            }
+            
+            CGFloat allBeforeValue = 0;
+            CGFloat allAfterValue  = 0;
+
+            for (NSString *timeStr in allDiettimeArr) {
+                allBeforeValue += [GLTools getLastBloodValueForTime:timeStr WithBloodArr:self.bloodValueArr];
+                NSString *afterStr = [[[timeStr toDateDefault] dateByAddingHours:2] toStringyyyyMMddHHmmss];
+                allAfterValue += [GLTools getAfterBloodValueForTime:afterStr WithBloodArr:self.bloodValueArr];
+            }
+            
+            CGFloat beforeAverageValue = allBeforeValue/allDiettimeArr.count;
+            CGFloat afterAverageValue = allAfterValue/allDiettimeArr.count;
+            
+            return @[@[[NSString stringWithFormat:@"%.1lf",beforeAverageValue]],@[[NSString stringWithFormat:@"%.1lf",afterAverageValue]]];
         }
             break;
         case 91:
@@ -810,6 +815,9 @@
 //颜色数组
 - (NSArray *)chartConfigColors:(UUChart *)chart
 {
+    if (chart.tag == 90) { //空腹/餐后血糖平均值
+        return @[TCOL_MAIN,TCOL_LOWDATA];
+    }
     return @[TCOL_HIGHDATA,TCOL_LOWDATA];
 }
 
@@ -877,6 +885,14 @@
         _referenceDic = [NSMutableDictionary dictionary];
     }
     return _referenceDic;
+}
+
+- (NSArray *)dietArr
+{
+    if (!_dietArr) {
+        _dietArr = [NSArray array];
+    }
+    return _dietArr;
 }
                                        
 

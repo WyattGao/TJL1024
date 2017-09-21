@@ -119,7 +119,6 @@ void GL_DisLog(NSString *log){
     
     NSInteger currentTime = [[time toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970];
     for (NSInteger i = (bloodArr.count - 1) ; i>=0; i--) {
-        DLog(@"i == %ld",i);
         NSString *bloodTime = bloodArr[i][@"collectedtime"];
         NSInteger upTimeSP   = [[bloodTime toDate:@"yyyy-MM-dd HH:mm:ss"] timeIntervalSince1970];
         if (currentTime  > upTimeSP) {
@@ -130,6 +129,12 @@ void GL_DisLog(NSString *log){
     return 0;
 }
 
+/**
+ 返回某个时间点之后的第一条血糖值
+ 
+ @param time 时间点
+ @return 返回的血糖数值
+ */
 + (CGFloat)getAfterBloodValueForTime:(NSString *)time WithBloodArr:(NSArray *)bloodArr
 {
     if (![bloodArr count]) {

@@ -58,4 +58,6 @@ typedef NS_ENUM(NSInteger, UUChartStyle){
 
 - (void)strokeChart;
 
+- (void)setUpChart;
+
 @end

@@ -129,10 +129,12 @@
         [self reloadConectStateLblTime];
         [self.tendencyBtn setTitle:@"佩戴记录" forState:UIControlStateNormal];
         [_connectSwitch setOn:true];
+        [_connectSwitch setUserInteractionEnabled:true];
     } else {
         _connectStateLbl.text = @"监测：关";
         [self.tendencyBtn setTitle:@"佩戴记录" forState:UIControlStateNormal];
         [_connectSwitch setOn:false];
+        [_connectSwitch setUserInteractionEnabled:false];
     }
 }
 
