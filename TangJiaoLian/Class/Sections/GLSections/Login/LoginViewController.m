@@ -11,7 +11,9 @@
 #import "EMSDK.h"
 
 @interface LoginViewController ()<UITextFieldDelegate,ForgetPassWordViewControllerDelegate>
-
+{
+    CGFloat tfRectY;
+}
 @property (nonatomic,strong) GLTextField *phoneTF;  /**< 手机号码编辑框 */
 @property (nonatomic,strong) GLTextField *passTF;   /**< 密码编辑框 */
 @property (nonatomic,strong) GLButton *loginBtn;    /**< 登陆按钮 */
@@ -424,6 +426,39 @@
     [tf mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(gesture.view);
         make.size.mas_equalTo(CGSizeMake(200, 30));
+    }];
+}
+
+- (BOOL)isKeyboardListener
+{
+    return true;
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    CGRect rect = [textField convertRect:textField.bounds toView:GL_KEYWINDOW];
+    tfRectY     = rect.origin.y + rect.size.height;
+    return true;
+}
+
+- (void)keyboardWillShowHandler:(CGSize)keyBoardSize
+{
+    
+    if (tfRectY  > SCREEN_HEIGHT - keyBoardSize.height) {
+        WS(ws);
+        CGFloat heightDiff = (SCREEN_HEIGHT  - keyBoardSize.height) - tfRectY;
+        
+        [UIView animateWithDuration:0.25f animations:^{
+            ws.view.y = heightDiff;
+        }];
+    }
+}
+
+- (void)keyboardWillHideHandler:(CGSize)keyBoardSize
+{
+    WS(ws);
+    [UIView animateWithDuration:0.25f animations:^{
+        ws.view.y = 0;
     }];
 }
 

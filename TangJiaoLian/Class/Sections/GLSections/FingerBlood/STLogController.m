@@ -302,7 +302,7 @@
         if (GETTAG) {
             if (GETRETMSG) {
                 NSArray *rangArr = [[response objectForKey:@"Result"] objectForKey:@"OutTable"];
-                if ([rangArr isEqual:[NSArray class]]) {
+                if ([rangArr isKindOfClass:[NSArray class]]) {
                     for (NSDictionary *dic in rangArr) {
                         //gettimetype 1：餐前 2：餐后
                         if ([dic getIntegerValue:@"gettimetype"] == 1) {

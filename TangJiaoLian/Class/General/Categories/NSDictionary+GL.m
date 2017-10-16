@@ -45,6 +45,7 @@
     if ([self objectForKey:key] == nil || [[self objectForKey:key] isEqual:[NSNull null]]) {
         return 0;
     }
+    
     return [[self objectForKey:key] floatValue];
 }
 

@@ -192,11 +192,11 @@
 
             
             if (dayLab.lbl.text.length!=0) {
-                if ([dayLab.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
-                    [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
-                } else if ([dayLab.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
-                    [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
-                }
+//                if ([dayLab.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
+//                    [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
+//                } else if ([dayLab.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
+//                    [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+//                }
                 
                 if ([GLTools BloodSugarBeforeOrAfterMeal:[dayArr[(j+7)%8] getIntegerValue:@"TYPE"]] == 1) {
                     //餐前
