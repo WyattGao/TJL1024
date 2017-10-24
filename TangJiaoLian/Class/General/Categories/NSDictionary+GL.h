@@ -32,5 +32,6 @@
  */
 - (NSArray *)getArrValue:(id)key;
 
+- (NSDictionary *)getDictionaryValue:(id)key;
 
 @end

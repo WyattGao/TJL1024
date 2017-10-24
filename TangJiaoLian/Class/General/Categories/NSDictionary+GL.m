@@ -57,6 +57,14 @@
     return [self objectForKey:key];
 }
 
+- (NSDictionary *)getDictionaryValue:(id)key
+{
+    if ([self objectForKey:key] == nil || [[self objectForKey:key] isEqual:[NSNull null]]) {
+        return @{};
+    }
+    return [self objectForKey:key];
+}
+
 - (NSString *)descriptionWithLocale:(id)locale
 {
     NSMutableString * str = [NSMutableString new];

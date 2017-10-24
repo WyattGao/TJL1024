@@ -2,8 +2,8 @@
 //  STLogController.m
 //  Diabetes
 //
-//  Created by xuqidong on 16/3/1.
-//  Copyright © 2016年 hlcc. All rights reserved.
+//  Created by 高临原 on 17/9/25.
+//  Copyright© 2017年 高临原♬. All rights reserved.
 //
 
 #import "STLogController.h"
@@ -11,13 +11,14 @@
 #import "STDietRecordViewController.h"
 #import "STMedicationController.h"
 #import "LogDateHeaderView.h"
+#import "LoginViewController.h"
 
 #define TYPECOUNT 5
 
 #define IntTOSting(__int__) [NSString stringWithFormat:@"%d",__int__]
 
 
-@interface STLogController()<UIPickerViewDelegate,UIPickerViewDataSource>
+@interface STLogController()
 {
     int days;
     
@@ -57,16 +58,32 @@
     }
     
     _recordLoadDete = [NSDate date];
+    
+    self.navigationController.navigationBar.translucent = false;
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+
+    WS(ws);
+    
+    //判断糖教练账号和有赞账号是否登陆
+    if (!ISLOGIN || !YZISLOGIN) {
+        LoginViewController *loginVC = [LoginViewController new];
+
+        [self.navigationController presentViewController:loginVC animated:false completion:^{
+            [super viewDidLoad];
+        }];
+    } else {
+        [super viewDidLoad];
+    }
     
     _recordLoadDete = [NSDate date];
     
     [self setNavTitle:@"指尖血（点击单元格编辑）"];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(bloodClick:) name:@"bloodClick" object:nil];//监测异常
+    //登陆完成
+    [GL_NOTIC_CENTER addObserver:self selector:@selector(loginFinish) name:@"loginFinish" object:nil];
     
     self.view.backgroundColor = RGB(241, 241, 245);
 
@@ -84,14 +101,21 @@
     [self makeTabble];
     
     //获取所有数据
-    [self getBloodRange];
-//    [self loadBloodSugar];
+    if (ISLOGIN) {
+        [self getBloodRange];
+    }
     
-    WS(ws);
+//    [self loadBloodSugar];
     
     self.reloadView.reload = ^{
         [ws loadBloodSugar];
     };
+}
+
+//登陆完成通知回调
+- (void)loginFinish
+{
+    [self getBloodRange];
 }
 
 - (void)bloodArrHaveData
@@ -103,115 +127,18 @@
     }
 }
 
-#pragma mark - - 时间选择
-- (void)cancelDown{
-    
-    for (UIView *view in alertTimeBackGroundView.subviews) {
-        [view removeFromSuperview];
-    }
-    
-    [UIView animateWithDuration:0.2 animations:^{
-        alertTimeBackGroundView.frame = CGRectMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0, 0);
-        alertTimeView.alpha = 0;
-    } completion:^(BOOL finished) {
-        [alertTimeView removeFromSuperview];
-        [alertTimeBackGroundView removeFromSuperview];
-    }];
-}
-
-- (void)okDown{
-    year = (int)[timePickerView selectedRowInComponent:0]+2000;
-    month = (int)[timePickerView selectedRowInComponent:1]+1;
-    [self cancelDown];
-    yearLab.text = [NSString stringWithFormat:@"%d年",year];
-    monthLab.text = [NSString stringWithFormat:@"%d月",month];
-    
-    //重新请求数据
-    [self loadBloodSugar];
-    
-    UIButton *tmpBtn;
-    for (NSInteger i = 0;i < TYPECOUNT;i++) {
-        UIButton *btn = [self.view viewWithTag:2310 + i];
-        if (btn.selected) {
-            tmpBtn = btn;
-        }
-    }
-}
-
-
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    NSInteger yrow = [pickerView selectedRowInComponent:0];
-    NSInteger mrow = [pickerView selectedRowInComponent:1];
-    alertTimeLab.text = [NSString stringWithFormat:@"%ld年%ld月",yrow+2000,mrow+1];
-}
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 2;
-}
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
-    if (component == 1) {//月
-        return 12;
-    }else if(component == 0){//年
-        NSDate *date = [NSDate date];
-        return [[date toString:@"yyyy"] intValue] - 1999;
-    }else{
-        return 1;
-    }
-}
-
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
-    UILabel *myView = nil;
-    myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 100, 30)];
-    myView.textAlignment = NSTextAlignmentCenter;
-    myView.font = [UIFont systemFontOfSize:20];         //用label来设置字体大小
-    myView.backgroundColor = [UIColor clearColor];
-    myView.textColor = RGB(74, 74, 74);
-    if (component == 0) {
-        myView.text = [NSString stringWithFormat:@"%ld",2000+(long)row];
-    }else if (component == 1){
-        myView.text = [NSString stringWithFormat:@"%ld",(long)row+1];
-    }
-    return myView;
-}
-
-
-
-#pragma mark - - 设置滚动
-- (void)setIndex:(NSString*)index{
-    UIButton *btn = (UIButton*)[self.view viewWithTag:2310+[index intValue]];
-    [self changeType:btn];
-}
-
-- (void)changeType:(UIButton*)sender{
-    for (int i=2310; i<2310+TYPECOUNT; i++) {
-        UIButton *btn = (UIButton*)[self.view viewWithTag:i];
-        btn.selected = NO;
-    }
-    sender.selected = YES;
-    
-    NSInteger index = sender.tag-2310;
-
-    
-    UIView *line = (UIView*)[self.view viewWithTag:1101];
-    [UIView animateWithDuration:0.2 animations:^{
-        line.frame = CGRectMake(index*(SCREEN_WIDTH/TYPECOUNT), 39, SCREEN_WIDTH/TYPECOUNT, 2);
-        TypeScrollview.contentOffset = CGPointMake(index*SCREEN_WIDTH, 0);
-    }];
-}
-
 #pragma mark - - makeTypeScrollview
 - (void)makeTypeScrollview{
-    TypeScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0,64, SCREEN_WIDTH, SCREEN_HEIGHT-(64 + 49))];
+    
+    CGFloat statusHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+    CGFloat navBarHeight = self.navigationController.navigationBar.height;
+    TypeScrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0,0, SCREEN_WIDTH, SCREEN_HEIGHT-(0 + 49 + statusHeight + navBarHeight))];
     TypeScrollview.pagingEnabled = YES;
     TypeScrollview.scrollEnabled = NO;
     TypeScrollview.contentSize   = CGSizeMake(TYPECOUNT*SCREEN_WIDTH, TypeScrollview.height);
-    TypeScrollview.mj_header = [MJRefreshGifHeader headerWithRefreshingBlock:^{
-        [self loadBloodSugar];
-    }];
+//    TypeScrollview.mj_header = [MJRefreshGifHeader headerWithRefreshingBlock:^{
+//        [self loadBloodSugar];
+//    }];
     [self addSubView:TypeScrollview];
 }
 
@@ -229,7 +156,7 @@
     WS(ws);
     
     [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(ws.view).offset(64);
+        make.top.equalTo(ws.view).offset(0);
         make.centerX.equalTo(ws.view);
         make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH, 42));
     }];
@@ -326,7 +253,7 @@
     }];
 }
 
-//获取血糖异常范围失败
+//获取血糖异常范围失败设置默认值
 - (void)getBloodRangeFailed
 {
     [GL_USERDEFAULTS setValue:@"6.0"  forKey:SamFingerRangeBeforeLow];
@@ -424,5 +351,6 @@
     }
     return _slideRuleView;
 }
+
 
 @end

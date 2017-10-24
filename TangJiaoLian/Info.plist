@@ -19,7 +19,13 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.1.1</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.0</string>
+	<string>1.0.3</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>wechat</string>
+		<string>alipay</string>
+		<string>weixin</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -30,16 +36,11 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>需要您开启蓝牙，以便您连接动态血糖仪</string>
 	<key>NSCameraUsageDescription</key>
-	<string>请允许App访问相机权限，以便您上传饮食、问诊等照片</string>
+	<string>请允许App访问相机权限，以便您上传照片</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>请允许App访问麦克风，以便您进行语音聊天等服务</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>请允许App访问相册权限，以便您上传饮食、问诊等照片</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>bluetooth-central</string>
-		<string>bluetooth-peripheral</string>
-	</array>
+	<string>请允许App访问相册权限，以便您上传照片</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>

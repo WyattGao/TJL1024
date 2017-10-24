@@ -17,6 +17,7 @@
 #import "WoChangePassWordWihPhoneFinishViewController.h"
 #import "MessageCenterViewController.h"
 #import "SettingsViewController.h"
+#import <YZBaseSDK/YZBaseSDK.h>
 
 @interface WoViewController ()
 
@@ -127,6 +128,9 @@
                       if (!error) {
                           NSLog(@"退出成功");
                       }
+                      //退出有赞登录
+                      [YZSDK logout];
+                      
                       GL_ALERT_S(@"已退出登录");
                   }];
               }

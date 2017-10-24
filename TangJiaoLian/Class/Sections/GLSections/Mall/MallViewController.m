@@ -8,8 +8,10 @@
 
 #import "MallViewController.h"
 #import <WebKit/WebKit.h>
+#import <YZNativeSDK/YZNativeSDK.h>
 
-@interface MallViewController ()<WKNavigationDelegate>
+
+@interface MallViewController ()<WKNavigationDelegate,YZNLoginDelegate>
 
 @property (nonatomic,strong)  WKWebView *webView;
 
@@ -22,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self pushWithController:[self getYZViewController]];
 }
 
 - (void)navRightBtnClick:(UIButton *)sender
@@ -94,6 +97,28 @@
         _hintLbl.backgroundColor = self.view.backgroundColor;
     }
     return _hintLbl;
+}
+
+/**
+ 初始化有赞主页
+ 
+ @return 有赞主页实例
+ */
+- (UIViewController *)getYZViewController
+{
+    UIViewController *yzViewController = [[YZNViewManager defaultManager] viewControllerForUrl:GL_URL(YZMALL_URL)];
+    [YZNViewManager defaultManager].delegate = self;
+    return yzViewController;
+}
+
+/**
+ 有赞登陆成功回调
+ 
+ @param manager YZNViewManager
+ */
+- (void)receiveLoginRequestFrom:(YZNViewManager *)manager
+{
+    [[YZNViewManager defaultManager] userDidLogin:true];
 }
 
 - (void)didReceiveMemoryWarning {

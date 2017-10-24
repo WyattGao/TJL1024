@@ -48,7 +48,7 @@
     
 }
 
-- (void)POST:(NSString *)URLString
+- (void)POST:(APIType)apiType
   parameters:(NSDictionary*)parameters
      SvpShow:(BOOL)show
      success:(void (^)(GLRequest *request, id response))success
@@ -60,14 +60,28 @@
     
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONWritingPrettyPrinted error:nil];
     NSString *json =[[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    parameters = @{@"param" : json};
+    
+    NSString *urlString = @"";
+    
+    switch (apiType) {
+        case API_HOST:
+            urlString  = HOST_URL;
+            parameters = @{@"param" : json};
+            break;
+        case API_YZ:
+            urlString = YZLOGIN_URL;
+            break;
+        default:
+            break;
+    }
+    
     if (show) {
         [SVProgressHUD show];
     }
     
     NSLog(@"[GLRequest 请求参数]: %@",parameters);
 
-    [self.operationManager POST:URLString parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+    [self.operationManager POST:urlString parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
         NSLog(@"%@",uploadProgress);
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -76,7 +90,7 @@
         NSLog(@"[GLRequest]: %@",responseJson);
         
         NSData *responseData = [responseJson dataUsingEncoding:NSUTF8StringEncoding];
-
+        
         NSError *err;
         NSDictionary *data = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&err];
         
@@ -100,16 +114,17 @@
 
 -(void)postWithParameters:(NSDictionary *)parameters SvpShow:(BOOL)show success:(void (^)(GLRequest *, id))success failure:(void (^)(GLRequest *, NSError *))failure
 {
-    [self POST:HOST_URL
+    [self POST:API_HOST
     parameters:parameters
        SvpShow:show
        success:success
      failure:failure];
 }
 
+
 - (void)postWithURL:(NSString *)URLString parameters:(NSDictionary *)parameters {
     
-    [self POST:URLString
+    [self POST:API_HOST
     parameters:parameters
        SvpShow:false
        success:^(GLRequest *request, NSString *responseString) {

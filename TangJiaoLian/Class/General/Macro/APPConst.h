@@ -68,6 +68,10 @@
 //是否声音通知
 #define SamIsAudio @"SamIsAudio"
 
+#define YZToken @"YZToken"
+#define YZISLOGIN [GL_USERDEFAULTS boolForKey:@"YZLOGIN"]
+#define YZISSHOPINGHINT @"YZISSHOPINGHINT"
+
 /**
  * @brief 获取请求状态
  */

@@ -53,8 +53,10 @@
 
 - (void)createUI
 {
-    [self setNavTitle:@"训练营"];
-    [self setRightBtnImgNamed:@"刷新-白"];
+    [self setNavHide:true];
+    
+//    [self setNavTitle:@"训练营"];
+//    [self setRightBtnImgNamed:@"刷新-白"];
    
     [self addSubView:self.webView];
     [self addSubView:self.hintLbl];
@@ -62,7 +64,7 @@
     WS(ws);
     
     [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(ws.view).with.insets(UIEdgeInsetsMake(64, 0, 0, 0));
+        make.edges.equalTo(ws.view).with.insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
     
     [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -78,6 +80,9 @@
         _webView                    = [WKWebView new];
         [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(@"http://xly.tangjiaolian.cn")]];
         _webView.navigationDelegate = self;
+        if (@available(iOS 11.0, *)) { //iOS11不自动调整状态栏
+            _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return _webView;
 }

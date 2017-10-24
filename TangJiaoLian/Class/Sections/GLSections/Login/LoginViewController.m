@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "ForgetPassWordViewController.h"
 #import "EMSDK.h"
+#import <YZBaseSDK/YZBaseSDK.h>
 
 @interface LoginViewController ()<UITextFieldDelegate,ForgetPassWordViewControllerDelegate>
 {
@@ -336,22 +337,11 @@
                 //发送通知改头像
                 [self sendChangeIcon];
                 
-                NSString  *huanUserName = [dic getStringValue:@"HUAN_USERNAME"];
-                EMError *error = [[EMClient sharedClient] loginWithUsername:huanUserName password:@"123456"];
-                if (!error) {
-                    //设置环信自动登陆
-                    [[EMClient sharedClient].options setIsAutoLogin:YES];
-                    NSLog(@"环信登录成功");
-                }
+                //环信登陆
+                [self huanxinLogin:[dic getStringValue:@"HUAN_USERNAME"]];
                 
-                //登陆成功回调
-                [self dismissViewControllerAnimated:true completion:^{
-                    GL_ALERT_S(@" 登录成功  ");
-                    if (_loginFinishBlock) {
-                        _loginFinishBlock();
-                    }
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"loginFinish" object:nil];
-                }];
+                //有赞登陆
+                [self yzLogin];
             } else {
                 GL_ALERT_E(RETMSG);
             }
@@ -370,6 +360,55 @@
     NSNotification *notify = [NSNotification notificationWithName:@"changeUserInfo" object:nil];
     
     [center postNotification:notify];
+}
+
+
+/**
+ 登陆环信
+ */
+- (void)huanxinLogin:(NSString *)huanUserName
+{
+    EMError *error = [[EMClient sharedClient] loginWithUsername:huanUserName password:@"123456"];
+    if (!error) {
+        //设置环信自动登陆
+        [[EMClient sharedClient].options setIsAutoLogin:YES];
+        NSLog(@"环信登录成功");
+    }
+}
+
+/**
+ 登陆有赞
+ */
+- (void)yzLogin
+{
+    NSDictionary *postDic = @{
+                              @"func" : @"yzLogin",
+                              @"id" : [GL_USERDEFAULTS getStringValue:@"USERID"],
+                              @"username" : [GL_USERDEFAULTS getStringValue:@"USERNAME"]
+                              };
+    [GL_Requst POST:API_YZ parameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+        if ([response getIntegerValue:@"errCode"] == 0) {
+            NSDictionary *dic = [[response getDictionaryValue:@"data"] getDictionaryValue:@"data"];
+            //成功
+            [YZSDK setToken:[dic getStringValue:@"access_token"] key:[dic getStringValue:@"cookie_key"] value:[dic getStringValue:@"cookie_value"]];
+            [GLCache writeCacheDic:dic name:YZToken];
+            [GL_USERDEFAULTS setBool:true forKey:@"YZLOGIN"];
+            [GL_USERDEFAULTS setBool:false forKey:YZISSHOPINGHINT];
+            //登陆成功回调
+            [self dismissViewControllerAnimated:true completion:^{
+                GL_ALERT_S(@" 登录成功  ");
+                if (_loginFinishBlock) {
+                    _loginFinishBlock();
+                }
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"loginFinish" object:nil];
+            }];
+
+        } else {
+            //失败
+            [GL_USERDEFAULTS setBool:false forKey:@"YZLOGIN"];
+        }
+    } failure:^(GLRequest *request, NSError *error) {
+    }];
 }
 
 //注册

@@ -20,6 +20,12 @@
     [self writeCacheObject:arr filePath:path];
 }
 
++ (void)writeCacheDic:(NSDictionary *)dic name:(NSString *)name
+{
+    NSString *path = [DOCUMENT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"__%@",name]];
+    [self writeCacheObject:dic filePath:path];
+}
+
 + (NSArray *)readCacheArrWithName:(NSString *)name
 {
     NSString *path = [DOCUMENT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"__%@",name]];
@@ -28,6 +34,17 @@
         array = @[];
     }
     return array;
+}
+
++ (NSDictionary *)readCacheDicWithName:(NSString *)name
+{
+    NSString *path = [DOCUMENT_PATH stringByAppendingPathComponent:[NSString stringWithFormat:@"__%@",name]];
+    NSDictionary *dic = [self readCachedObjectWithFilePath:path];
+    if (!dic) {
+        dic = @{};
+    }
+    return dic;
+
 }
 
 + (void)writeCacheObject:(id)obj filePath:(NSString *)filePath {

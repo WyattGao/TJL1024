@@ -11,6 +11,11 @@
 
 #define GL_Requst [GLRequest request]
 
+typedef NS_ENUM(NSInteger,APIType) {
+    API_HOST = 0,  /**< 糖教练接口 */
+    API_YZ = 1, /**< 有赞接口 */
+};
+
 @class GLRequest;
 
 @protocol GLRequestDelegate <NSObject>
@@ -53,17 +58,23 @@
 
 /**
  *功能：POST请求
- *参数：(1)请求的url: urlString
+ *参数：(1)请求的接口类型: apiType
  *     (2)POST请求体参数:parameters
  *     (3)是否显示网络请求状态: SvpShow
  *     (4)请求成功调用的Block: success
  *     (5)请求失败调用的Block: failure
  */
-- (void)POST:(NSString *)URLString
+- (void)POST:(APIType)apiType
   parameters:(NSDictionary*)parameters
      SvpShow:(BOOL)show
      success:(void (^)(GLRequest *request, id response))success
      failure:(void (^)(GLRequest *request, NSError *error))failure;
+
+-(void)postWithAPIType:(APIType)type
+            Parameters:(NSDictionary *)parameters
+               SvpShow:(BOOL)show
+               success:(void (^)(GLRequest *, id))success
+               failure:(void (^)(GLRequest *, NSError *))failure;
 
 
 - (void)postWithParameters:(NSDictionary *)parameters
@@ -78,6 +89,7 @@
  *  @param parameters 请求参数
  */
 - (void)postWithURL:(NSString *)URLString parameters:(NSDictionary *)parameters;
+
 
 /**
  *  get 请求

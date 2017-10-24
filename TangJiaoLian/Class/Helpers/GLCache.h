@@ -20,6 +20,13 @@
 + (void)writeCacheArr:(NSArray *)arr name:(NSString *)name;
 
 
+/**
+ 字典写缓存
+
+ @param dic 字典
+ @param name 缓存名称
+ */
++ (void)writeCacheDic:(NSDictionary *)dic name:(NSString *)name;
 
 /**
  读取数组缓存
@@ -28,5 +35,14 @@
  @return 数组
  */
 + (NSArray *)readCacheArrWithName:(NSString *)name;
+
+
+/**
+ 读取字典缓存
+
+ @param name 缓存名称
+ @return 字典
+ */
++ (NSDictionary *)readCacheDicWithName:(NSString *)name;
 
 @end
