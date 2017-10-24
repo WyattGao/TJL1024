@@ -26,10 +26,12 @@
 #define GL_IPHONE_6_SCREEN_HEIGHT      667
 #define GL_IPHONE_6_PLUS_SCREEN_WIDTH  414
 #define GL_IPHONE_6_PLUS_SCREEN_HEIGHT 736
+#define GL_IPHONE_X_HEIGHT             812
 
-#define GL_IS_IPHONE5 SCREEN_HEIGHT == GL_IPHONE_5_SCREEN_HEIGHT
-#define GL_IS_IPHONE6_OR_7 SCREEN_HEIGHT == GL_IPHONE_6_SCREEN_HEIGHT
-#define GL_IS_IPHONE6PLUS_OR_7 SCREEN_HEIGHT == GL_IPHONE_6_PLUS_SCREEN_HEIGHT
+#define GL_IS_IP5 SCREEN_HEIGHT == GL_IPHONE_5_SCREEN_HEIGHT
+#define GL_IS_IP6_OR_7 SCREEN_HEIGHT == GL_IPHONE_6_SCREEN_HEIGHT
+#define GL_IS_IP6PLUS_OR_7 SCREEN_HEIGHT == GL_IPHONE_6_PLUS_SCREEN_HEIGHT
+#define GL_IS_IPX SCREEN_HEIGHT == GL_IPHONE_X_HEIGHT
 
 #define GL_IP6_W_RATIO(f)    ((f * 1.0f)/GL_IPHONE_6_SCREEN_WIDTH*SCREEN_WIDTH)
 #define GL_IP6_H_RATIO(f)   ((f * 1.0f)/GL_IPHONE_6_SCREEN_HEIGHT*SCREEN_HEIGHT)
@@ -39,8 +41,18 @@
 
 #define GL_TABBARHEIGHT 49
 #define GL_NAVBARHEIGHT 44
-#define GL_STATUESBARHEIGHT 20
+#define GL_STATUESBAR_HEIGHT [UIApplication sharedApplication].statusBarFrame.size.height
 #define GL_NAVSTATUESABARHEIGHT 64
+
+
+
+/**
+ 将一个字符串中的数字转换为NSDecimalNumber对象
+
+ @param n 字符串对象
+ @return NSDecimalNumber对象
+ */
+#define GL_DVALUE(n) [NSDecimalNumber decimalNumberWithString:n]
 
 
 //=====================================================================>

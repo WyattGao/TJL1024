@@ -70,6 +70,11 @@
     return UIStatusBarStyleLightContent;//白色
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return false;
+}
+
 - (void)createUI{}
 
 - (void)createData{}

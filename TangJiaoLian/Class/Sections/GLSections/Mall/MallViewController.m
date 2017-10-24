@@ -106,7 +106,7 @@
  */
 - (UIViewController *)getYZViewController
 {
-    UIViewController *yzViewController = [[YZNViewManager defaultManager] viewControllerForUrl:GL_URL(YZMALL_URL)];
+    UIViewController *yzViewController = [[YZNViewManager defaultManager] viewControllerForUrl:GL_URL(URL_YZMALL)];
     [YZNViewManager defaultManager].delegate = self;
     return yzViewController;
 }

@@ -11,6 +11,4 @@
 
 @interface STLogController : GLViewController
 
-- (void)setIndex:(NSString*)index;
-
 @end

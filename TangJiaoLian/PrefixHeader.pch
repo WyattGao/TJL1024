@@ -57,6 +57,7 @@
 #import "UITextView+Category.h"
 #import "UINavigationController+FDFullscreenPopGesture.h"
 #import "NSDate+Category.h"
+#import "UIColor+GL.h"
 
 //官方框架
 #import <AVFoundation/AVFoundation.h>

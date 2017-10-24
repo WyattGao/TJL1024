@@ -91,7 +91,6 @@
     year         = [[date toString:@"yyyy"] intValue];
     month        = [[date toString:@"MM"] intValue];
     
-    
     [self setLeftBtnImgNamed:nil];
     [self setRightBtnImgNamed:@"iconfont-shuju"];
     self.navigationItem.rightBarButtonItem.enabled = NO;
@@ -233,14 +232,30 @@
                     for (NSDictionary *dic in rangArr) {
                         //gettimetype 1：餐前 2：餐后
                         if ([dic getIntegerValue:@"gettimetype"] == 1) {
-                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowlow"]) forKey:SamFingerRangeBeforeLow];
-                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowhigh"]) forKey:SamFingerRangeBeforeHigh];
+                            
+                            //餐前黄色
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"yellowlow"]  forKey:SamFingerRangeBeforeYellowLow];
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"yellowhigh"] forKey:SamFingerRangeBeforeYellowHigh];
+                            //餐前红色
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"redhigh"] forKey:SamFingerRangeBeforeRedHigh];
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"redlow"]  forKey:SamFingerRangeBeforeRedLow];
+                            //餐前绿色
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"greenlow"]  forKey:SamFingerRangeBeforeGreenLow];
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"greenhigh"] forKey:SamFingerRangeBeforeGreenHigh];
                         } else {
-                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowlow"]) forKey:SamFingerRangeAfterLow];
-                            [GL_USERDEFAULTS setValue:@([dic getFloatValue:@"yellowhigh"]) forKey:SamFingerRangeAfterHigh];
+                            //餐后黄色
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"yellowlow"]  forKey:SamFingerRangeAfterYellowLow];
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"yellowhigh"] forKey:SamFingerRangeAfterYellowHigh];
+                            //餐后红色
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"redhigh"] forKey:SamFingerRangeAfterRedHigh];
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"redlow"]  forKey:SamFingerRangeAfterRedLow];
+                            //餐后绿色
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"greenlow"]  forKey:SamFingerRangeAfterGreenLow];
+                            [GL_USERDEFAULTS setValue:[dic getStringValue:@"greenhigh"] forKey:SamFingerRangeAfterGreenHigh];
                         }
                     }
                 }
+                
                 [self loadBloodSugar];
             } else {
                 [self getBloodRangeFailed];
@@ -281,8 +296,24 @@
     [self.slideRuleView showWithCurrentValue:bloodSugarValue > 0 ? bloodSugarValue : 100];
     [self.slideRuleView getValue:^(CGFloat value) {
         
+        //保存修改前的血糖值
         NSString *btnStr = btn.lbl.text;
+        //值是否异常，绿色为0，其余为1
+        NSString *isAbnormal = @"0";
+        //修改按钮标题为新值
         [btn setTitle:[NSString stringWithFormat:@"%.1lf",value/10.0f]  forState:UIControlStateNormal];
+
+        if ([GLTools BloodSugarBeforeOrAfterMeal:[dicc getIntegerValue:@"TYPE"]] == 1) {
+            //餐前
+            if ([btn.text floatValue] >= [GL_USERDEFAULTS getFloatValue:SamFingerRangeBeforeYellowHigh] || [btn.text floatValue] <= [GL_USERDEFAULTS getFloatValue:SamFingerRangeBeforeYellowLow]) {
+                isAbnormal = @"1";
+            }
+        } else {
+            //餐后
+            if ([btn.text floatValue] > [GL_USERDEFAULTS getFloatValue:SamFingerRangeAfterYellowHigh] || [btn.text floatValue] <= [GL_USERDEFAULTS getFloatValue:SamFingerRangeAfterYellowLow]) {
+                isAbnormal = @"1";
+            }
+        }
         
         NSDictionary *postDic = @{
                                   FUNCNAME : @"saveBloodValue",
@@ -291,9 +322,10 @@
                                           @"BLOOD_TEST" :@[
                                                   @{
                                                   @"ACCOUNT" : USER_ACCOUNT,
-                                                  @"COUNTS" : btn.lbl.text,
-                                                  @"TYPE" : [dicc getStringValue:@"TYPE"],
-                                                  @"DATE" : [BloodArr[[dic[@"i"] intValue]] getStringValue:@"date"]
+                                                  @"COUNTS" : btn.text,
+                                                  @"TYPE" : [@([dicc getIntegerValue:@"TYPE"]) stringValue],
+                                                  @"DATE" : [BloodArr[[dic[@"i"] intValue]] getStringValue:@"date"],
+                                                  @"ISABNORMAL" : isAbnormal
                                                   }
                                           ]
                                           }
@@ -327,6 +359,7 @@
                                               @"ID":[dicc getStringValue:@"ID"]
                                               }
                                       };
+            
             [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) { 
                 if (GETTAG) {
                     if (GETRETVAL) {

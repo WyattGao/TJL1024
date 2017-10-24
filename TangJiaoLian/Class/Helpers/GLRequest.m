@@ -69,7 +69,7 @@
             parameters = @{@"param" : json};
             break;
         case API_YZ:
-            urlString = YZLOGIN_URL;
+            urlString = URL_YZLOGIN;
             break;
         default:
             break;

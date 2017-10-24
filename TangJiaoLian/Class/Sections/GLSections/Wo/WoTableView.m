@@ -66,7 +66,8 @@
 - (WoInfoFooterView *)infoFooterView
 {
     if (!_infoFooterView) {
-        _infoFooterView = [[WoInfoFooterView  alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - GL_IP6_H_RATIO(237) - 50 * self.titleArr.count - GL_TABBARHEIGHT - 10)];
+        CGFloat infoFooterViewHeight = SCREEN_HEIGHT - GL_IP6_H_RATIO(237) - 50 * self.titleArr.count - GL_TABBARHEIGHT - 10 - (GL_IS_IPX ? [UIApplication sharedApplication].statusBarFrame.size.height : 0);
+        _infoFooterView = [[WoInfoFooterView  alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, infoFooterViewHeight)];
         _infoFooterView.hidden = !ISLOGIN;
     }
     return _infoFooterView;

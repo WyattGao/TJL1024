@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
-            timestampString = "530502087.949141"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogView.m"
+            timestampString = "530526181.826326"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
-            landmarkName = "-headerView"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
+            landmarkName = "+makeBloodSugarScrollview:andSelectYear:andMonth:andData:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -35,29 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
-            timestampString = "530502087.949519"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogView.m"
+            timestampString = "530526181.826397"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "302"
-            endingLineNumber = "302"
-            landmarkName = "-bloodClick:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
-            timestampString = "530502087.949776"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "-makeTypeScrollview"
+            startingLineNumber = "203"
+            endingLineNumber = "203"
+            landmarkName = "+makeBloodSugarScrollview:andSelectYear:andMonth:andData:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

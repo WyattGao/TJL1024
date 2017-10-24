@@ -170,6 +170,7 @@
 		2643B7A81ED92143003B8A0F /* WoGetVerificationCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7A11ED92143003B8A0F /* WoGetVerificationCodeViewController.m */; };
 		2643B7B11ED921C6003B8A0F /* HelpAndFeedBackViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7B01ED921C6003B8A0F /* HelpAndFeedBackViewController.m */; };
 		2643B7B41ED9220A003B8A0F /* HelpAndFeedBackTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643B7B31ED9220A003B8A0F /* HelpAndFeedBackTableView.m */; };
+		2643D2DE1F9F067A0061F8A4 /* UIColor+GL.m in Sources */ = {isa = PBXBuildFile; fileRef = 2643D2DD1F9F067A0061F8A4 /* UIColor+GL.m */; };
 		2648852C1E8FF9BA007A98D7 /* JinNangHeaderScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2648852B1E8FF9BA007A98D7 /* JinNangHeaderScrollView.m */; };
 		264885321E8FFB28007A98D7 /* STEncyclopediaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 264885311E8FFB28007A98D7 /* STEncyclopediaViewController.m */; };
 		264885351E8FFB9D007A98D7 /* STEncyclopediaDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 264885341E8FFB9D007A98D7 /* STEncyclopediaDetailViewController.m */; };
@@ -669,6 +670,8 @@
 		2643B7B01ED921C6003B8A0F /* HelpAndFeedBackViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpAndFeedBackViewController.m; sourceTree = "<group>"; };
 		2643B7B21ED9220A003B8A0F /* HelpAndFeedBackTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelpAndFeedBackTableView.h; sourceTree = "<group>"; };
 		2643B7B31ED9220A003B8A0F /* HelpAndFeedBackTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelpAndFeedBackTableView.m; sourceTree = "<group>"; };
+		2643D2DC1F9F067A0061F8A4 /* UIColor+GL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+GL.h"; sourceTree = "<group>"; };
+		2643D2DD1F9F067A0061F8A4 /* UIColor+GL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+GL.m"; sourceTree = "<group>"; };
 		2648852A1E8FF9BA007A98D7 /* JinNangHeaderScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JinNangHeaderScrollView.h; sourceTree = "<group>"; };
 		2648852B1E8FF9BA007A98D7 /* JinNangHeaderScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JinNangHeaderScrollView.m; sourceTree = "<group>"; };
 		264885301E8FFB28007A98D7 /* STEncyclopediaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STEncyclopediaViewController.h; sourceTree = "<group>"; };
@@ -2397,6 +2400,8 @@
 				2648853D1E8FFC78007A98D7 /* UITextView+Category.m */,
 				26A83F971ED3E04B000082D0 /* NSMutableAttributedString+Category.h */,
 				26A83F981ED3E04B000082D0 /* NSMutableAttributedString+Category.m */,
+				2643D2DC1F9F067A0061F8A4 /* UIColor+GL.h */,
+				2643D2DD1F9F067A0061F8A4 /* UIColor+GL.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -3365,6 +3370,7 @@
 				264886B71E901121007A98D7 /* PSTGridLayoutSection.m in Sources */,
 				26394ACF1F53BBC1009BB8AC /* ChevronDownShapeRenderer.swift in Sources */,
 				260A22B81F62F9BC00203F8C /* SettingsViewController.m in Sources */,
+				2643D2DE1F9F067A0061F8A4 /* UIColor+GL.m in Sources */,
 				26394A7C1F53BBC1009BB8AC /* BarLineScatterCandleBubbleChartData.swift in Sources */,
 				26D0B46A1E8BBB1D009F1774 /* UUBarChart.m in Sources */,
 				26394AD91F53BBC1009BB8AC /* XAxisRendererHorizontalBarChart.swift in Sources */,

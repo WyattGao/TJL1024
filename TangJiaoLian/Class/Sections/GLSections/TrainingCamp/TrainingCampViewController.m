@@ -11,9 +11,9 @@
 
 @interface TrainingCampViewController ()<WKNavigationDelegate>
 
-@property (nonatomic,strong)  WKWebView *webView;
+@property (nonatomic,strong) WKWebView *webView;
 
-@property (nonatomic,strong)  UILabel *hintLbl;
+@property (nonatomic,strong) UILabel *hintLbl;
 
 @end
 
@@ -24,9 +24,15 @@
     // Do any additional setup after loading the view.
 }
 
+//修改状态栏文字颜色
+- (BOOL)prefersStatusBarHidden
+{
+    return true;
+}
+
 - (void)navRightBtnClick:(UIButton *)sender
 {
-    [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(@"http://xly.tangjiaolian.cn")]];
+    [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(URL_XLY)]];
 }
 
 //WkWebViewDelegate
@@ -64,7 +70,7 @@
     WS(ws);
     
     [self.webView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(ws.view).with.insets(UIEdgeInsetsMake(0, 0, 0, 0));
+        make.edges.equalTo(ws.view).with.insets(UIEdgeInsetsMake(GL_STATUESBAR_HEIGHT, 0, 0, 0));
     }];
     
     [self.hintLbl mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -78,6 +84,7 @@
 {
     if (!_webView) {
         _webView                    = [WKWebView new];
+        _webView.backgroundColor    = [UIColor blackColor];
         [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(@"http://xly.tangjiaolian.cn")]];
         _webView.navigationDelegate = self;
         if (@available(iOS 11.0, *)) { //iOS11不自动调整状态栏

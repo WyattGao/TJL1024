@@ -189,28 +189,33 @@
             dayLab.titleLabel.textAlignment = NSTextAlignmentCenter;
             [dayLab setBackgroundColor:TCOL_MAIN forState:UIControlStateSelected];
             [dayLab setBackgroundColor:TCOL_BG forState:UIControlStateNormal];
-
             
             if (dayLab.lbl.text.length!=0) {
-//                if ([dayLab.lbl.text doubleValue]<=[GL_USERDEFAULTS getDoubleValue:SamTargetLow]) {
-//                    [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
-//                } else if ([dayLab.lbl.text doubleValue]>=[GL_USERDEFAULTS getDoubleValue:SamTargetHeight]){
-//                    [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
-//                }
-                
+                NSDecimalNumber *dayLabValue = [NSDecimalNumber decimalNumberWithString:dayLab.lbl.text];
                 if ([GLTools BloodSugarBeforeOrAfterMeal:[dayArr[(j+7)%8] getIntegerValue:@"TYPE"]] == 1) {
                     //餐前
-                    if ([dayLab.lbl.text doubleValue] < [GL_USERDEFAULTS getDoubleValue:SamFingerRangeBeforeLow]) {
-                        [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
-                    } else if ([dayLab.lbl.text doubleValue] > [GL_USERDEFAULTS getDoubleValue:SamFingerRangeBeforeHigh]){
-                        [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+                    if (([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedLow])] == NSOrderedAscending)
+                        || ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedHigh])] == NSOrderedDescending)
+                             || ([dayLabValue compare: GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedHigh])] == NSOrderedSame)) {
+                        //红色 小于最低值或者大于等于最高值
+                        [dayLab setTitleColor:TCOL_GLUCOSERED forState:UIControlStateNormal];
+                    } else if ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeYellowLow])] == NSOrderedDescending
+                               && [dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeYellowHigh])] == NSOrderedAscending){
+                        //黄色 >最低值或者<最高值
+                        [dayLab setTitleColor:TCOL_GLUCOSYELLOW forState:UIControlStateNormal];
                     }
                 } else {
                     //餐后
-                    if ([dayLab.lbl.text doubleValue] < [GL_USERDEFAULTS getDoubleValue:SamFingerRangeAfterLow]) {
-                        [dayLab setTitleColor:TCOL_GLUCOSLOW forState:UIControlStateNormal];
-                    } else if ([dayLab.lbl.text doubleValue] > [GL_USERDEFAULTS getDoubleValue:SamFingerRangeAfterHigh]){
-                        [dayLab setTitleColor:TCOL_GLUCOSEHEIGHT forState:UIControlStateNormal];
+                    if ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterRedLow])] == NSOrderedAscending
+                        || [dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterRedLow])] == NSOrderedSame
+                        || [dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterRedHigh])] == NSOrderedDescending
+                        ) {
+                        //红色
+                        [dayLab setTitleColor:TCOL_GLUCOSERED forState:UIControlStateNormal];
+                    } else if ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterYellowLow])] == NSOrderedDescending
+                               && ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterYellowHigh])] == NSOrderedAscending || [dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterYellowHigh])] == NSOrderedSame)){
+                        //黄色 >最低值或者<= 最高值
+                        [dayLab setTitleColor:TCOL_GLUCOSYELLOW forState:UIControlStateNormal];
                     }
                 }
             }

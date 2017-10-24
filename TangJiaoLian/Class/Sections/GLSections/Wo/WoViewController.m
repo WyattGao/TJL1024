@@ -65,8 +65,7 @@
     WS(ws);
     
     [self.mainTV mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.center.equalTo(ws.view);
-        make.size.equalTo(ws.view);
+        make.edges.equalTo(ws.view).insets(UIEdgeInsetsMake(0, 0, 0, 0));
     }];
 }
 

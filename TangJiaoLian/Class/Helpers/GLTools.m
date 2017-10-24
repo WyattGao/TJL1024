@@ -300,9 +300,9 @@ void GL_DisLog(NSString *log){
 + (NSInteger)BloodSugarBeforeOrAfterMeal:(NSInteger)type
 {
     if (type == 0 || type == 2 || type == 4 || type == 6 || type == 7) {
-        return 1;
+        return 1; //餐前
     } else {
-        return 2;
+        return 2; //餐后
     }
 }
 

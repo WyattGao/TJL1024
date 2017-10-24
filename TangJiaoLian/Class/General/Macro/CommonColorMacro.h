@@ -74,11 +74,11 @@
 //记录按钮灰色蒙版
 #define TCOL_RECORDBTNHINT RGBA(0, 0, 0, 0.7)
 
-//高血糖数值颜色
-#define TCOL_GLUCOSEHEIGHT RGB(255, 102, 102)
+//血糖数值红色颜色
+#define TCOL_GLUCOSERED RGB(255, 102, 102)
 
-//环形按钮选中颜色
-#define TCOL_GLUCOSLOW RGB(255, 153, 0)
+//环形按钮选中颜色||血糖数值黄色
+#define TCOL_GLUCOSYELLOW RGB(255, 153, 0)
 
 //修改手机号密码高亮字符
 #define TCOL_HIGHLIGHTSTR RGB(255,102,0)

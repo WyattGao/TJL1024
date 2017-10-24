@@ -113,7 +113,7 @@
  */
 - (UIViewController *)getYZViewController
 {
-    UIViewController *yzViewController = [[YZNViewManager defaultManager] viewControllerForUrl:GL_URL(YZMALL_URL)];
+    UIViewController *yzViewController = [[YZNViewManager defaultManager] viewControllerForUrl:GL_URL(URL_YZMALL)];
     yzViewController.navigationController.navigationBar .barTintColor       = TCOL_NAVBAR;
     yzViewController.navigationController.navigationBar .barStyle           = UIBarStyleBlack;
     yzViewController.navigationController.navigationBar .tintColor          = [UIColor whiteColor];
