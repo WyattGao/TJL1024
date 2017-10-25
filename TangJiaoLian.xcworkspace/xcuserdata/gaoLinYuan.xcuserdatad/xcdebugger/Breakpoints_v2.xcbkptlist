@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogView.m"
-            timestampString = "530526181.826326"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/PersonalInfo/STPersonInfoViewController.m"
+            timestampString = "530532370.21556"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
-            landmarkName = "+makeBloodSugarScrollview:andSelectYear:andMonth:andData:"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "-initData"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -35,13 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogView.m"
-            timestampString = "530526181.826397"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
+            timestampString = "530590562.301453"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
-            landmarkName = "+makeBloodSugarScrollview:andSelectYear:andMonth:andData:"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
+            landmarkName = "-getBloodRange"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
