@@ -24,6 +24,8 @@ SlideRuleView *slideRuleView;
 
 @property (nonatomic,strong) STSelectDateView *selectDateView;/**< 时间选择 */
 
+@property (nonatomic,strong) UISelectionFeedbackGenerator *generator; /**< 触觉反馈 */
+
 @end
 
 @implementation SlideRuleView
@@ -61,6 +63,8 @@ SlideRuleView *slideRuleView;
     [valueMutableString addAttributes:valueAttributeDict range:NSMakeRange(0, valueStr.length - 6)];
     [valueMutableString addAttributes:unitAttributeDict  range:NSMakeRange(valueStr.length - 7, 7)];
     _valueLbl.attributedText                      = valueMutableString;
+    
+//    [self.generator selectionChanged];
 }
 
 #pragma mark - 点击事件
@@ -445,6 +449,15 @@ SlideRuleView *slideRuleView;
         _selectDateView.replaceRemoveWithHidden = true;
     }
     return _selectDateView;
+}
+
+- (UISelectionFeedbackGenerator *)generator
+{
+    if (!_generator) {
+        _generator = [UISelectionFeedbackGenerator new];
+        [_generator prepare];
+    }
+    return _generator;
 }
 
 - (void)setTitle:(NSString *)title

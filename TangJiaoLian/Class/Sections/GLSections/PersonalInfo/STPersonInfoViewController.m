@@ -42,9 +42,6 @@
 
 @property (nonatomic,strong) NSMutableDictionary *saveDic;
 
-@property (nonatomic,strong) NSMutableDictionary *userBaseDic; /**< 用户基本信息 */
-
-@property (nonatomic,strong) NSMutableDictionary *patientDic;  /**< 用户扩展信息 */
 
 @end
 
@@ -95,89 +92,7 @@
 
 - (void)initData
 {
-    _U           = [NSUserDefaults standardUserDefaults];
-    _userBaseDic = [[NSMutableDictionary alloc]initWithObjects:@[USER_ACCOUNT] forKeys:@[@"ACCOUNT"]];
-    _patientDic  = [NSMutableDictionary new];
-    
-    NSDictionary * dict = @{
-                            FUNCNAME:@"getUserInfo",
-                            INFIELD:@{
-                                    @"ACCOUNT":USER_ACCOUNT,	//手机号码
-                                    @"DEVICE":@"1"		//0:android 1:ios
-                                    },
-                            OUTFIELD:@[
-                                    @"RETVAL",
-                                    @"RETMSG"
-                                    ],
-                            OUTTABLE:@{}
-                            };
-    [GL_Requst postWithParameters:dict SvpShow:false success:^(GLRequest *request, id response) {
-        if ([response getIntegerValue:@"Tag"]) {
-            if (GETRETVAL) {
-                NSDictionary *dic = [[[[response objectForKey:@"Result"] objectForKey:@"OutTable"] objectAtIndex:0] objectAtIndex:0];
-                
-                
-                [_userBaseDic setObject:[dic getStringValue:@"ACCOUNT"] forKey:@"ACCOUNT"];
-                [_userBaseDic setObject:[dic getStringValue:@"USERNAME"] forKey:@"USERNAME"];
-                [_userBaseDic setObject:[dic getStringValue:@"USERNAME"] forKey:@"NICKNAME"];
-                [_userBaseDic setObject:[dic getStringValue:@"BIRTHDAY"] forKey:@"BIRTHDAY"];
-                
-                [_patientDic setValuesForKeysWithDictionary:dic];
-                [_patientDic removeObjectForKey:@"USERNAME"];
-                [_patientDic removeObjectForKey:@"NICKNAME"];
-                [_patientDic removeObjectForKey:@"ACCOUNT"];
-                [_patientDic removeObjectForKey:@"BIRTHDAY"];
-                
-                /*
-                //保存用户数据
-                [_U setObject:[dic getStringValue:@"PIC"]       forKey:@"PIC"];
-                //昵称 统一用UserName字段
-                [_U setObject:[dic getStringValue:@"USERNAME"]  forKey:@"NICKNAME"];
-                //身高
-                [_U setObject:[dic getStringValue:@"HEIGHT"]    forKey:@"HEIGHT"];
-                //体重
-                [_U setObject:[dic getStringValue:@"WEIGHT"]    forKey:@"WEIGHT"];
-                //腰围
-                [_U setObject:[dic getStringValue:@"WAISTLINE"] forKey:@"WAISTLINE"];
-                //已保存的BMI
-                [_U setObject:[dic getStringValue:@"BMI"]       forKey:@"BMI"];
-                //出生年月
-                [_U setObject:[dic getStringValue:@"BIRTHDAY"]  forKey:@"AGE"];
-                //用户名（昵称）
-                [_U setObject:[dic getStringValue:@"USERNAME"]  forKey:@"USERNAME"];
-                //用户号
-                [_U setObject:[dic getStringValue:@"ACCOUNT"]   forKey:@"ACCOUNT"];
-                //性别
-                [_U setObject:[dic getStringValue:@"SEX"]       forKey:@"SEX"];
-                //绑定的手机号
-                [_U setObject:[dic getStringValue:@"PHONE"]     forKey:@"PHONE"];
-                //糖尿病类型
-                [_U setObject:[dic getStringValue:@"DIABETESTYPE"] forKey:@"DIABETESTYPE"];
-                //心率
-                [_U setObject:[dic getStringValue:@"HEARTRATE"] forKey:@"HEARTRATE"];
-                //高血压
-                [_U setObject:[dic getStringValue:@"HIGHESTHYPERTENSION"] forKey:@"HIGHESTHYPERTENSION"];
-                //低血压
-                [_U setObject:[dic getStringValue:@"LOWESTHYPERTENSION"] forKey:@"LOWESTHYPERTENSION"];
-                //确诊病史(年)
-                [_U setObject:[dic getStringValue:@"ILLYEARS"] forKey:@"ILLYEARS"];
-                //治疗方式
-                [_U setObject:[dic getStringValue:@"TREATTYPE"] forKey:@"TREATTYPE"];
-                
-                [_U synchronize];
-                 */
-                
-                //存储记录
-                [_mainTV reloadData];
-            } else {
-                GL_ALERT_E(GETRETMSG);
-            }
-        } else {
-            GL_ALERT_E([response getStringValue:@"Message"]);
-        }
-    } failure:^(GLRequest *request, NSError *error) {
-        GL_ALERT_E(@"获取用户信息失败");
-    }];
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -491,14 +406,14 @@
 #pragma mark 上传头像
 -(void)upLoadImage:(UIImage *)imageURL
 {
-    imageURL = [UIImage compressImage:imageURL toByte:10240];
-    NSData *data = UIImageJPEGRepresentation(imageURL, 1.0f);
+//    imageURL = [UIImage scaleImage:imageURL toKb:200];
+    NSData *data = [NSData compressImage:imageURL toByte:200 * 1024];
     NSString *encodedImageStr = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
     NSDictionary *dict = @{
                            FUNCNAME:@"uploadPicIos",
                            INFIELD:@{
                                    @"ACCOUNT":USER_ACCOUNT,
-                                   @"DEVICE":@"1",
+                                   @"DEVICE":@"0",
                                    @"FACE":encodedImageStr
                                    },
                            OUTFIELD:@[
@@ -523,33 +438,37 @@
     }];
 }
 
+- (void)didMoveToParentViewController:(UIViewController*)parent{
+    [super didMoveToParentViewController:parent];
+    NSLog(@"%s,%@",__FUNCTION__,parent);
+    if(!parent){
+        NSDictionary *postDic = @{
+                                  FUNCNAME : @"saveUserInfo",
+                                  INFIELD  : @{@"DEVICE" : @"1"},
+                                  INTABLE  :@{
+                                          @"USER_BASE" : @[_userBaseDic],
+                                          @"PATIENT" : @[_patientDic]
+                                          }
+                                  };
+        
+        [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
+            if ([response getIntegerValue:@"Tag"]) {
+                
+                [GL_USERDEFAULTS setValuesForKeysWithDictionary:_userBaseDic];
+                [GL_USERDEFAULTS setValuesForKeysWithDictionary:_patientDic];
+                
+                GL_NOTIC_CENTER_POST1(@"changeUserInfo");
+            } else {
+                //            GL_ALERT_E(@"保存失败，请稍后再试");
+            }
+        } failure:^(GLRequest *request, NSError *error) {
+            //        GL_ALERT_E(@"保存失败，请稍后再试");
+        }];
+    }
+}
 
 - (void)navLeftBtnClick:(UIButton *)sender
 {
-    NSDictionary *postDic = @{
-                              FUNCNAME : @"saveUserInfo",
-                              INFIELD  : @{@"DEVICE" : @"1"},
-                              INTABLE  :@{
-                                      @"USER_BASE" : @[_userBaseDic],
-                                      @"PATIENT" : @[_patientDic]
-                                      }
-                              };
-    
-    [GL_Requst postWithParameters:postDic SvpShow:false success:^(GLRequest *request, id response) {
-        if ([response getIntegerValue:@"Tag"]) {
-            
-            [GL_USERDEFAULTS setValuesForKeysWithDictionary:_userBaseDic];
-            [GL_USERDEFAULTS setValuesForKeysWithDictionary:_patientDic];
-            
-            GL_NOTIC_CENTER_POST1(@"changeUserInfo");
-            
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-//            GL_ALERT_E(@"保存失败，请稍后再试");
-        }
-    } failure:^(GLRequest *request, NSError *error) {
-//        GL_ALERT_E(@"保存失败，请稍后再试");
-    }];
     [super navLeftBtnClick:sender];
 }
 

@@ -28,4 +28,6 @@
 + (UIImage *)imageWithColor:(UIColor *)color size:(CGSize)size;
 
 
++(UIImage *)scaleImage:(UIImage *)image toKb:(NSInteger)kb;
+
 @end

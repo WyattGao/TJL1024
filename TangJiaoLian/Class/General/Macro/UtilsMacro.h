@@ -174,6 +174,24 @@ fprintf(stderr, "-------\n");                                               \
 } while (0)
 
 //=====================================================================>
+//=====================================================================>
+/**
+ * @brief 判断IOS8及以下版本
+ */
+#define __IOS8_OR_EARLY ([[UIDevice currentDevice].systemVersion floatValue] <= 8.0f)
+/**
+ * @brief 判断IOS8以上版本
+ */
+#define __IOS8_OR_LATER ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0f)
+/**
+ * @brief 判断IOS9以上版本
+ */
+#define __IOS9_OR_LATER ([[UIDevice currentDevice].systemVersion floatValue] >= 9.0f)
+/**
+ * @brief 判断IOS10以上版本
+ */
+#define __IOS10_OR_LATER ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0f)
+
 //获取版本号
 #define GL_VERSION [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]
 

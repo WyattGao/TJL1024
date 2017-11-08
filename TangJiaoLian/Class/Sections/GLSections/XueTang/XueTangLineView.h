@@ -8,7 +8,7 @@
 
 #import "GLView.h"
 #import "XQDLineChart.h"
-#import "ChartsDateValueFormatter.h"
+//#import "ChartsDateValueFormatter.h"
 #import "XueTangLineViewEntity.h"
 
 
@@ -17,7 +17,7 @@
 @property (nonatomic,strong) XQDColor *lineColor;
 @property (nonatomic,strong) UIView *cutlineView;
 @property (nonatomic,strong) XQDLineChart *lineChat;
-@property (nonatomic,strong) LineChartView *lineChartView;
+//@property (nonatomic,strong) LineChartView *lineChartView;
 @property (nonatomic,strong) XueTangLineViewEntity *entity;
 
 

@@ -10,4 +10,9 @@
 
 @interface STPersonInfoViewController : GLViewController
 
+@property (nonatomic,strong) NSMutableDictionary *userBaseDic; /**< 用户基本信息 */
+
+@property (nonatomic,strong) NSMutableDictionary *patientDic;  /**< 用户扩展信息 */
+
+
 @end

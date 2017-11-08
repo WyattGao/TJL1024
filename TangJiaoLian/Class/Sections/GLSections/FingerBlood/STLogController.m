@@ -45,6 +45,10 @@
 
 @property (nonatomic,strong) SlideRuleView *slideRuleView;
 
+@property (nonatomic,assign) BOOL isQuickRecord; /**< 是否是3Dtouch记录血糖 */
+
+@property (nonatomic,strong) UIFeedbackGenerator *feedbackGenerator;
+
 @end
 
 @implementation STLogController
@@ -195,6 +199,9 @@
                 BloodSugarScrollview = [STLogView makeBloodSugarScrollview:TypeScrollview andSelectYear:year andMonth:month andData:BloodArr];
                 [ws bloodArrHaveData];
                 [ws.reloadView setHidden:true];
+                if (self.isQuickRecord) {
+//                    [self bloodClick:(NSNotification *)]
+                }
             } else {
                 GL_ALERT_E(GETRETMSG);
                 if (!BloodArr.count) {
@@ -310,6 +317,14 @@
 
 #pragma mark - 添加修改血糖
 - (void)bloodClick:(NSNotification*)not{
+    
+    //震动反馈
+    if (__IOS10_OR_LATER) {
+        self.feedbackGenerator = [[UIImpactFeedbackGenerator alloc]initWithStyle:UIImpactFeedbackStyleMedium];
+        [self.feedbackGenerator prepare];
+        [(UIImpactFeedbackGenerator *)self.feedbackGenerator impactOccurred];
+    }
+    
     NSDictionary *dic  = [not object];
     NSDictionary *dicc = BloodArr[[dic[@"i"] intValue]][@"result"][[dic[@"j"] intValue]];
     GLButton *btn      = [dic objectForKey:@"btn"];
@@ -362,6 +377,14 @@
         [GL_Requst postWithParameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
             if (GETTAG) {
                 if (GETRETVAL) {
+                    
+                    if (__IOS10_OR_LATER) {
+                        //记录成功震动反馈
+                        self.feedbackGenerator = [UINotificationFeedbackGenerator new];
+                        [self.feedbackGenerator prepare];
+                        [(UINotificationFeedbackGenerator *)self.feedbackGenerator notificationOccurred:UINotificationFeedbackTypeSuccess];
+                    }
+
                     [btn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
                     //刷新数据，获取ID
                     [self loadBloodSugar];
@@ -414,5 +437,12 @@
     return _slideRuleView;
 }
 
+- (UIFeedbackGenerator *)feedbackGenerator
+{
+    if (!_feedbackGenerator) {
+        _feedbackGenerator = [UIFeedbackGenerator new];
+    }
+    return _feedbackGenerator;
+}
 
 @end

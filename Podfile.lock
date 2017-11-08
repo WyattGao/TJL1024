@@ -16,11 +16,11 @@ PODS:
     - AFNetworking/NSURLSession
   - FDFullscreenPopGesture (1.1)
   - HyphenateLite_CN (3.2.2.2)
-  - Masonry (1.0.2)
-  - SDWebImage (4.1.0):
-    - SDWebImage/Core (= 4.1.0)
-  - SDWebImage/Core (4.1.0)
-  - SVProgressHUD (2.2.1)
+  - Masonry (1.1.0)
+  - SDWebImage (4.2.0):
+    - SDWebImage/Core (= 4.2.0)
+  - SDWebImage/Core (4.2.0)
+  - SVProgressHUD (2.2.2)
   - UITableView+FDTemplateLayoutCell (1.6)
 
 DEPENDENCIES:
@@ -36,9 +36,9 @@ SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   HyphenateLite_CN: 61b01b906d6ed88259c980522f6f346bfac96993
-  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  SDWebImage: 0e435c14e402a6730315a0fb79f95e68654d55a4
-  SVProgressHUD: db27c54e6e18bc903341661fc9feb55e04905cc4
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  SDWebImage: b1189fd85365c18434270a11a5cad13a1e848d53
+  SVProgressHUD: 59b2d3dabacbd051576d21d32293ca7228dc18b0
   UITableView+FDTemplateLayoutCell: 5c949b4a5059c404b442926c0e80f81d10a2d66f
 
 PODFILE CHECKSUM: 638dbbc5c3921a143cfb68fa03787b83751958b9

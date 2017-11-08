@@ -27,7 +27,15 @@
 //修改状态栏文字颜色
 - (BOOL)prefersStatusBarHidden
 {
+    if (GL_IS_IPX) {
+        return false;
+    }
     return true;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleDefault;
 }
 
 - (void)navRightBtnClick:(UIButton *)sender
@@ -85,7 +93,7 @@
     if (!_webView) {
         _webView                    = [WKWebView new];
         _webView.backgroundColor    = [UIColor blackColor];
-        [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(@"http://xly.tangjiaolian.cn")]];
+        [_webView loadRequest:[NSURLRequest requestWithURL:GL_URL(URL_XLY)]];
         _webView.navigationDelegate = self;
         if (@available(iOS 11.0, *)) { //iOS11不自动调整状态栏
             _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;

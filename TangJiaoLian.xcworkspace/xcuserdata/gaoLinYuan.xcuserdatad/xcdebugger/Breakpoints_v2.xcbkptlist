@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/PersonalInfo/STPersonInfoViewController.m"
-            timestampString = "530532370.21556"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/PersonalInfo/STEditiInfoViewController.m"
+            timestampString = "531393561.63043"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
-            landmarkName = "-initData"
+            startingLineNumber = "324"
+            endingLineNumber = "324"
+            landmarkName = "-rightBtnDown:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -35,14 +35,62 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "TangJiaoLian/Class/Sections/GLSections/FingerBlood/STLogController.m"
-            timestampString = "530590562.301453"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/Wo/WoViewController.m"
+            timestampString = "531828678.738563"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "230"
-            endingLineNumber = "230"
-            landmarkName = "-getBloodRange"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
+            landmarkName = "-changeUserInfo"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TangJiaoLian/Class/Sections/GLSections/Wo/WoViewController.m"
+            timestampString = "531828678.738903"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "-createData"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[WoViewController createData]"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Library/Mobile%20Documents/com~apple~CloudDocs/%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE/TangJiaoLian1024/TangJiaoLian/Class/Sections/GLSections/Wo/WoViewController.m"
+                  timestampString = "531828678.923817"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "95"
+                  endingLineNumber = "95"
+                  offsetFromSymbolStart = "1042">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__30-[WoViewController createData]_block_invoke"
+                  moduleName = "TangJiaoLian"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/gaoLinYuan/Library/Mobile%20Documents/com~apple~CloudDocs/%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE/TangJiaoLian1024/TangJiaoLian/Class/Sections/GLSections/Wo/WoViewController.m"
+                  timestampString = "531828678.928541"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96"
+                  offsetFromSymbolStart = "79">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

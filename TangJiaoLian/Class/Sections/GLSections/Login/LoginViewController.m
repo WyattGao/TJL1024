@@ -346,7 +346,12 @@
                 GL_ALERT_E(RETMSG);
             }
         } else {
-            GL_ALERT_E([response getStringValue:@"Message"]);
+            NSString *message = [response getStringValue:@"Message"];
+            if (!message.length) {
+                GL_ALERT_E(@"服务器请求失败");
+            } else {
+                GL_ALERT_E(message);
+            }
         }
     } failure:^(GLRequest *request, NSError *error) {
         GL_AFFAil;

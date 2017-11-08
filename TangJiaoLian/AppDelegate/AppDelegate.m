@@ -74,6 +74,32 @@
             [YZSDK setToken:[dic getStringValue:@"access_token"] key:[dic getStringValue:@"cookie_key"] value:[dic getStringValue:@"cookie_value"]];
         }
     }
+    
+    //3DTouch
+    if (__IOS9_OR_LATER) {
+        //菜单图标
+        UIApplicationShortcutIcon *icon = [UIApplicationShortcutIcon iconWithType:UIApplicationShortcutIconTypeAdd];
+        //菜单文字
+        UIMutableApplicationShortcutItem *item = [[UIMutableApplicationShortcutItem alloc]initWithType:@"0" localizedTitle:@"记录血糖"];
+        //绑定信息到指定菜单
+        item.icon = icon;
+        //添加3DTouch按钮
+        UIApplication.sharedApplication.shortcutItems = @[item];
+    }
+}
+
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler
+{
+    switch ([shortcutItem.type integerValue]) {
+        case 0:
+            if (ISLOGIN) {
+                
+            }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 /**

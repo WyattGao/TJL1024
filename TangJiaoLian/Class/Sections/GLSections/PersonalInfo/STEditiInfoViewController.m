@@ -256,8 +256,19 @@
 
 - (void)navLeftBtnClick:(UIButton *)sender
 {
+    [super navLeftBtnClick:sender];
     if (_editiStyle == NikeName) {
+//        [self rightBtnDown:nil];
+    }
+}
+
+- (void)didMoveToParentViewController:(UIViewController*)parent{
+    [super didMoveToParentViewController:parent];
+    NSLog(@"%s,%@",__FUNCTION__,parent);
+    if(!parent){
+        if (_editiStyle == NikeName) {
         [self rightBtnDown:nil];
+        }
     }
 }
 
@@ -311,7 +322,6 @@
         }];
     } else {
         [self.delegate getEditiContent:[(UITextField *)[self.view viewWithTag:10] text]];
-        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

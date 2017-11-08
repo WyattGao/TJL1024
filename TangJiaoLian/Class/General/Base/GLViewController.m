@@ -98,22 +98,23 @@
 - (void)setLeftBtnImgNamed:(NSString *)imgNamed
 {
     if (!imgNamed) {
-//        imgNamed = @"返回";
+        imgNamed = @"返回";
         
-        UIBarButtonItem *item                             = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-        self.navigationItem.backBarButtonItem             = item;
+//        UIBarButtonItem *item                             = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:self action:@selector(navLeftBtnClick:)];
+//        self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+//        self.navigationItem.backBarButtonItem             = item;
     } else {
-        UIButton *fanHuiButton                = [UIButton buttonWithType:UIButtonTypeCustom];
-        fanHuiButton.frame                    = CGRectMake(0, 0, 44, 44);
-        fanHuiButton.imageEdgeInsets          = UIEdgeInsetsMake(0, -40, 0, 0);
-        [fanHuiButton setImage:[UIImage imageNamed:imgNamed] forState:UIControlStateNormal];
-        [fanHuiButton setImage:[UIImage imageNamed:imgNamed] forState:UIControlStateHighlighted];
-        [fanHuiButton addTarget:self action:@selector(navLeftBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-        
-        UIBarButtonItem *leftItem             = [[UIBarButtonItem alloc] initWithCustomView:fanHuiButton];
-        self.navigationItem.leftBarButtonItem = leftItem;
     }
+    UIButton *fanHuiButton                = [UIButton buttonWithType:UIButtonTypeCustom];
+    fanHuiButton.frame                    = CGRectMake(0, 0, 44, 44);
+    fanHuiButton.imageEdgeInsets          = UIEdgeInsetsMake(0, -40, 0, 0);
+    [fanHuiButton setImage:[UIImage imageNamed:imgNamed] forState:UIControlStateNormal];
+    [fanHuiButton setImage:[UIImage imageNamed:imgNamed] forState:UIControlStateHighlighted];
+    [fanHuiButton addTarget:self action:@selector(navLeftBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *leftItem             = [[UIBarButtonItem alloc] initWithCustomView:fanHuiButton];
+    self.navigationItem.leftBarButtonItem = leftItem;
+
 }
 
 - (void)setRightBtnImgNamed:(NSString *)imgNamed
