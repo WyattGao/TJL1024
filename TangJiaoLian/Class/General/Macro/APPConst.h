@@ -62,6 +62,8 @@
 #define SamTargetWarningArr @"SamTargetWarningArr"
 //用户ACCOUNT
 #define USER_ACCOUNT [GL_USERDEFAULTS getStringValue:@"ACCOUNT"]
+//用户ID
+#define USER_ID [GL_USERDEFAULTS getStringValue:@"USERID"]
 //用户登陆状态
 #define ISLOGIN ([USER_ACCOUNT length] > 0)
 //设备绑定状态

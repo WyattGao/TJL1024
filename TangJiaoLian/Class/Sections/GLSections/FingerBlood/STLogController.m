@@ -347,14 +347,25 @@
         //修改按钮标题为新值
         [btn setTitle:[NSString stringWithFormat:@"%.1lf",value/10.0f]  forState:UIControlStateNormal];
 
-        if ([GLTools BloodSugarBeforeOrAfterMeal:[dicc getIntegerValue:@"TYPE"]] == 1) {
-            //餐前
-            if ([btn.text floatValue] >= [GL_USERDEFAULTS getFloatValue:SamFingerRangeBeforeYellowHigh] || [btn.text floatValue] <= [GL_USERDEFAULTS getFloatValue:SamFingerRangeBeforeYellowLow]) {
+        //时间段：餐前餐后
+        NSString *timeType = [dicc getStringValue:@"TYPE"];
+        //血糖值的十进制数
+        NSDecimalNumber *dayLabValue = [NSDecimalNumber decimalNumberWithString:btn.text];
+        //餐前
+        if ([GLTools BloodSugarBeforeOrAfterMeal:[timeType integerValue]] == 1) {
+            if (([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedLow])] == NSOrderedAscending)
+                || ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedHigh])] == NSOrderedDescending)
+                || ([dayLabValue compare: GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedHigh])] == NSOrderedSame)) {
+                //红色 小于最低值或者大于等于最高值
                 isAbnormal = @"1";
             }
         } else {
             //餐后
-            if ([btn.text floatValue] > [GL_USERDEFAULTS getFloatValue:SamFingerRangeAfterYellowHigh] || [btn.text floatValue] <= [GL_USERDEFAULTS getFloatValue:SamFingerRangeAfterYellowLow]) {
+            if ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterRedLow])] == NSOrderedAscending
+                || [dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterRedLow])] == NSOrderedSame
+                || [dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeAfterRedHigh])] == NSOrderedDescending
+                ) {
+                //红色
                 isAbnormal = @"1";
             }
         }
@@ -388,6 +399,9 @@
                     [btn setTitleColor:TCOL_MAIN forState:UIControlStateNormal];
                     //刷新数据，获取ID
                     [self loadBloodSugar];
+                    if ([isAbnormal isEqualToString:@"1"]) {
+                        [self disposeIsAbnormalValue:btn.text WithType:timeType];
+                    }
                 } else {
                     GL_ALERTCONTR(nil, GETRETMSG);
                     [btn setTitle:btnStr  forState:UIControlStateNormal];
@@ -426,6 +440,30 @@
                 GL_AFFAil;
                 }];
         }
+    }];
+}
+
+/**
+ 处理异常值
+ 
+ @param value 血糖值
+ @param type 时间段
+ */
+- (void)disposeIsAbnormalValue:(NSString *)value WithType:(NSString *)type
+{
+    NSDictionary *postDic = @{
+                              FUNCNAME : @"wxSendModel",
+                              @"blood_value" : value,
+                              @"type" : type,
+                              @"userid" : USER_ID
+                              };
+    [GL_Requst POST:API_WECHAT parameters:postDic SvpShow:true success:^(GLRequest *request, id response) {
+        if (GETTAG) {
+            if (GETRETVAL) {
+            }
+        }
+    } failure:^(GLRequest *request, NSError *error) {
+        
     }];
 }
 

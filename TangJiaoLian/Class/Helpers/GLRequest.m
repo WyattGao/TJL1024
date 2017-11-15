@@ -29,7 +29,7 @@
     
     self.operationQueue=self.operationManager.operationQueue;
     self.operationManager.responseSerializer = [AFHTTPResponseSerializer serializer];
-
+    
     
     [self.operationManager GET:URLString parameters:parameters progress:^(NSProgress * _Nonnull downloadProgress) {
         
@@ -71,6 +71,9 @@
         case API_YZ:
             urlString = URL_YZLOGIN;
             break;
+        case API_WECHAT:
+            urlString = HOST_WECHATURL;
+            break;
         default:
             break;
     }
@@ -80,13 +83,15 @@
     }
     
     NSLog(@"[GLRequest 请求参数]: %@",parameters);
-
+    
     [self.operationManager POST:urlString parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
         
         NSLog(@"%@",uploadProgress);
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
         NSString* responseJson = [[NSString alloc]initWithData:responseObject encoding:NSUTF8StringEncoding];
+        if ([[parameters getStringValue:FUNCNAME] isEqualToString:@"wxSendModel"]) { //此接口沒有返回值
+            responseJson = @"";
+        }
         NSLog(@"[GLRequest]: %@",responseJson);
         
         NSData *responseData = [responseJson dataUsingEncoding:NSUTF8StringEncoding];
@@ -103,7 +108,7 @@
         }
         success(self,data);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-
+        
         NSLog(@"[GLRequest]: %@",error.localizedDescription);
         if (show) {
             [SVProgressHUD dismiss];
@@ -118,7 +123,7 @@
     parameters:parameters
        SvpShow:show
        success:success
-     failure:failure];
+       failure:failure];
 }
 
 
@@ -158,3 +163,4 @@
 }
 
 @end
+

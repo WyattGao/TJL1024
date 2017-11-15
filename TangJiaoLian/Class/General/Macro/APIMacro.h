@@ -12,3 +12,4 @@
 #define URL_XLY @"http://www.tangjiaolian.cn"
 #define URL_YZMALL @"https://kdt.im/pVZG2h"
 #define URL_YZLOGIN @"http://api.tangjiaolian.cn/youzan/yzuser"
+#define HOST_WECHATURL @"http://api.tangjiaolian.cn/wechat/Send"
