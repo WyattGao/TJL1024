@@ -109,6 +109,7 @@
 #define GETRETMSG [[[response objectForKey:@"Result"] objectForKey:@"OutField"] getStringValue:@"RETMSG"]
 
 #define FUNCNAME @"FuncName"
+#define FUNC @"func"
 #define INFIELD  @"InField"
 #define OUTFIELD @"OutField"
 #define INTABLE @"InTable"

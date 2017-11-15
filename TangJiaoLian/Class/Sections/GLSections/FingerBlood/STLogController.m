@@ -351,8 +351,9 @@
         NSString *timeType = [dicc getStringValue:@"TYPE"];
         //血糖值的十进制数
         NSDecimalNumber *dayLabValue = [NSDecimalNumber decimalNumberWithString:btn.text];
+        NSInteger beforeOrAfter = [GLTools BloodSugarBeforeOrAfterMeal:[timeType integerValue]];
         //餐前
-        if ([GLTools BloodSugarBeforeOrAfterMeal:[timeType integerValue]] == 1) {
+        if (beforeOrAfter == 1) {
             if (([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedLow])] == NSOrderedAscending)
                 || ([dayLabValue compare:GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedHigh])] == NSOrderedDescending)
                 || ([dayLabValue compare: GL_DVALUE([GL_USERDEFAULTS getStringValue:SamFingerRangeBeforeRedHigh])] == NSOrderedSame)) {
@@ -400,7 +401,7 @@
                     //刷新数据，获取ID
                     [self loadBloodSugar];
                     if ([isAbnormal isEqualToString:@"1"]) {
-                        [self disposeIsAbnormalValue:btn.text WithType:timeType];
+                        [self disposeIsAbnormalValue:btn.text WithType:[@(beforeOrAfter) stringValue]];
                     }
                 } else {
                     GL_ALERTCONTR(nil, GETRETMSG);
@@ -452,7 +453,7 @@
 - (void)disposeIsAbnormalValue:(NSString *)value WithType:(NSString *)type
 {
     NSDictionary *postDic = @{
-                              FUNCNAME : @"wxSendModel",
+                              FUNC : @"wxSendModel",
                               @"blood_value" : value,
                               @"type" : type,
                               @"userid" : USER_ID
